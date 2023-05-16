@@ -1,4 +1,4 @@
-package org.example.admin.service;
+package org.example.admin.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -7,6 +7,7 @@ import org.apache.tomcat.util.buf.StringUtils;
 import org.example.admin.dto.RolePermDto;
 import org.example.admin.mapper.SystemRolePermDao;
 import org.example.admin.mapper.SystemRolesDao;
+import org.example.admin.service.SystemRolePermService;
 import org.example.admin.vo.RolePermVo;
 import org.example.common.base.CommResp;
 import org.example.common.entity.SystemAdminRolePerms;
