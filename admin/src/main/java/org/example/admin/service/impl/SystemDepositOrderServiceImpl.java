@@ -31,6 +31,7 @@ public class SystemDepositOrderServiceImpl extends ServiceImpl<SystemDepositOrde
 
     @Override
     public List<Map<String, Object>> selectTxnModeByRegion() {
-        List<Map<String, Object>> maps = this.systemDepositOrderMapper.selectTxnModeByRegion();
+//        List<Map<String, Object>> maps = this.systemDepositOrderMapper.selectTxnModeByRegion();
+        return null;
     }
 }
