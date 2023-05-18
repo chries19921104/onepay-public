@@ -2,6 +2,8 @@ package org.example.admin.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 
@@ -10,16 +12,18 @@ import org.example.admin.mapper.*;
 import org.example.admin.service.SystemMerchantService;
 import org.example.common.base.MerchantData;
 import org.example.common.base.Totals;
+import org.example.common.dto.MerchantBodyDto;
+import org.example.common.dto.MerchantByBrandDto;
 import org.example.common.dto.MerchantDto;
 import org.example.common.entity.*;
-import org.example.common.vo.AgentsByCardGroupVo;
-import org.example.common.vo.AgentsVo;
-import org.example.common.vo.MerchantByAgentByGroupVo;
+import org.example.common.utils.URLUtils;
+import org.example.common.vo.*;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import javax.servlet.http.HttpServletRequest;
 import java.awt.peer.CanvasPeer;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
@@ -53,6 +57,15 @@ public class SystemMerchantServiceImpl extends ServiceImpl<SystemMerchantMapper,
 
     @Autowired
     private SystemMerchantSupportBankMapper systemMerchantSupportBankMapper;
+
+    @Autowired
+    private BaseMapper<MerchantData> MerchantDataMapper;
+
+    @Autowired
+    private SystemBankMapper systemBankMapper;
+
+    @Autowired
+    private SystemMerchantBankCardMapper systemMerchantBankCardMapper;
 
     /**
      * 选择账户群组
@@ -100,12 +113,12 @@ public class SystemMerchantServiceImpl extends ServiceImpl<SystemMerchantMapper,
     }
 
     /**
-     * 商户条件查询返回data
+     * 商户条件查询返回data信息
      * @param merchantDto
      * @return
      */
     @Override
-    public List<MerchantData> selectData(MerchantDto merchantDto) {
+    public Page<MerchantData> selectData(MerchantDto merchantDto) {
         //通过条件查询商户表
         LambdaQueryWrapper<SystemMerchant> lqw = new LambdaQueryWrapper<>();
         if (merchantDto.getMerchantId()!= null && !merchantDto.getMerchantId().isEmpty()){
@@ -147,13 +160,6 @@ public class SystemMerchantServiceImpl extends ServiceImpl<SystemMerchantMapper,
             }
         }
 
-        Totals totals = new Totals();
-        BigDecimal availableBalance = null;
-        BigDecimal depositOutstandingBalance= null;
-        BigDecimal currentBalance= null;
-        BigDecimal holdBalance= null;
-        BigDecimal frozenBalance= null;
-        BigDecimal todayTrFee= null;
         //遍历data结果集合
         for (MerchantData merchantData : collect) {
             //通过data类中的商户id查询对应的商户钱包信息
@@ -182,12 +188,6 @@ public class SystemMerchantServiceImpl extends ServiceImpl<SystemMerchantMapper,
                         "holdBalance",
                         "frozenBalance",
                         "todayTrFee");
-                availableBalance = availableBalance.add(systemMerchantWallet.getAvailableBalance());
-                depositOutstandingBalance = depositOutstandingBalance.add(systemMerchantWallet.getDepositOutstandingBalance());
-                currentBalance = currentBalance.add(systemMerchantWallet.getCurrentBalance());
-                holdBalance = holdBalance.add(systemMerchantWallet.getHoldBalance());
-                frozenBalance = frozenBalance.add(systemMerchantWallet.getFrozenBalance());
-                todayTrFee = todayTrFee.add(systemMerchantWallet.getTodayTrFee());
             }
             //如果查询出来对应的代理信息那么就将其中部分字段拷贝到data结果类中
             if (systemAgent1 != null){
@@ -195,16 +195,108 @@ public class SystemMerchantServiceImpl extends ServiceImpl<SystemMerchantMapper,
                 merchantData.setAgentFullName(systemAgent1.getFullName());
             }
         }
-        //将totals数据存储
-        totals.setCurrentBalance(currentBalance);
-        totals.setAvailableBalance(availableBalance);
-        totals.setFrozenBalance(frozenBalance);
-        totals.setHoldBalance(holdBalance);
-        totals.setTodayTrFee(todayTrFee);
-        totals.setDepositOutstandingBalance(depositOutstandingBalance);
+        //分页处理
+        Page<MerchantData> page = new Page<>(merchantDto.getPage(),merchantDto.getRp());
+        page.setRecords(collect);
+        Page<MerchantData> merchantDataPage = MerchantDataMapper.selectPage(page, new QueryWrapper<MerchantData>());
+        return merchantDataPage;
+    }
 
-
-
+    /**
+     * 银行信息
+     * @param status
+     * @return
+     */
+    @Override
+    public List<BrankVo> getBranks(Integer status) {
+        List<SystemBank> systemBanks = systemBankMapper.selectList(new LambdaQueryWrapper<SystemBank>()
+                .eq(SystemBank::getStatus, status));
+        //拷贝属性
+        List<BrankVo> collect = systemBanks.stream().map(iter -> {
+            BrankVo brankVo = new BrankVo();
+            BeanUtils.copyProperties(systemBanks, brankVo);
+            return brankVo;
+        }).collect(Collectors.toList());
         return collect;
+    }
+
+    /**
+     * 新增商户信息
+     * @param merchantBodyDto
+     */
+    @Override
+    public Long saveMerchant(MerchantBodyDto merchantBodyDto) {
+        SystemMerchant systemMerchant = new SystemMerchant();
+        //将接收的信息部分存在systemMerchant中
+        systemMerchant.setFiBankMax(BigDecimal.valueOf(Double.parseDouble(merchantBodyDto.getFI_bank_max())));
+        systemMerchant.setFiBankMin(BigDecimal.valueOf(Double.parseDouble(merchantBodyDto.getFI_bank_min())));
+        systemMerchant.setFiLocalbankMax(BigDecimal.valueOf(Double.parseDouble(merchantBodyDto.getFI_local_max())));
+        systemMerchant.setFiLocalbankMin(BigDecimal.valueOf(Double.parseDouble(merchantBodyDto.getFI_local_min())));
+        systemMerchant.setFiQrpayMax(BigDecimal.valueOf(Double.parseDouble(merchantBodyDto.getFI_qrpay_max())));
+        systemMerchant.setFiQrpayMin(BigDecimal.valueOf(Double.parseDouble(merchantBodyDto.getFI_qrpay_min())));
+        systemMerchant.setFiTrueMax(BigDecimal.valueOf(Double.parseDouble(merchantBodyDto.getFI_true_max())));
+        systemMerchant.setFiTrueMin(BigDecimal.valueOf(Double.parseDouble(merchantBodyDto.getFI_True_min())));
+        systemMerchant.setFoMax(BigDecimal.valueOf(Double.parseDouble(merchantBodyDto.getFO_max())));
+        systemMerchant.setFoMin(BigDecimal.valueOf(Double.parseDouble(merchantBodyDto.getFO_min())));
+        systemMerchant.setFxMax(BigDecimal.valueOf(Double.parseDouble(merchantBodyDto.getFX_max())));
+        systemMerchant.setFxMin(BigDecimal.valueOf(Double.parseDouble(merchantBodyDto.getFX_min())));
+        systemMerchant.setCardGroupId((long)merchantBodyDto.getCardGroupId());
+        systemMerchant.setVnpayEnabled(merchantBodyDto.getVNPAY_enabled());
+        systemMerchant.setAgentId((long)merchantBodyDto.getAgent_id());
+        systemMerchant.setCheckAccname(("true".equals(merchantBodyDto.getCheck_accname()))?1:0);
+        systemMerchant.setCode(merchantBodyDto.getCode());
+        systemMerchant.setCurrency(merchantBodyDto.getCurrency());
+        systemMerchant.setName(merchantBodyDto.getName());
+        systemMerchant.setName4qr(merchantBodyDto.getName4qr());
+        systemMerchant.setNoQrAdj(merchantBodyDto.getNo_qr_adj());
+        systemMerchant.setNoQrAdjRandom(("true".equals(merchantBodyDto.getNo_qr_adj_random()))?1:0);
+        systemMerchant.setPayFoBankFee(("true".equals(merchantBodyDto.getPay_fo_bank_fee()))?1:0);
+        systemMerchant.setSecCode(merchantBodyDto.getSec_code());
+        systemMerchant.setSettCardMax(Integer.valueOf(merchantBodyDto.getSett_card_max()));
+        systemMerchant.setSettFee(BigDecimal.valueOf(Double.parseDouble(merchantBodyDto.getSett_fee())));
+        systemMerchant.setSettlementTerm(merchantBodyDto.getSettlement_term());
+        systemMerchant.setTrQrRate(BigDecimal.valueOf(Double.parseDouble(merchantBodyDto.getTr_qr_rate())));
+        systemMerchant.setTrRate(BigDecimal.valueOf(Double.parseDouble(merchantBodyDto.getTr_rate())));
+        systemMerchant.setTrTrueRate(BigDecimal.valueOf(Double.parseDouble(merchantBodyDto.getTr_true_rate())));
+        systemMerchant.setWdRate(BigDecimal.valueOf(Double.parseDouble(merchantBodyDto.getWd_rate())));
+
+        systemMerchantMapper.insert(systemMerchant);
+        return systemMerchant.getMerchantId();
+    }
+
+    /**
+     * 银行账户条件查询返回data信息
+     * @param merchant
+     * @return
+     */
+    @Override
+    public Page<SystemMerchantBankCard> selectBrandData(MerchantByBrandDto merchant) {
+        Page<SystemMerchantBankCard> page = new Page<>(merchant.getPage(),merchant.getRp());
+        //先查询system_merchant_bank_card表
+        LambdaQueryWrapper<SystemMerchantBankCard> lqw = new LambdaQueryWrapper<>();
+        if (merchant.getMerchantId()!= null && !merchant.getMerchantId().isEmpty()){
+            lqw.in(SystemMerchantBankCard::getMerchantId,merchant.getMerchantId());
+        }if (merchant.getStatus()!= null && !merchant.getStatus().isEmpty()){
+            lqw.in(SystemMerchantBankCard::getStatus,merchant.getStatus());
+        }if (merchant.getCardNumber() != null){
+            lqw.eq(SystemMerchantBankCard::getCardNumber,merchant.getCardNumber());
+        }if (merchant.getStartDate() != null && !merchant.getStartDate().isEmpty()) {
+            lqw.between(SystemMerchantBankCard::getCreatedAt, Timestamp.valueOf(merchant.getStartDate()), Timestamp.valueOf(merchant.getEndDate()));
+        }
+        Page<SystemMerchantBankCard> iPage = systemMerchantBankCardMapper.selectPage(page, lqw);
+        return iPage;
+    }
+
+    /**
+     * 银行账户更新
+     * @param merchant
+     */
+    @Override
+    public void updateStatus(MerchantByBrandVo merchant) {
+        SystemMerchantBankCard merchantBankCard = systemMerchantBankCardMapper.selectById(merchant.getMbId());
+        if (merchantBankCard.getStatus() != merchant.getStatus()){
+            merchantBankCard.setStatus(merchant.getStatus());
+            systemMerchantBankCardMapper.updateById(merchantBankCard);
+        }
     }
 }
