@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.example.merchant.mapper.SystemSettlementOrderMapper">
+
+    <resultMap id="BaseResultMap" type="org.example.merchant.entity.SystemSettlementOrder">
+            <id property="fxId" column="fx_id" jdbcType="INTEGER"/>
+            <result property="merchantId" column="merchant_id" jdbcType="INTEGER"/>
+            <result property="reference" column="reference" jdbcType="VARCHAR"/>
+            <result property="toMan" column="to_man" jdbcType="VARCHAR"/>
+            <result property="toBank" column="to_bank" jdbcType="VARCHAR"/>
+            <result property="toBankBranch" column="to_bank_branch" jdbcType="VARCHAR"/>
+            <result property="toCardNumber" column="to_card_number" jdbcType="VARCHAR"/>
+            <result property="requestAmount" column="request_amount" jdbcType="DECIMAL"/>
+            <result property="paidAmount" column="paid_amount" jdbcType="DECIMAL"/>
+            <result property="rate" column="rate" jdbcType="DECIMAL"/>
+            <result property="bankFee" column="bank_fee" jdbcType="DECIMAL"/>
+            <result property="balance" column="balance" jdbcType="DECIMAL"/>
+            <result property="preBalance" column="pre_balance" jdbcType="DECIMAL"/>
+            <result property="balanceXy" column="balance_xy" jdbcType="DECIMAL"/>
+            <result property="preBalanceXy" column="pre_balance_xy" jdbcType="DECIMAL"/>
+            <result property="sh110Balance" column="SH110_balance" jdbcType="DECIMAL"/>
+            <result property="completedAt" column="completed_at" jdbcType="TIMESTAMP"/>
+            <result property="currency" column="currency" jdbcType="VARCHAR"/>
+            <result property="status" column="status" jdbcType="SMALLINT"/>
+            <result property="action" column="action" jdbcType="TINYINT"/>
+            <result property="trCode" column="tr_code" jdbcType="VARCHAR"/>
+            <result property="note" column="note" jdbcType="VARCHAR"/>
+            <result property="approveType" column="approve_type" jdbcType="TINYINT"/>
+            <result property="approveTime" column="approve_time" jdbcType="TIMESTAMP"/>
+            <result property="approvePerson" column="approve_person" jdbcType="VARCHAR"/>
+            <result property="createdMan" column="created_man" jdbcType="VARCHAR"/>
+            <result property="updatedMan" column="updated_man" jdbcType="VARCHAR"/>
+            <result property="createdAt" column="created_at" jdbcType="TIMESTAMP"/>
+            <result property="updatedAt" column="updated_at" jdbcType="TIMESTAMP"/>
+            <result property="localCreatedAt" column="local_created_at" jdbcType="TIMESTAMP"/>
+            <result property="localUpdatedAt" column="local_updated_at" jdbcType="TIMESTAMP"/>
+            <result property="mn100Id" column="MN100_ID" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <resultMap id="BaseResultMap2" type="org.example.merchant.vo.SettlementOrderVO" extends="BaseResultMap">
+        <result property="name" column="name" jdbcType="VARCHAR"/>
+        <result property="code" column="code" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        fx_id,merchant_id,reference,
+        to_man,to_bank,to_bank_branch,
+        to_card_number,request_amount,paid_amount,
+        rate,bank_fee,balance,
+        pre_balance,balance_xy,pre_balance_xy,
+        SH110_balance,completed_at,currency,
+        status,action,tr_code,
+        note,approve_type,approve_time,
+        approve_person,created_man,updated_man,
+        created_at,updated_at,local_created_at,
+        local_updated_at,MN100_ID
+    </sql>
+    <!--分页查询-->
+    <select id="search" resultType="org.example.merchant.vo.SettlementOrderVO" resultMap="BaseResultMap2">
+        SELECT
+        s.fx_id,
+        m.CODE,
+        m.NAME,
+        s.to_bank,
+        s.to_card_number,
+        s.to_man,
+        s.request_amount,
+        s.bank_fee,
+        s.STATUS,
+        s.created_at,
+        s.updated_at,
+        s.created_man,
+        s.updated_man
+        FROM
+        system_settlement_order AS s
+        left JOIN system_merchant AS m ON s.merchant_id = m.merchant_id
+        left JOIN system_merchant_third_pay AS p ON m.merchant_id = p.merchant_id
+        <where>
+            <!--币别-->
+            <if test="dto.currency!=null and dto.currency!=''">
+                and s.currency = #{dto.currency}
+            </if>
+            <!--群组-->
+            <if test="dto.cardGroupId!=null">
+                and m.card_group_id=#{dto.cardGroupId}
+            </if>
+            <!--商户id-->
+            <if test="dto.merchantId!=null">
+                and m.merchant_id in
+                <foreach collection="dto.merchantId" index="index" item="item" open="(" separator="," close=")">
+                    #{item}
+                </foreach>
+            </if>
+            <!--状态-->
+            <if test="dto.status!=null">
+                and s.status in
+                <foreach collection="dto.status" index="index" item="item" open="(" separator="," close=")">
+                    #{item}
+                </foreach>
+            </if>
+            <!--第三方支付名称-->
+            <if test="dto.company!=null and dto.company!=''">
+                and p.company=#{dto.company}
+            </if>
+            <!--to银行账户（from）-->
+            <if test="dto.toCardNumber!=null and dto.toCardNumber!=''">
+                and s.to_card_number=#{dto.toCardNumber}
+            </if>
+            <!--to银行名称-->
+            <if test="dto.toBank!=null and dto.toBank!=''">
+                and s.to_bank like  concat('%',#{dto.toBank},'%')
+            </if>
+            <!--下发id-->
+            <if test="dto.fxId!=null">
+                and s.fx_id=#{dto.fxId}
+            </if>
+            <!--子下发id-->
+            <if test="dto.FX110ID!=null">
+                and s.fx_id= (SELECT
+                FX110_ID
+                FROM
+                system_sub_settlement_order
+                WHERE
+                FX100_ID =#{dto.FX110ID})
+            </if>
+            <!--交易代码-->
+            <if test="dto.trCode!=null and dto.trCode!=''">
+                and s.tr_code=#{dto.trCode}
+            </if>
+            <if test="dto.createdAtTime!=null and dto.createdAtEndTime!=null">
+                and s.created_at between #{dto.createdAtTime}  and  DATE_ADD(#{dto.createdAtEndTime},INTERVAL 1 day)
+            </if>
+            <if test="dto.updatedAtEndTime!=null and dto.updatedAtBeginTime!=null">
+                and s.updated_at between #{dto.updatedAtEndTime}  and  DATE_ADD(#{dto.updatedAtBeginTime},INTERVAL 1 day)
+            </if>
+            <if test="dto.completedAtBeginTime!=null and dto.completedAtEndTime!=null">
+                and s.completed_at between #{dto.completedAtBeginTime}  and  DATE_ADD(#{dto.completedAtEndTime},INTERVAL 1 day)
+            </if>
+        </where>
+    </select>
+</mapper>
