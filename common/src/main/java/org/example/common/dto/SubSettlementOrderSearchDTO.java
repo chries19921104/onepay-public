@@ -1,4 +1,4 @@
-package org.example.merchant.dto;
+package org.example.common.dto;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -7,7 +7,6 @@ import org.example.common.dto.PageDTO;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.util.Date;
-import java.util.List;
 
 @ApiModel(value = "子下发查询模型")
 @Data

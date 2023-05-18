@@ -1,6 +1,7 @@
-package org.example.merchant.conf.component;
+package org.example.admin.conf;
 
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
+import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.LocaleResolver;
 
@@ -31,6 +32,13 @@ public class MyLocaleResolver implements LocaleResolver {
     @Override
     public void setLocale(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Locale locale) {
 
+    }
+
+
+    //注入Bean 自定义的国际化组件就生效了
+    @Bean
+    public LocaleResolver localeResolver(){
+        return new MyLocaleResolver();
     }
 
 }

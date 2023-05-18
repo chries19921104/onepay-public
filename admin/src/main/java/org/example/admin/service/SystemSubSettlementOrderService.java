@@ -1,9 +1,9 @@
-package org.example.merchant.service;
+package org.example.admin.service;
 
-import org.example.merchant.dto.SubSettlementOrderSearchDTO;
-import org.example.merchant.entity.SystemSubSettlementOrder;
+import org.example.common.dto.SubSettlementOrderSearchDTO;
+import org.example.common.entity.SystemSubSettlementOrder;
 import com.baomidou.mybatisplus.extension.service.IService;
-import org.example.merchant.vo.SubSettlementOrderVO;
+import org.example.common.vo.SubSettlementOrderVO;
 
 import java.util.List;
 

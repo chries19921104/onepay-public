@@ -1,13 +1,13 @@
-package org.example.merchant.controller;
+package org.example.admin.controller;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.example.admin.service.SystemSettlementOrderService;
 import org.example.common.controller.BaseController;
 import org.example.common.exception.MsgException;
 import org.example.common.vo.R;
-import org.example.merchant.dto.SettlementOrderSearchDTO;
-import org.example.merchant.service.SystemSettlementOrderService;
-import org.example.merchant.vo.SettlementOrderVO;
+import org.example.common.dto.SettlementOrderSearchDTO;
+import org.example.common.vo.SettlementOrderVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;

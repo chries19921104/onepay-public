@@ -2,9 +2,9 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="org.example.merchant.mapper.SystemSettlementOrderMapper">
+<mapper namespace="org.example.admin.mapper.SystemSettlementOrderMapper">
 
-    <resultMap id="BaseResultMap" type="org.example.merchant.entity.SystemSettlementOrder">
+    <resultMap id="BaseResultMap" type="org.example.common.entity.SystemSettlementOrder">
             <id property="fxId" column="fx_id" jdbcType="INTEGER"/>
             <result property="merchantId" column="merchant_id" jdbcType="INTEGER"/>
             <result property="reference" column="reference" jdbcType="VARCHAR"/>
@@ -39,7 +39,7 @@
             <result property="mn100Id" column="MN100_ID" jdbcType="INTEGER"/>
     </resultMap>
 
-    <resultMap id="BaseResultMap2" type="org.example.merchant.vo.SettlementOrderVO" extends="BaseResultMap">
+    <resultMap id="BaseResultMap2" type="org.example.common.vo.SettlementOrderVO" extends="BaseResultMap">
         <result property="name" column="name" jdbcType="VARCHAR"/>
         <result property="code" column="code" jdbcType="VARCHAR"/>
     </resultMap>
@@ -58,7 +58,7 @@
         local_updated_at,MN100_ID
     </sql>
     <!--分页查询-->
-    <select id="search" resultType="org.example.merchant.vo.SettlementOrderVO" resultMap="BaseResultMap2">
+    <select id="search" resultType="org.example.common.vo.SettlementOrderVO" resultMap="BaseResultMap2">
         SELECT
         s.fx_id,
         m.CODE,

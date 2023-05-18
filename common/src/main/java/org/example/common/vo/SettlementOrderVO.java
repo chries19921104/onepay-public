@@ -1,7 +1,7 @@
-package org.example.merchant.vo;
+package org.example.common.vo;
 
 import lombok.Data;
-import org.example.merchant.entity.SystemSettlementOrder;
+import org.example.common.entity.SystemSettlementOrder;
 @Data
 public class SettlementOrderVO extends SystemSettlementOrder {
 

@@ -1,4 +1,4 @@
-package org.example.merchant.controller;
+package org.example.admin.controller;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;

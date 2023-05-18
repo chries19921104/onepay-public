@@ -2,9 +2,9 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="org.example.merchant.mapper.SystemSubSettlementOrderMapper">
+<mapper namespace="org.example.admin.mapper.SystemSubSettlementOrderMapper">
 
-    <resultMap id="BaseResultMap" type="org.example.merchant.entity.SystemSubSettlementOrder">
+    <resultMap id="BaseResultMap" type="org.example.common.entity.SystemSubSettlementOrder">
             <id property="fx110Id" column="FX110_ID" jdbcType="INTEGER"/>
             <result property="fx100Id" column="FX100_ID" jdbcType="INTEGER"/>
             <result property="fx110Preid" column="FX110_PREID" jdbcType="INTEGER"/>
@@ -66,6 +66,14 @@
             <result property="runmonNumber" column="runmon_number" jdbcType="TINYINT"/>
     </resultMap>
 
+    <resultMap id="BaseResultMap2" type="org.example.common.vo.SubSettlementOrderVO" extends="BaseResultMap">
+        <result property="code" column="code" jdbcType="VARCHAR"/>
+        <result property="name" column="name" jdbcType="VARCHAR"/>
+        <result property="toBank" column="to_bank" jdbcType="VARCHAR"/>
+        <result property="toCardNumber" column="to_card_number" jdbcType="VARCHAR"/>
+        <result property="toMan" column="to_man" jdbcType="VARCHAR"/>
+    </resultMap>
+
     <sql id="Base_Column_List">
         FX110_ID,FX100_ID,FX110_PREID,
         BC100_ID,tpi100_id,txn_mode,
@@ -90,7 +98,7 @@
     </sql>
 
     <!--分页查询-->
-    <select id="search" resultType="org.example.merchant.vo.SubSettlementOrderVO">
+    <select id="search" resultType="org.example.common.vo.SubSettlementOrderVO" resultMap="BaseResultMap2">
         SELECT
             ss.FX100_ID,
             ss.FX110_PREID,
@@ -136,7 +144,7 @@
             <!--to银行id-->
             <if test="dto.cardId!=null">
                 and so.to_card_number = (
-                select  bank_number from system_bank_card
+                select  atm_card_number from system_bank_card
                 where card_id = #{dto.cardId}
                 )
             </if>

@@ -1,4 +1,4 @@
-package org.example.merchant.dto;
+package org.example.common.dto;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;

@@ -1,11 +1,11 @@
-package org.example.merchant.service.impl;
+package org.example.admin.service.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import org.example.merchant.dto.SettlementOrderSearchDTO;
-import org.example.merchant.entity.SystemSettlementOrder;
-import org.example.merchant.service.SystemSettlementOrderService;
-import org.example.merchant.mapper.SystemSettlementOrderMapper;
-import org.example.merchant.vo.SettlementOrderVO;
+import org.example.common.dto.SettlementOrderSearchDTO;
+import org.example.common.entity.SystemSettlementOrder;
+import org.example.admin.mapper.SystemSettlementOrderMapper;
+import org.example.admin.service.SystemSettlementOrderService;
+import org.example.common.vo.SettlementOrderVO;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -17,7 +17,7 @@ import java.util.List;
 */
 @Service
 public class SystemSettlementOrderServiceImpl extends ServiceImpl<SystemSettlementOrderMapper, SystemSettlementOrder>
-    implements SystemSettlementOrderService{
+    implements SystemSettlementOrderService {
 
     /**
      * 分页查询
