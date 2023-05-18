@@ -1,4 +1,4 @@
-package org.example.admin.controller.controller;
+package org.example.admin.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
