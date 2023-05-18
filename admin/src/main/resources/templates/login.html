@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- CSRF Token -->
+    <meta name="csrf-token" content="h5Ef3RIozrhRpftNIl8mktcKpScTu54FtvWYAKkR">
+
+    <title>Master Back Office</title>
+
+    <!-- Styles -->
+    <link href="https://api-tu-outside.100scrop.tech/css/app.css" rel="stylesheet">
+</head>
+<body>
+<div id="app">
+    <main class="py-4">
+        <div class="container login-container">
+            <div class="row justify-content-center login-form">
+                <!-- <div class="nav"></div> -->
+                <div class="col-md-8">
+                    <div class="card">
+                        <div class="card-header title-container"><span>主后台</span></div>
+                        <div class="card-text">登录</div>
+                        <div class="lang">
+                            <form id="form_locale" method="get" action="/login" style="margin:0">
+                                <select id="change" name="hl" onchange="document.getElementById('form_locale').submit()">
+                                    <option value="en">English</option>
+                                    <option value="zh-CN" selected>中文</option>
+                                </select>
+                            </form>
+                        </div>
+                        <div class="card-body">
+                            <form method="POST" action="/login" aria-label="登录" class="form_warp">
+                                <input type="hidden" name="_token" value="h5Ef3RIozrhRpftNIl8mktcKpScTu54FtvWYAKkR">
+                                <div class="form-group row el-form-item__content">
+                                    <label for="username" class="col-sm-4 col-form-label text-md-right">用户名</label>
+                                    <div class="col-md-6 el-input">
+                                        <input id="username" type="text" class="form-control" name="username" value="" autofocus placeholder="用户名">
+                                    </div>
+                                </div>
+
+                                <div class="form-group row el-form-item__content" style="margin-bottom: 35px;">
+                                    <label for="password" class="col-sm-4 col-form-label text-md-right">密码</label>
+                                    <div class="col-md-6 el-input">
+                                        <input id="password"  class="form-control" name="password" type="password" placeholder="密码">
+                                    </div>
+                                </div>
+
+                                <div class="form-group row prompt">
+                                </div>
+
+                                <!-- <div class="form-group row">
+                                    <div class="col-md-6 offset-md-4">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" name="remember" id="remember" >
+
+                                            <label class="form-check-label" for="remember">
+                                                记住我
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div> -->
+
+                                <div class="form-group row mb-0">
+                                    <div class="col-md-8 offset-md-4">
+                                        <button type="submit" class="btn btn-primary">
+                                            登录
+                                        </button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+</body>
+</html>
