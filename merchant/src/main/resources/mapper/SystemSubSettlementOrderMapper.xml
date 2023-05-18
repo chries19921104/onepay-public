@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.example.merchant.mapper.SystemSubSettlementOrderMapper">
+
+    <resultMap id="BaseResultMap" type="org.example.merchant.entity.SystemSubSettlementOrder">
+            <id property="fx110Id" column="FX110_ID" jdbcType="INTEGER"/>
+            <result property="fx100Id" column="FX100_ID" jdbcType="INTEGER"/>
+            <result property="fx110Preid" column="FX110_PREID" jdbcType="INTEGER"/>
+            <result property="bc100Id" column="BC100_ID" jdbcType="INTEGER"/>
+            <result property="tpi100Id" column="tpi100_id" jdbcType="SMALLINT"/>
+            <result property="txnMode" column="txn_mode" jdbcType="INTEGER"/>
+            <result property="requestAmount" column="request_amount" jdbcType="DECIMAL"/>
+            <result property="paidAmount" column="paid_amount" jdbcType="DECIMAL"/>
+            <result property="rate" column="rate" jdbcType="DECIMAL"/>
+            <result property="bankFee" column="bank_fee" jdbcType="DECIMAL"/>
+            <result property="tpiBankFee" column="tpi_bank_fee" jdbcType="DECIMAL"/>
+            <result property="balance" column="balance" jdbcType="DECIMAL"/>
+            <result property="preBalance" column="pre_balance" jdbcType="DECIMAL"/>
+            <result property="balanceXy" column="balance_xy" jdbcType="DECIMAL"/>
+            <result property="preBalanceXy" column="pre_balance_xy" jdbcType="DECIMAL"/>
+            <result property="sh110Balance" column="SH110_balance" jdbcType="DECIMAL"/>
+            <result property="currency" column="currency" jdbcType="VARCHAR"/>
+            <result property="step" column="step" jdbcType="VARCHAR"/>
+            <result property="retryTimes" column="retry_times" jdbcType="TINYINT"/>
+            <result property="isPressButton" column="is_press_button" jdbcType="TINYINT"/>
+            <result property="status" column="status" jdbcType="TINYINT"/>
+            <result property="action" column="action" jdbcType="TINYINT"/>
+            <result property="message" column="message" jdbcType="VARCHAR"/>
+            <result property="commandId" column="command_id" jdbcType="VARCHAR"/>
+            <result property="vb100Id" column="VB100_ID" jdbcType="INTEGER"/>
+            <result property="receivedotptime" column="receivedOTPtime" jdbcType="TIMESTAMP"/>
+            <result property="otptimer" column="otptimer" jdbcType="INTEGER"/>
+            <result property="refCode" column="ref_code" jdbcType="VARCHAR"/>
+            <result property="bankreferenceno" column="bankreferenceno" jdbcType="VARCHAR"/>
+            <result property="isRefCode" column="is_ref_code" jdbcType="TINYINT"/>
+            <result property="isEntry" column="is_entry" jdbcType="TINYINT"/>
+            <result property="vndOtp" column="vnd_otp" jdbcType="VARCHAR"/>
+            <result property="vndPaymentMethod" column="vnd_payment_method" jdbcType="VARCHAR"/>
+            <result property="postscript" column="postscript" jdbcType="VARCHAR"/>
+            <result property="note" column="note" jdbcType="VARCHAR"/>
+            <result property="tokenInput" column="token_input" jdbcType="VARCHAR"/>
+            <result property="xyToMan" column="xy_to_man" jdbcType="VARCHAR"/>
+            <result property="createdMan" column="created_man" jdbcType="VARCHAR"/>
+            <result property="updatedMan" column="updated_man" jdbcType="VARCHAR"/>
+            <result property="createdAt" column="created_at" jdbcType="TIMESTAMP"/>
+            <result property="updatedAt" column="updated_at" jdbcType="TIMESTAMP"/>
+            <result property="localCreatedAt" column="local_created_at" jdbcType="TIMESTAMP"/>
+            <result property="localUpdatedAt" column="local_updated_at" jdbcType="TIMESTAMP"/>
+            <result property="vpn100Id" column="VPN100_ID" jdbcType="INTEGER"/>
+            <result property="altVpnId" column="alt_vpn_id" jdbcType="INTEGER"/>
+            <result property="mn100Id" column="MN100_ID" jdbcType="INTEGER"/>
+            <result property="mn120Id" column="MN120_ID" jdbcType="INTEGER"/>
+            <result property="isLateTimes" column="is_late_times" jdbcType="INTEGER"/>
+            <result property="isWeird" column="is_weird" jdbcType="TINYINT"/>
+            <result property="description" column="description" jdbcType="VARCHAR"/>
+            <result property="externalDescription" column="external_description" jdbcType="VARCHAR"/>
+            <result property="isUrgent" column="is_urgent" jdbcType="TINYINT"/>
+            <result property="receipt" column="receipt" jdbcType="VARCHAR"/>
+            <result property="keepPoint" column="keep_point" jdbcType="DECIMAL"/>
+            <result property="superiorKeepPoint" column="superior_keep_point" jdbcType="DECIMAL"/>
+            <result property="superiorMn100Id" column="superior_MN100_ID" jdbcType="INTEGER"/>
+            <result property="frozenAvailableBalance" column="frozen_available_balance" jdbcType="DECIMAL"/>
+            <result property="frozenGuaranteeBalance" column="frozen_guarantee_balance" jdbcType="DECIMAL"/>
+            <result property="runmonNumber" column="runmon_number" jdbcType="TINYINT"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        FX110_ID,FX100_ID,FX110_PREID,
+        BC100_ID,tpi100_id,txn_mode,
+        request_amount,paid_amount,rate,
+        bank_fee,tpi_bank_fee,balance,
+        pre_balance,balance_xy,pre_balance_xy,
+        SH110_balance,currency,step,
+        retry_times,is_press_button,status,
+        action,message,command_id,
+        VB100_ID,receivedOTPtime,otptimer,
+        ref_code,bankreferenceno,is_ref_code,
+        is_entry,vnd_otp,vnd_payment_method,
+        postscript,note,token_input,
+        xy_to_man,created_man,updated_man,
+        created_at,updated_at,local_created_at,
+        local_updated_at,VPN100_ID,alt_vpn_id,
+        MN100_ID,MN120_ID,is_late_times,
+        is_weird,description,external_description,
+        is_urgent,receipt,keep_point,
+        superior_keep_point,superior_MN100_ID,frozen_available_balance,
+        frozen_guarantee_balance,runmon_number
+    </sql>
+
+    <!--分页查询-->
+    <select id="search" resultType="org.example.merchant.vo.SubSettlementOrderVO">
+        SELECT
+            ss.FX100_ID,
+            ss.FX110_PREID,
+            sm.code,
+            sm.name,
+            so.to_bank,
+            so.to_card_number,
+            so.to_man,
+            ss.request_amount,
+            ss.bank_fee,
+            ss.paid_amount,
+            ss.vnd_otp,
+            ss.STATUS,
+            ss.step,
+            ss.created_at,
+            ss.updated_at,
+            ss.created_man,
+            ss.updated_man
+        FROM
+            system_sub_settlement_order AS ss
+                left JOIN system_settlement_order AS so ON so.fx_id = ss.fX100_ID
+                left JOIN system_merchant AS sm ON so.merchant_id = sm.merchant_id
+        <where>
+            <!--币别-->
+            <if test="dto.currency!=null and dto.currency!=''">
+                and ss.currency = #{dto.currency}
+            </if>
+            <!--群组-->
+            <if test="dto.cardGroupId!=null">
+                and sm.card_group_id = #{dto.cardGroupId}
+            </if>
+            <!--商户id-->
+            <if test="dto.merchantId!=null">
+                and sm.merchant_id in
+                <foreach collection="dto.merchantId" index="index" item="item" open="(" separator="," close=")">
+                    #{item}
+                </foreach>
+            </if>
+            <!--第三方支付id-->
+            <if test="dto.tpi100Id!=null">
+                and ss.tpi100_Id=#{dto.tpi100Id}
+            </if>
+            <!--to银行id-->
+            <if test="dto.cardId!=null">
+                and so.to_card_number = (
+                select  bank_number from system_bank_card
+                where card_id = #{dto.cardId}
+                )
+            </if>
+            <!--状态-->
+            <if test="dto.status!=null">
+                and ss.status in
+                <foreach collection="dto.status" index="index" item="item" open="(" separator="," close=")">
+                    #{item}
+                </foreach>
+            </if>
+            <!--出款方式-->
+            <if test="dto.vndPaymentMethod!=null">
+                and ss.vnd_payment_method in
+                    <foreach collection="dto.vndPaymentMethod" index="index" item="item" open="(" separator="," close=")">
+                        #{item}
+                    </foreach>
+            </if>
+            <!--OTP方式-->
+            <if test="dto.vndOtp!=null">
+                and ss.vnd_otp in
+                    <foreach collection="dto.vndOtp" index="index" item="item" open="(" separator="," close=")">
+                        #{item}
+                    </foreach>
+            </if>
+            <!--from 银行卡id-->
+            <if test="dto.bc100ID!=null">
+                and ss.BC100_ID = #{dto.bc100ID}
+            </if>
+            <!--to名称-->
+            <if test="dto.toMan!=null and dto.toMan!=''">
+                and so.to_man = #{dto.toMan}
+            </if>
+            <!--主下发id-->
+            <if test="dto.fxId!=null">
+                and ss.FX100_ID=#{dto.fxId}
+            </if>
+            <!--子下发id-->
+            <if test="dto.fx110ID!=null">
+                and ss.FX110_ID=#{dto.fx110ID}
+            </if>
+            <!--商户订单号-->
+            <if test="dto.commandId!=null and dto.commandId!=''">
+                and ss.command_id=#{dto.commandId}
+            </if>
+            <!--附言-->
+            <if test="dto.description!=null and dto.description!=''">
+                and ss.description like concat('%',#{dto.description},'%')
+            </if>
+            <if test="dto.createdAtBeginTime!=null and dto.createdAtAtEndTime!=null">
+                and ss.created_at between #{dto.createdAtBeginTime}  and  DATE_ADD(#{dto.createdAtAtEndTime},INTERVAL 1 day)
+            </if>
+            <if test="dto.updatedAtBeginTime!=null and dto.updatedAtEndTime!=null">
+                and ss.updated_at between #{dto.updatedAtBeginTime}  and  DATE_ADD(#{dto.updatedAtEndTime},INTERVAL 1 day)
+            </if>
+        </where>
+    </select>
+</mapper>
