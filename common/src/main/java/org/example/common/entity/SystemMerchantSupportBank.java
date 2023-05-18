@@ -1,46 +1,59 @@
 package org.example.common.entity;
-
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
-
-import lombok.Data;
-
+import lombok.Getter;
+import lombok.Setter;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
 /**
 * <p>
-* system_bank_card_group 实体类
+* system_merchant_support_bank 实体类
 * </p>
 *
-<<<<<<< HEAD
-* @author zhangmi
-* @since 2023-05-17 13:41:12
+* @author Administrator
+* @since 2023-05-17 17:01:04
 */
-@Data
-@TableName("system_bank_card_group")
-public class SystemBankCardGroup implements Serializable {
+@Getter
+@Setter
+@TableName("system_merchant_support_bank")
+public class SystemMerchantSupportBank implements Serializable {
     private static final long serialVersionUID = 1L;
 
     /**
-    * 银行卡群组ID
+    * 商户支持银行主键 ID
     */
     @TableId
-    private Long groupId;
+    private Long msId;
 
     /**
-    * 群名称
+    * 商户ID
     */
-    private String groupName;
+    private Integer merchantId;
 
     /**
-    * 币别
+    * 银行ID
     */
-    private String currency;
+    private Integer bankId;
+
+    /**
+    * 交易类别, 1: FI bank, 2: FI QRPay, 3: FO
+    */
+    private Integer txnType;
+
+    /**
+    * 是否启用
+    */
+    private Integer isEnabled;
+
+    /**
+    * 商户接口不支持此银行时返回的错误信息
+    */
+    private String message;
 
     /**
     * 创建人员
