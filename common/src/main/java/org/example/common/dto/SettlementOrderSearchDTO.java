@@ -45,7 +45,7 @@ public class SettlementOrderSearchDTO extends PageDTO {
 
     @ApiModelProperty(value = "创建开始时间" )
     @DateTimeFormat(pattern = "yyyy-MM-dd")
-    private Date createdAtTime;
+    private Date createdAtBeginTime;
 
     @ApiModelProperty(value = "创建结束时间")
     @DateTimeFormat(pattern = "yyyy-MM-dd")

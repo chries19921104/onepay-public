@@ -5,6 +5,7 @@ import cn.hutool.core.io.IoUtil;
 import cn.hutool.core.util.NumberUtil;
 
 
+import lombok.SneakyThrows;
 import org.example.common.enums.AckCode;
 import org.example.common.exception.MsgException;
 import org.springframework.web.context.request.RequestContextHolder;
@@ -44,7 +45,8 @@ public class ServletUtils {
      * @param key
      * @return
      */
-    public static Integer getParamsToInt(String key) throws MsgException {
+    @SneakyThrows
+    public static Integer getParamsToInt(String key) {
         String value=getParams(key);
         if(NumberUtil.isInteger(value)){
             return  Integer.parseInt(value);

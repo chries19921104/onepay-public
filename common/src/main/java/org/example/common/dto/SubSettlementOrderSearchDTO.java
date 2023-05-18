@@ -42,7 +42,7 @@ public class SubSettlementOrderSearchDTO extends PageDTO {
 
     @ApiModelProperty(value = "创建结束时间")
     @DateTimeFormat(pattern = "yyyy-MM-dd")
-    private Date createdAtAtEndTime;
+    private Date createdAtEndTime;
 
     @ApiModelProperty(value = "更新时间 updated_at" )
     @DateTimeFormat(pattern = "yyyy-MM-dd")

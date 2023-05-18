@@ -2,6 +2,7 @@ package org.example.admin.controller;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import lombok.SneakyThrows;
 import org.example.admin.service.SystemSubSettlementOrderService;
 import org.example.common.controller.BaseController;
 import org.example.common.exception.MsgException;
@@ -23,9 +24,10 @@ public class SubSettlementOrderController extends BaseController {
     @Autowired
     private SystemSubSettlementOrderService systemSubSettlementOrderService;
 
+    @SneakyThrows
     @ApiOperation(value = "分页查询")
     @GetMapping(value = "/search")
-    public R search(SubSettlementOrderSearchDTO dto) throws MsgException {
+    public R search(SubSettlementOrderSearchDTO dto) {
         super.startPageHelper();
         List<SubSettlementOrderVO> list = this.systemSubSettlementOrderService.search(dto);
         return super.pageToPageVO(list);

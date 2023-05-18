@@ -11,7 +11,7 @@ import org.springframework.context.annotation.Configuration;
  * myatis-plus配置
  */
 @Configuration
-@MapperScan(basePackages = "org.example.**.mapper")
+@MapperScan(basePackages = "org.example.admin.mapper")
 public class MyBatisPlusConfig {
 
     /**

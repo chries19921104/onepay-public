@@ -129,11 +129,11 @@
             <if test="dto.trCode!=null and dto.trCode!=''">
                 and s.tr_code=#{dto.trCode}
             </if>
-            <if test="dto.createdAtTime!=null and dto.createdAtEndTime!=null">
-                and s.created_at between #{dto.createdAtTime}  and  DATE_ADD(#{dto.createdAtEndTime},INTERVAL 1 day)
+            <if test="dto.createdAtBeginTime!=null and dto.createdAtEndTime!=null">
+                and s.created_at between #{dto.createdAtBeginTime}  and  DATE_ADD(#{dto.createdAtEndTime},INTERVAL 1 day)
             </if>
-            <if test="dto.updatedAtEndTime!=null and dto.updatedAtBeginTime!=null">
-                and s.updated_at between #{dto.updatedAtEndTime}  and  DATE_ADD(#{dto.updatedAtBeginTime},INTERVAL 1 day)
+            <if test="dto.updatedAtBeginTime!=null and dto.updatedAtEndTime!=null">
+                and s.updated_at between #{dto.updatedAtBeginTime}  and  DATE_ADD(#{dto.updatedAtEndTime},INTERVAL 1 day)
             </if>
             <if test="dto.completedAtBeginTime!=null and dto.completedAtEndTime!=null">
                 and s.completed_at between #{dto.completedAtBeginTime}  and  DATE_ADD(#{dto.completedAtEndTime},INTERVAL 1 day)

@@ -193,8 +193,8 @@
             <if test="dto.description!=null and dto.description!=''">
                 and ss.description like concat('%',#{dto.description},'%')
             </if>
-            <if test="dto.createdAtBeginTime!=null and dto.createdAtAtEndTime!=null">
-                and ss.created_at between #{dto.createdAtBeginTime}  and  DATE_ADD(#{dto.createdAtAtEndTime},INTERVAL 1 day)
+            <if test="dto.createdAtBeginTime!=null and dto.createdAtEndTime!=null">
+                and ss.created_at between #{dto.createdAtBeginTime}  and  DATE_ADD(#{dto.createdAtEndTime},INTERVAL 1 day)
             </if>
             <if test="dto.updatedAtBeginTime!=null and dto.updatedAtEndTime!=null">
                 and ss.updated_at between #{dto.updatedAtBeginTime}  and  DATE_ADD(#{dto.updatedAtEndTime},INTERVAL 1 day)
