@@ -37,19 +37,19 @@ public class SubSettlementOrderSearchDTO extends PageDTO {
     private String[] vndOtp;
 
     @ApiModelProperty(value = "创建开始时间 created_at" )
-    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date createdAtBeginTime;
 
     @ApiModelProperty(value = "创建结束时间")
-    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date createdAtEndTime;
 
     @ApiModelProperty(value = "更新时间 updated_at" )
-    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date updatedAtBeginTime;
 
     @ApiModelProperty(value = "更新结束时间")
-    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date updatedAtEndTime;
 
     @ApiModelProperty(value = "银行卡id（from）" )
