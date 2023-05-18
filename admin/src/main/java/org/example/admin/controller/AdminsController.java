@@ -7,10 +7,9 @@ import org.example.common.base.CommResp;
 import org.example.common.dto.AdminsDTO;
 import org.example.common.entity.Admins;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.http.HttpServletRequest;
 
 
 /**
@@ -23,32 +22,48 @@ import org.springframework.web.bind.annotation.RestController;
 */
 @Api(tags = "管理员登录")
 @RestController
-@RequestMapping("/aas")
+@RequestMapping()
 public class AdminsController {
 
     @Autowired
     private AdminsService adminsService;
+    @Autowired
+    private HttpServletRequest request;
 
 
     @ApiOperation(value ="登录")
     @PostMapping("/login")
-    public CommResp loginAuth(@RequestBody Admins admins) {
+    public CommResp loginAuth(@RequestParam("username") String username,@RequestParam("password") String password) {
+        Admins admins=new Admins();
+        admins.setUsername(username);
+        admins.setPassword(password);
         return adminsService.login(admins);
     }
     @ApiOperation(value ="注册")
-    @PostMapping("/register")
+    @PostMapping("/api/admin")
     public CommResp register(@RequestBody AdminsDTO adminsDTO) {
         return adminsService.register(adminsDTO);
     }
     @ApiOperation(value ="修改")
-    @PostMapping("/adminupdate")
+    @PostMapping("/api/adminupdate")
     public CommResp update(@RequestBody AdminsDTO adminsDTO) {
+        String token = request.getHeader("token");
+        adminsDTO.setToken(token);
         return adminsService.update(adminsDTO);
     }
 
     @ApiOperation(value ="删除")
-    @PostMapping("/admindelete")
+    @PostMapping("/api/admindelete")
     public CommResp delete(@RequestBody AdminsDTO adminsDTO) {
+        String token = request.getHeader("token");
+        adminsDTO.setToken(token);
         return adminsService.delete(adminsDTO);
     }
+    @ApiOperation(value ="登出")
+    @GetMapping("/logout")
+    public CommResp logout(){
+        boolean status = adminsService.update().eq("status", 0).update();
+        return CommResp.data(status);
+    }
+
 }

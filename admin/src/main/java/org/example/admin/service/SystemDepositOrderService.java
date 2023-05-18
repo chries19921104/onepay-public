@@ -1,0 +1,23 @@
+package org.example.admin.service;
+
+import com.baomidou.mybatisplus.extension.service.IService;
+import org.apache.ibatis.annotations.Param;
+import org.example.common.base.CommResp;
+import org.example.common.entity.SystemDepositOrder;
+
+import java.util.List;
+import java.util.Map;
+
+/**
+* <p>
+* system_deposit_order Service 接口
+* </p>
+*
+* @author zhangmi
+* @since 2023-05-17 19:16:15
+*/
+public interface SystemDepositOrderService extends IService<SystemDepositOrder> {
+    CommResp selectTxnModeByRegion(String currency);
+
+
+}

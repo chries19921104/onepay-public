@@ -10,6 +10,7 @@ import org.apache.shiro.authz.annotation.RequiresRoles;
 import org.apache.shiro.subject.Subject;
 import org.example.common.base.CommResp;
 import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Controller;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,7 +18,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.HashMap;
 
-@RestController
+@Controller
 public class IndexController {
 
     /**
@@ -27,8 +28,13 @@ public class IndexController {
      * @return
      */
     @RequestMapping("/login")
+    @ResponseBody
     public CommResp login(HttpServletRequest request, HttpServletResponse response) {
         return CommResp.FAIL("unauthorized >  401 ");
+    }
+    @GetMapping("/login")
+    public String login11(){
+        return "login";
     }
 
 

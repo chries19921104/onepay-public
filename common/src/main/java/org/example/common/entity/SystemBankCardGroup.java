@@ -1,11 +1,8 @@
 package org.example.common.entity;
-import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableField;
+
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
@@ -15,11 +12,11 @@ import java.time.LocalDateTime;
 * system_bank_card_group 实体类
 * </p>
 *
-* @author Administrator
-* @since 2023-05-16 16:37:08
+<<<<<<< HEAD
+* @author zhangmi
+* @since 2023-05-17 13:41:12
 */
-@Getter
-@Setter
+@Data
 @TableName("system_bank_card_group")
 public class SystemBankCardGroup implements Serializable {
     private static final long serialVersionUID = 1L;

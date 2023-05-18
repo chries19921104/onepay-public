@@ -3,7 +3,6 @@ package org.example.admin.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import org.example.common.dto.AdminsDTO;
-import org.example.common.vo.AdminsVO;
 import org.example.common.base.CommResp;
 import org.example.common.entity.Admins;
 import org.springframework.stereotype.Service;

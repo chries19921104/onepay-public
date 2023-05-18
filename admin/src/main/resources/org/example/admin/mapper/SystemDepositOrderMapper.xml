@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.example.admin.mapper.SystemDepositOrderMapper">
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="org.example.common.entity.SystemDepositOrder">
+                <id column="fi_id" property="fiId" />
+                <result column="merchant_id" property="merchantId" />
+                <result column="reference" property="reference" />
+                <result column="from_man" property="fromMan" />
+                <result column="from_bank" property="fromBank" />
+                <result column="from_card_number" property="fromCardNumber" />
+                <result column="to_card_number" property="toCardNumber" />
+                <result column="tpi100_id" property="tpi100Id" />
+                <result column="txn_mode" property="txnMode" />
+                <result column="order_amount" property="orderAmount" />
+                <result column="request_amount" property="requestAmount" />
+                <result column="paid_amount" property="paidAmount" />
+                <result column="loss_amount" property="lossAmount" />
+                <result column="rate" property="rate" />
+                <result column="bank_fee" property="bankFee" />
+                <result column="balance" property="balance" />
+                <result column="pre_balance" property="preBalance" />
+                <result column="balance_xy" property="balanceXy" />
+                <result column="pre_balance_xy" property="preBalanceXy" />
+                <result column="merchant_balance" property="merchantBalance" />
+                <result column="completed_at" property="completedAt" />
+                <result column="currency" property="currency" />
+                <result column="step" property="step" />
+                <result column="status" property="status" />
+                <result column="status_description" property="statusDescription" />
+                <result column="no_qr_adj" property="noQrAdj" />
+                <result column="action" property="action" />
+                <result column="note" property="note" />
+                <result column="message" property="message" />
+                <result column="command_id" property="commandId" />
+                <result column="security_questions" property="securityQuestions" />
+                <result column="pairing_by" property="pairingBy" />
+                <result column="vb_id" property="vbId" />
+                <result column="vb_pairing_time" property="vbPairingTime" />
+                <result column="sm_id" property="smId" />
+                <result column="sm_pairing_time" property="smPairingTime" />
+                <result column="is_tuna_in" property="isTunaIn" />
+                <result column="is_log_in" property="isLogIn" />
+                <result column="is_otp_in" property="isOtpIn" />
+                <result column="receivedOTPtime" property="receivedOTPtime" />
+                <result column="otptimer" property="otptimer" />
+                <result column="ref_code" property="refCode" />
+                <result column="bankreferenceno" property="bankreferenceno" />
+                <result column="otp" property="otp" />
+                <result column="postscript" property="postscript" />
+                <result column="creator" property="creator" />
+                <result column="updater" property="updater" />
+                <result column="created_at" property="createdAt" />
+                <result column="updated_at" property="updatedAt" />
+                <result column="local_created_at" property="localCreatedAt" />
+                <result column="local_updated_at" property="localUpdatedAt" />
+                <result column="user_created_at" property="userCreatedAt" />
+                <result column="notify_url" property="notifyUrl" />
+                <result column="tqrcode" property="tqrcode" />
+                <result column="server_id" property="serverId" />
+                <result column="alt_vpn_id" property="altVpnId" />
+                <result column="is_weird" property="isWeird" />
+                <result column="description" property="description" />
+                <result column="external_description" property="externalDescription" />
+                <result column="is_urgent" property="isUrgent" />
+                <result column="is_approve_not_get" property="isApproveNotGet" />
+                <result column="keep_point" property="keepPoint" />
+                <result column="superior_keep_point" property="superiorKeepPoint" />
+                <result column="is_expired" property="isExpired" />
+                <result column="abnormal_man" property="abnormalMan" />
+                <result column="abnormald_at" property="abnormaldAt" />
+                <result column="abnormalVerify_man" property="abnormalverifyMan" />
+                <result column="abnormalVerifyd_at" property="abnormalverifydAt" />
+                <result column="frozen_guarantee_balance" property="frozenGuaranteeBalance" />
+                <result column="insider_takes" property="insiderTakes" />
+                <result column="runmon_number" property="runmonNumber" />
+    </resultMap>
+    <!--成功 -->
+    <select id="selectSuccess" resultType="org.example.common.vo.SelectVo">
+        SELECT SUM(paid_amount) AS moneyCount, COUNT(*) AS count
+        FROM system_deposit_order
+        WHERE txn_mode = #{txnMode}
+          AND status in(#{status})
+          AND completed_at <![CDATA[>=]]> #{beginTime}
+          AND completed_at <![CDATA[<=]]> #{endTime}
+          AND currency= #{currency}
+    </select>
+    <!--失败 -->
+    <select id="selectFail" resultType="org.example.common.vo.SelectVo">
+        SELECT SUM(request_amount) AS moneyCount, COUNT(*) AS count
+        FROM system_deposit_order
+        WHERE txn_mode = #{txnMode}
+          AND status in(#{status})
+          AND completed_at <![CDATA[>=]]> #{beginTime}
+          AND completed_at <![CDATA[<=]]> #{endTime}
+          AND currency= #{currency}
+    </select>
+</mapper>

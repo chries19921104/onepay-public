@@ -1,4 +1,4 @@
-package org.example.admin.conf;
+package org.example.merchant.conf;
 
 import com.baomidou.mybatisplus.annotation.DbType;
 import com.baomidou.mybatisplus.extension.plugins.MybatisPlusInterceptor;
@@ -7,17 +7,23 @@ import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+/**
+ * myatis-plus配置
+ */
 @Configuration
-//扫描mapper接口所在的包
-@MapperScan("org/example/admin/mapper")
+@MapperScan(basePackages = "org.example.**.mapper")
 public class MyBatisPlusConfig {
 
+    /**
+     * https://baomidou.com/pages/2976a3/#spring-boot  分页插件配置
+     * @return
+     */
     @Bean
-    public MybatisPlusInterceptor mybatisPlusInterceptor(){
+    public MybatisPlusInterceptor mybatisPlusInterceptor() {
         MybatisPlusInterceptor interceptor = new MybatisPlusInterceptor();
-        //添加分页插件
         interceptor.addInnerInterceptor(new PaginationInnerInterceptor(DbType.MYSQL));
         return interceptor;
     }
+
 
 }
