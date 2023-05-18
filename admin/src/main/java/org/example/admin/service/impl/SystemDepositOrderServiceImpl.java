@@ -1,17 +1,16 @@
 package org.example.admin.service.impl;
 
+import cn.hutool.core.date.DateUtil;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import org.example.common.entity.SystemDepositOrder;
+import lombok.extern.slf4j.Slf4j;
 import org.example.admin.mapper.SystemDepositOrderMapper;
 import org.example.admin.service.SystemDepositOrderService;
-
-import lombok.extern.slf4j.Slf4j;
+import org.example.common.base.CommResp;
+import org.example.common.entity.SystemDepositOrder;
+import org.example.common.vo.SelectVo;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.beans.factory.annotation.Autowired;
-
-import java.util.List;
-import java.util.Map;
 
 /**
 * <p>
@@ -30,8 +29,17 @@ public class SystemDepositOrderServiceImpl extends ServiceImpl<SystemDepositOrde
     private SystemDepositOrderMapper systemDepositOrderMapper;
 
     @Override
-    public List<Map<String, Object>> selectTxnModeByRegion() {
-//        List<Map<String, Object>> maps = this.systemDepositOrderMapper.selectTxnModeByRegion();
-        return null;
+    public CommResp selectTxnModeByRegion(String currency) {
+        SelectVo selectVo = getSelectVo(currency);
+        return CommResp.data(selectVo);
     }
+    //**今日成功金额****/****笔数**
+    private SelectVo getSelectVo(String currency) {
+
+        SelectVo selectVo = systemDepositOrderMapper.selectSuccess
+                (currency, DateUtil.today(), DateUtil.formatDate(DateUtil.tomorrow()),"1","1");
+        return selectVo;
+    }
+
+
 }

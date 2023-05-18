@@ -1,9 +1,13 @@
 package org.example.admin.controller;
 
+import cn.hutool.core.date.DateUtil;
+import org.example.common.base.CommResp;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.Serializable;
+import java.util.List;
+import java.util.Map;
 
 import org.example.common.entity.SystemDepositOrder;
 import org.example.admin.service.SystemDepositOrderService;
@@ -17,31 +21,19 @@ import org.example.admin.service.SystemDepositOrderService;
 * @since 2023-05-17 19:16:15
 */
 @RestController
-@RequestMapping("/system/deposit/order")
+@RequestMapping("/api")
 public class SystemDepositOrderController {
 
     @Autowired
     private SystemDepositOrderService systemDepositOrderService;
 
-    @PostMapping
-    public String create(@RequestBody SystemDepositOrder systemDepositOrder) {
-        systemDepositOrderService.save(systemDepositOrder);
-        return "OK";
+    @GetMapping("/dashboard")
+    public CommResp create(@RequestParam String currency) {
+
+
+
+        return systemDepositOrderService.selectTxnModeByRegion(currency);
     }
 
-    @PutMapping
-    public String updateById(@RequestBody SystemDepositOrder systemDepositOrder) {
-        systemDepositOrderService.updateById(systemDepositOrder);
-        return "OK";
-    }
 
-    @DeleteMapping("/{id}")
-    public boolean removeById(@PathVariable Serializable id) {
-        return systemDepositOrderService.removeById(id);
-    }
-
-    @GetMapping("/get/{id}")
-    public SystemDepositOrder getById(@PathVariable Serializable id) {
-        return systemDepositOrderService.getById(id);
-    }
 }

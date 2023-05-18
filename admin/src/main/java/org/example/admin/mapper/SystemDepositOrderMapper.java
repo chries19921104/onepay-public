@@ -4,8 +4,8 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.example.common.entity.SystemDepositOrder;
+import org.example.common.vo.SelectVo;
 
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -19,7 +19,14 @@ import java.util.Map;
 */
 @Mapper
 public interface SystemDepositOrderMapper extends BaseMapper<SystemDepositOrder> {
-    List<Map<String,Object>> selectTxnModeByRegion(@Param("region") String region, @Param("today") Date today);
+    SelectVo selectSuccess(
+            @Param("currency") String currency,
+            @Param("beginTime") String beginTime,
+            @Param("endTime") String endTime,
+            @Param("txnMode") String txnMode,
+            @Param("status") String status
+    );
+
 
 
 }

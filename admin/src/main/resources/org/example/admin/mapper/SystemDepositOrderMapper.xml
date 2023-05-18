@@ -75,11 +75,24 @@
                 <result column="insider_takes" property="insiderTakes" />
                 <result column="runmon_number" property="runmonNumber" />
     </resultMap>
-
-    <select id="selectTxnModeByRegion" resultMap="BaseResultMap">
-        SELECT SUM(paid_amount) AS sum_paid_amount, COUNT(*) AS total_count
+    <!--成功 -->
+    <select id="selectSuccess" resultType="org.example.common.vo.SelectVo">
+        SELECT SUM(paid_amount) AS moneyCount, COUNT(*) AS count
         FROM system_deposit_order
-        WHERE txn_mode = 1 AND status = 1 AND completed_at <![CDATA[>=]]> #{today} AND completed_at <![CDATA[<]]> #{tomorrow}
-        AND region = #{region}
+        WHERE txn_mode = #{txnMode}
+          AND status in(#{status})
+          AND completed_at <![CDATA[>=]]> #{beginTime}
+          AND completed_at <![CDATA[<=]]> #{endTime}
+          AND currency= #{currency}
+    </select>
+    <!--失败 -->
+    <select id="selectFail" resultType="org.example.common.vo.SelectVo">
+        SELECT SUM(request_amount) AS moneyCount, COUNT(*) AS count
+        FROM system_deposit_order
+        WHERE txn_mode = #{txnMode}
+          AND status in(#{status})
+          AND completed_at <![CDATA[>=]]> #{beginTime}
+          AND completed_at <![CDATA[<=]]> #{endTime}
+          AND currency= #{currency}
     </select>
 </mapper>
