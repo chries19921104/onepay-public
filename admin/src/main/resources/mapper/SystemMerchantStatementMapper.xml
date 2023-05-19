@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.example.admin.mapper.SystemMerchantStatementMapper">
+
+    <resultMap id="BaseResultMap" type="org.example.common.entity.SystemMerchantStatement">
+            <id property="id" column="id" jdbcType="INTEGER"/>
+            <result property="currency" column="currency" jdbcType="VARCHAR"/>
+            <result property="orderSn" column="order_sn" jdbcType="VARCHAR"/>
+            <result property="linkId" column="link_id" jdbcType="INTEGER"/>
+            <result property="merchantId" column="merchant_id" jdbcType="INTEGER"/>
+            <result property="type" column="type" jdbcType="VARCHAR"/>
+            <result property="requestAmount" column="request_amount" jdbcType="DECIMAL"/>
+            <result property="actualAmount" column="actual_amount" jdbcType="DECIMAL"/>
+            <result property="pm" column="pm" jdbcType="TINYINT"/>
+            <result property="transactionFee" column="transaction_fee" jdbcType="DECIMAL"/>
+            <result property="balance" column="balance" jdbcType="DECIMAL"/>
+            <result property="bankFee" column="bank_fee" jdbcType="DECIMAL"/>
+            <result property="bankFeeBear" column="bank_fee_bear" jdbcType="VARCHAR"/>
+            <result property="mark" column="mark" jdbcType="VARCHAR"/>
+            <result property="reason" column="reason" jdbcType="VARCHAR"/>
+            <result property="tradeTime" column="trade_time" jdbcType="TIMESTAMP"/>
+            <result property="createAt" column="create_at" jdbcType="TIMESTAMP"/>
+            <result property="updateAt" column="update_at" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <resultMap id="BaseResultMap2" type="org.example.common.vo.SystemMerchantStatementVO" extends="BaseResultMap">
+        <result property="name" column="name" jdbcType="VARCHAR"/>
+        <result property="code" column="code" jdbcType="VARCHAR"/>
+    </resultMap>
+
+
+    <sql id="Base_Column_List">
+        id,currency,order_sn,
+        link_id,merchant_id,type,
+        request_amount,actual_amount,pm,
+        transaction_fee,balance,bank_fee,
+        bank_fee_bear,mark,reason,
+        trade_time,create_at,update_at
+    </sql>
+
+    <!--分页查询-->
+    <select id="search" resultType="org.example.common.vo.SystemMerchantStatementVO" resultMap="BaseResultMap2">
+        SELECT
+            sms.id,
+            sm.CODE,
+            sm.NAME,
+            sms.type,
+            sms.reason,
+            sms.request_amount,
+            sms.pm,
+            sms.transaction_fee,
+            sms.balance,
+            sms.bank_fee,
+            sms.bank_fee_bear,
+            sms.mark,
+            sms.create_at
+        FROM
+            system_merchant_statement AS sms
+                LEFT JOIN system_merchant AS sm ON sms.merchant_id = sm.merchant_id
+        <where>
+            <if test="dto.currency!=null and dto.currency!=''">
+                and sms.currency = #{dto.currency}
+            </if>
+            <if test="dto.merchantId!=null">
+                and sms.merchant_id = #{dto.merchantId}
+            </if>
+            <if test="dto.type!=null">
+                and sms.type in
+                    <foreach collection="dto.type" index="index" item="item" open="(" separator="," close=")">
+                        #{item}
+                    </foreach>
+            </if>
+            <if test="dto.tradeTimeBeginTime!=null and dto.tradeTimeEndTime!=null">
+                and sms.trade_time between #{dto.tradeTimeBeginTime}  and  DATE_ADD(#{dto.tradeTimeEndTime},INTERVAL 1 day)
+            </if>
+            <if test="dto.id!=null">
+                and sms.id = #{dto.id}
+            </if>
+        </where>
+        order by sms.id
+    </select>
+</mapper>
