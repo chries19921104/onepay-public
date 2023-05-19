@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @Api(tags = "子下发api")
 @RestController
-@RequestMapping(value = "/test/oders")
+@RequestMapping(value = "/api/oders")
 public class SubSettlementOrderController extends BaseController {
 
     @Autowired

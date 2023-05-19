@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.apache.shiro.SecurityUtils;
+import org.example.admin.conf.interceptor.NoAuthorization;
 import org.example.common.controller.BaseController;
 import org.example.common.dto.SystemAdjustOrdersDTO;
 import org.example.common.dto.SystemAdjustOrdersSearchDTO;
@@ -26,7 +27,7 @@ import java.util.concurrent.locks.ReentrantLock;
 
 @Api(tags = "调整订单api")
 @RestController
-@RequestMapping(value = "/test/Adjust")
+@RequestMapping(value = "/api/Adjust")
 public class SystemAdjustOrdersController extends BaseController {
 
 
@@ -35,6 +36,7 @@ public class SystemAdjustOrdersController extends BaseController {
 
     @ApiOperation(value = "分页查询")
     @GetMapping(value = "/search")
+    @NoAuthorization
     public R search(@Validated SystemAdjustOrdersSearchDTO dto){
 
         Page<SystemAdjustOrdersVO> list = this.systemAdjustOrdersService.search(new Page<>(dto.getPage(),dto.getSize()),dto);
@@ -45,6 +47,7 @@ public class SystemAdjustOrdersController extends BaseController {
 
     @ApiOperation(value = "新增或者修改")
     @PostMapping(value = "/addOrUpdate")
+    @NoAuthorization
     public R add(@Validated @RequestBody SystemAdjustOrdersDTO dto) {
 
         // 根据shiro 获取登陆用户信息
