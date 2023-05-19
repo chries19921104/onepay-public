@@ -17,5 +17,5 @@ public class MerchantByBrandVo {
     private String card_number;
     private String created_at;
     private String name;
-    private int status;
+    private Integer status;
 }

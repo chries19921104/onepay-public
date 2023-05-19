@@ -3,7 +3,6 @@ package org.example.admin.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 
@@ -11,12 +10,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.example.admin.mapper.*;
 import org.example.admin.service.SystemMerchantService;
 import org.example.common.base.MerchantData;
-import org.example.common.base.Totals;
-import org.example.common.dto.MerchantBodyDto;
-import org.example.common.dto.MerchantByBrandDto;
-import org.example.common.dto.MerchantDto;
+import org.example.common.dto.*;
 import org.example.common.entity.*;
-import org.example.common.utils.URLUtils;
+import org.example.common.utils.BaseContext;
 import org.example.common.vo.*;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
@@ -25,6 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -64,6 +61,12 @@ public class SystemMerchantServiceImpl extends ServiceImpl<SystemMerchantMapper,
 
     @Autowired
     private SystemMerchantBankCardMapper systemMerchantBankCardMapper;
+
+    @Autowired
+    private SystemMerchantWhiteListMapper systemMerchantWhiteListMapper;
+
+    @Autowired
+    private AdminsMapper adminsMapper;
 
     /**
      * 选择账户群组
@@ -258,6 +261,7 @@ public class SystemMerchantServiceImpl extends ServiceImpl<SystemMerchantMapper,
         systemMerchant.setTrTrueRate(BigDecimal.valueOf(Double.parseDouble(merchantBodyDto.getTr_true_rate())));
         systemMerchant.setWdRate(BigDecimal.valueOf(Double.parseDouble(merchantBodyDto.getWd_rate())));
 
+        //可能还需要补充一些数据
         systemMerchantMapper.insert(systemMerchant);
         return systemMerchant.getMerchantId();
     }
@@ -296,5 +300,75 @@ public class SystemMerchantServiceImpl extends ServiceImpl<SystemMerchantMapper,
             merchantBankCard.setStatus(merchant.getStatus());
             systemMerchantBankCardMapper.updateById(merchantBankCard);
         }
+    }
+
+    /**
+     * 选择商户代理
+     * @return
+     */
+    @Override
+    public List<MerchantByAgentByGroupVo> getMerchantByAgent() {
+        List<SystemMerchant> systemMerchants = systemMerchantMapper.selectList(null);
+        List<MerchantByAgentByGroupVo> collect = systemMerchants.stream().map(iter -> {
+            MerchantByAgentByGroupVo merchantByAgentByGroupVo = new MerchantByAgentByGroupVo();
+            BeanUtils.copyProperties(iter, merchantByAgentByGroupVo);
+            merchantByAgentByGroupVo.setAgent_id(iter.getAgentId());
+            return merchantByAgentByGroupVo;
+        }).collect(Collectors.toList());
+        return collect;
+    }
+
+    //商户资讯-白名单-查询接口
+    @Override
+    public Page<SystemMerchantWhiteList> getMerchantByWhite(MerchantByWhiteDto merchantByWhiteDto) {
+        Page<SystemMerchantWhiteList> page = new Page<>(merchantByWhiteDto.getPage(),merchantByWhiteDto.getRp());
+        //先查询system_merchant_white_list表
+        LambdaQueryWrapper<SystemMerchantWhiteList> lqw = new LambdaQueryWrapper<>();
+        if (merchantByWhiteDto.getMerchantId() != null && !merchantByWhiteDto.getMerchantId().isEmpty()){
+            lqw.in(SystemMerchantWhiteList::getMerchantId,merchantByWhiteDto.getMerchantId());
+        }if (merchantByWhiteDto.getType() != null && !merchantByWhiteDto.getType().isEmpty()){
+            lqw.in(SystemMerchantWhiteList::getType,merchantByWhiteDto.getType());
+        }if (merchantByWhiteDto.getIp() != null && !merchantByWhiteDto.getIp().isEmpty()){
+            lqw.eq(SystemMerchantWhiteList::getIp,merchantByWhiteDto.getIp());
+        }if (merchantByWhiteDto.getStartDate() != null && !merchantByWhiteDto.getStartDate().isEmpty()) {
+            lqw.between(SystemMerchantWhiteList::getCreatedAt, Timestamp.valueOf(merchantByWhiteDto.getStartDate()), Timestamp.valueOf(merchantByWhiteDto.getEndDate()));
+        }
+        Page<SystemMerchantWhiteList> iPage = systemMerchantWhiteListMapper.selectPage(page, lqw);
+        return iPage;
+    }
+
+    //商户资讯-白名单-新增接口
+    @Override
+    public SystemMerchantWhiteList saveWhite(WhiteBodyDto whiteBodyDto) {
+        SystemMerchantWhiteList merchantWhiteList = new SystemMerchantWhiteList();
+        merchantWhiteList.setMerchantId(whiteBodyDto.getMerchantId());
+        merchantWhiteList.setIp(whiteBodyDto.getIp());
+        merchantWhiteList.setStatus(whiteBodyDto.getStatus());
+        merchantWhiteList.setType(Integer.valueOf(whiteBodyDto.getType()));
+        //更新与创建
+        Long current = BaseContext.getCurrent();
+        Admins admins = adminsMapper.selectById(current);
+        merchantWhiteList.setCreatedAt(LocalDateTime.now());
+        merchantWhiteList.setCreator(admins.getUsername());
+        merchantWhiteList.setUpdatedAt(LocalDateTime.now());
+        merchantWhiteList.setUpdater(admins.getUsername());
+
+        systemMerchantWhiteListMapper.insert(merchantWhiteList);
+        Long whiteId = merchantWhiteList.getWhiteId();
+        merchantWhiteList.setWhiteId(whiteId);
+        return merchantWhiteList;
+    }
+
+    /**
+     * 白名单更新
+     * @param merchantByWhiteVo
+     */
+    @Override
+    public void updateWhite(MerchantByWhiteVo merchantByWhiteVo) {
+        SystemMerchantWhiteList merchantWhiteList = systemMerchantWhiteListMapper.selectById(merchantByWhiteVo.getWhiteId());
+        if (merchantWhiteList.getStatus() != merchantByWhiteVo.getStatus()){
+            merchantWhiteList.setStatus(merchantByWhiteVo.getStatus());
+        }
+        systemMerchantWhiteListMapper.updateById(merchantWhiteList);
     }
 }

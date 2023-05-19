@@ -36,4 +36,9 @@ public class MerchantByAgentByGroupVo {
      * 卡群
      */
     private Long cardGroupId;
+
+    /**
+     * 代理id
+     */
+    private Long agent_id;
 }

@@ -10,7 +10,7 @@ import java.util.List;
 @ApiModel(description = "用于常用商户查询返回数据类")
 public class MerchantByBrandResp {
     private Integer current_page;
-    private List<MerchantByBrandVo> data;
+    private Object data;
     private String first_page_url;
     private Integer from;
     private Integer last_page;

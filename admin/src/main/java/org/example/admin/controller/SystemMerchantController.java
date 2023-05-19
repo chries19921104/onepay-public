@@ -8,11 +8,10 @@ import org.example.common.base.MerchantByBrandResp;
 import org.example.common.base.MerchantData;
 import org.example.common.base.MerchantResp;
 import org.example.common.base.Totals;
-import org.example.common.dto.MerchantBodyDto;
-import org.example.common.dto.MerchantByBrandDto;
-import org.example.common.dto.MerchantDto;
+import org.example.common.dto.*;
 import org.example.common.entity.SystemMerchant;
 import org.example.common.entity.SystemMerchantBankCard;
+import org.example.common.entity.SystemMerchantWhiteList;
 import org.example.common.utils.URLUtils;
 import org.example.common.vo.*;
 import org.springframework.beans.BeanUtils;
@@ -21,7 +20,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -48,8 +46,11 @@ public class SystemMerchantController {
     @ApiOperation(value = "有关商户的一些选项列表查询接口，注意不同的请求需要判断with的内容。")
     @GetMapping("/sh100/simple")
     public List<MerchantByAgentByGroupVo> getMerchant(@RequestParam("with") List<String> with) {
+        if (with.size() == 1 && "currency,agent_id".equals(with.get(0))){
+            //走的第二个请求
+            return systemMerchantService.getMerchantByAgent();
+        }
         //查询出所有商户资料，相关表为system_merchant
-        //返回数据[{SH100_ID: 151, name: "BTTHB14", code: "BTTHB14", currency: "THB", PG100_ID: 1},…]
         return systemMerchantService.getMerchant();
     }
 
@@ -91,36 +92,11 @@ public class SystemMerchantController {
     // status[]=1&status[]=0&
     // not_allowed_types[]=1&not_allowed_types[]=2&
     // not_allowed_BK100_ID=&
-    // rp=100&
-    // page=1&
+    // rp=100&page=1&
     // PG100_ID=1
     @GetMapping("/sh100")
     @ApiOperation(value = "商户资讯-商户列表-查询接口")
-    public MerchantResp selectMerchant(@RequestParam("SH100_ID[]") List<Integer> merchantId,
-                                             @RequestParam("agent_id[]") List<String> agentId,
-                                             @RequestParam("currency") String currency,
-                                             @RequestParam("start_date") String startDate,
-                                             @RequestParam("end_date") String endDate,
-                                             @RequestParam("status[]") List<Integer> status,
-                                             @RequestParam("not_allowed_types[]") List<Integer> notAllowedTypes,
-                                             @RequestParam("not_allowed_BK100_ID") String notAllowedBk100Id,
-                                             @RequestParam("rp") Integer rp,
-                                             @RequestParam("page") Integer page,
-                                             @RequestParam("PG100_ID") Integer groupId,
-                                             HttpServletRequest request) {
-        MerchantDto merchantDto = new MerchantDto();
-        merchantDto.setMerchantId(merchantId);
-        merchantDto.setAgentId(agentId);
-        merchantDto.setCurrency(currency);
-        merchantDto.setEndDate(endDate);
-        merchantDto.setStartDate(startDate);
-        merchantDto.setStatus(status);
-        merchantDto.setNotAllowedTypes(notAllowedTypes);
-        merchantDto.setNotAllowedBk100Id(notAllowedBk100Id);
-        merchantDto.setRp(rp);
-        merchantDto.setPage(page);
-        merchantDto.setGroupId(groupId);
-
+    public MerchantResp selectMerchant(MerchantDto merchantDto, HttpServletRequest request) {
         //data
         Page<MerchantData> merchantData = systemMerchantService.selectData(merchantDto);
         //totals
@@ -148,24 +124,7 @@ public class SystemMerchantController {
     // rp=100&page=1
     @ApiOperation(value = "商户资讯-银行账户-查询接口")
     @GetMapping("/sh120")
-    public MerchantByBrandResp selectMerchant(@RequestParam("currency") String currency,
-                                              @RequestParam("SH100_ID[]") List<Integer> merchantId,
-                                              @RequestParam("status") List<Integer> status,
-                                              @RequestParam("card_number") String cardNumber,
-                                              @RequestParam("start_date") String startDate,
-                                              @RequestParam("end_date") String endDate,
-                                              @RequestParam("rp") Integer rp,
-                                              @RequestParam("page") Integer page,
-                                              HttpServletRequest request){
-        MerchantByBrandDto merchantDto = new MerchantByBrandDto();
-        merchantDto.setCurrency(currency);
-        merchantDto.setMerchantId(merchantId);
-        merchantDto.setStatus(status);
-        merchantDto.setCardNumber(cardNumber);
-        merchantDto.setStartDate(startDate);
-        merchantDto.setEndDate(endDate);
-        merchantDto.setRp(rp);
-        merchantDto.setPage(page);
+    public MerchantByBrandResp selectMerchant(MerchantByBrandDto merchantDto, HttpServletRequest request){
         //data
         Page<SystemMerchantBankCard> bankCardPage = systemMerchantService.selectBrandData(merchantDto);
         //MerchantByBrandResp
@@ -183,6 +142,85 @@ public class SystemMerchantController {
         return map;
     }
 
+    //http://localhost:8088/api/sh130?
+    // SH100_ID[]=1&SH100_ID[]=2&
+    // currency=THB&
+    // type[]=4&type[]=2&
+    // ip=111&
+    // start_date=&end_date=&
+    // rp=100&page=1
+    @ApiOperation(value = "商户资讯-白名单-查询接口")
+    @GetMapping("/sh130")
+    public MerchantByBrandResp selectMerchantWhite(MerchantByWhiteDto merchantByWhiteDto, HttpServletRequest request){
+        //data
+        Page<SystemMerchantWhiteList> whiteListPage = systemMerchantService.getMerchantByWhite(merchantByWhiteDto);
+        //MerchantByBrandResp
+        return getMerchantByWhiteResp(whiteListPage,request,merchantByWhiteDto);
+    }
+
+    //http://localhost:8088/api/sh130
+    @PostMapping("/sh130")
+    @ApiOperation(value = "商户资讯-白名单-新增接口")
+    public Map<String,WhiteCreateVo> updateBankCount(@RequestBody WhiteBodyDto whiteBodyDto){
+        //新增数据
+        SystemMerchantWhiteList merchantWhiteList = systemMerchantService.saveWhite(whiteBodyDto);
+        //返回数据
+        WhiteCreateVo whiteCreateVo = new WhiteCreateVo();
+        BeanUtils.copyProperties(merchantWhiteList,whiteCreateVo);
+        Map<String,WhiteCreateVo> map = new HashMap<>();
+        map.put("data",whiteCreateVo);
+        return map;
+    }
+
+    //http://localhost:8088/api/sh130/388
+    @PostMapping("sh130/{id}")
+    @ApiOperation(value = "商户资讯-白名单-更新接口")
+    public Map<String,Boolean> updateBankCount(@RequestBody MerchantByWhiteVo merchantByWhiteVo){
+        Map<String,Boolean> map = new HashMap<>();
+        //更新状态
+        systemMerchantService.updateWhite(merchantByWhiteVo);
+        map.put("success",true);
+        return map;
+    }
+
+    private MerchantByBrandResp getMerchantByWhiteResp(Page<SystemMerchantWhiteList> whiteListPage, HttpServletRequest request, MerchantByWhiteDto merchantByWhiteDto) {
+        MerchantByBrandResp merchantResp = new MerchantByBrandResp();
+        //拷贝属性data
+        List<MerchantByWhiteVo> collect = whiteListPage.getRecords().stream().map(iter -> {
+            MerchantByWhiteVo merchant = new MerchantByWhiteVo();
+            BeanUtils.copyProperties(iter,merchant,"whiteId","creator","ip","status","type");
+            //手动将创建时间拷贝一下，类型不一样
+            merchant.setCreatedAt(iter.getCreatedAt()+"");
+            //再通过商户id去查询商户表，将code和name字段补齐
+            SystemMerchant byId = systemMerchantService.getById(iter.getMerchantId());
+            merchant.setCode(byId.getCode());
+            merchant.setName(byId.getName());
+            return merchant;
+        }).collect(Collectors.toList());
+        //获取当前接口的url
+        String url = URLUtils.getCurrentURL(request);
+        //拼接url
+        merchantResp.setFirst_page_url(url + "?page=1");
+        merchantResp.setLast_page_url(url + "?page=" + whiteListPage.getPages());
+        if (whiteListPage.getPages()>whiteListPage.getCurrent()){
+            merchantResp.setNext_page_url(url + "?page=" + (whiteListPage.getCurrent()+1));
+        }
+        merchantResp.setPath(url);
+        //保存其他信息
+        merchantResp.setCurrent_page((int) whiteListPage.getCurrent());
+        merchantResp.setData(collect);
+        if (whiteListPage.getTotal() != 0){
+            merchantResp.setFrom((int) whiteListPage.getCurrent());
+        }
+        merchantResp.setLast_page((int) whiteListPage.getPages());
+        merchantResp.setPer_page(merchantByWhiteDto.getRp()+ "");
+        merchantResp.setPrev_page_url(null);
+        if (whiteListPage.getTotal() != 0){
+            merchantResp.setTo((int) whiteListPage.getTotal());
+        }
+        merchantResp.setTotal((int) whiteListPage.getTotal());
+        return merchantResp;
+    }
 
     private MerchantByBrandResp getMerchantByBrandResp(Page<SystemMerchantBankCard> bankCardPage, HttpServletRequest request,MerchantByBrandDto merchantDto) {
         MerchantByBrandResp merchantResp = new MerchantByBrandResp();
@@ -222,7 +260,9 @@ public class SystemMerchantController {
         merchantResp.setLast_page((int) bankCardPage.getPages());
         merchantResp.setPer_page(merchantDto.getRp()+ "");
         merchantResp.setPrev_page_url(null);
-        merchantResp.setTo((int) bankCardPage.getTotal());
+        if (bankCardPage.getTotal() != 0){
+            merchantResp.setTo((int) bankCardPage.getTotal());
+        }
         merchantResp.setTotal((int) bankCardPage.getTotal());
         return merchantResp;
     }
@@ -232,7 +272,7 @@ public class SystemMerchantController {
         MerchantByCreateVo merchant = new MerchantByCreateVo();
         BeanUtils.copyProperties(merchantBodyDto,merchant);
         //补充属性
-        merchant.setMerchantId(Integer.valueOf(merchantId.intValue()));
+        merchant.setMerchantId(Long.valueOf(merchantId).intValue());
         merchant.setTpi_settled(true);
         merchant.setUse_qr_pairing_code(true);
 //        merchant.setCreated_at();
@@ -268,7 +308,9 @@ public class SystemMerchantController {
         merchantResp.setPer_page(merchantDto.getRp()+ "");
         merchantResp.setPrev_page_url(null);
         merchantResp.setSubtotals(totals);
-        merchantResp.setTo((int) merchantData.getTotal());
+        if (merchantData.getTotal() != 0){
+            merchantResp.setTo((int) merchantData.getTotal());
+        }
         merchantResp.setTotal((int) merchantData.getTotal());
         merchantResp.setTotals(totals);
         return merchantResp;

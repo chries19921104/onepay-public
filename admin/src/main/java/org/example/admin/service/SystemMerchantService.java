@@ -3,15 +3,13 @@ package org.example.admin.service;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 import org.example.common.base.MerchantData;
-import org.example.common.dto.MerchantBodyDto;
-import org.example.common.dto.MerchantByBrandDto;
-import org.example.common.dto.MerchantDto;
+import org.example.common.dto.*;
 import org.example.common.entity.SystemMerchantBankCard;
+import org.example.common.entity.SystemMerchantWhiteList;
 import org.example.common.vo.*;
 import org.example.common.entity.SystemMerchant;
 import org.springframework.stereotype.Service;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 /**
@@ -75,4 +73,22 @@ public interface SystemMerchantService extends IService<SystemMerchant> {
      * @param merchant
      */
     void updateStatus(MerchantByBrandVo merchant);
+
+    /**
+     * 选择商户代理
+     * @return
+     */
+    List<MerchantByAgentByGroupVo> getMerchantByAgent();
+
+    //商户资讯-白名单-查询接口
+    Page<SystemMerchantWhiteList> getMerchantByWhite(MerchantByWhiteDto merchantByWhiteDto);
+
+    //商户资讯-白名单-新增接口
+    SystemMerchantWhiteList saveWhite(WhiteBodyDto whiteBodyDto);
+
+    /**
+     * 白名单更新
+     * @param merchantByWhiteVo
+     */
+    void updateWhite(MerchantByWhiteVo merchantByWhiteVo);
 }
