@@ -1,5 +1,6 @@
 package org.example.admin.mapper;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.apache.ibatis.annotations.Param;
 import org.example.common.dto.SubSettlementOrderSearchDTO;
 import org.example.common.entity.SystemSubSettlementOrder;
@@ -17,7 +18,7 @@ import java.util.List;
 public interface SystemSubSettlementOrderMapper extends BaseMapper<SystemSubSettlementOrder> {
 
     // 分页查询
-    List<SubSettlementOrderVO> search(@Param(value = "dto") SubSettlementOrderSearchDTO dto);
+    Page<SubSettlementOrderVO> search(Page<SubSettlementOrderVO> subSettlementOrderVOPage,@Param(value = "dto") SubSettlementOrderSearchDTO dto);
 }
 
 

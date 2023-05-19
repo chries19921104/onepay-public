@@ -1,5 +1,7 @@
 package org.example.admin.service;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import org.apache.ibatis.annotations.Param;
 import org.example.common.dto.SettlementOrderSearchDTO;
 import org.example.common.entity.SystemSettlementOrder;
 import com.baomidou.mybatisplus.extension.service.IService;
@@ -13,8 +15,6 @@ import java.util.List;
 * @createDate 2023-05-16 14:12:52
 */
 public interface SystemSettlementOrderService extends IService<SystemSettlementOrder> {
-
     // 分页查询
-    List<SettlementOrderVO> search(SettlementOrderSearchDTO dto);
-
+    Page<SettlementOrderVO> search(Page<SettlementOrderVO> objectPage,SettlementOrderSearchDTO dto);
 }

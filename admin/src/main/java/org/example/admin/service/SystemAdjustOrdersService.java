@@ -1,5 +1,6 @@
 package org.example.admin.service;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 import org.example.common.dto.SystemAdjustOrdersSearchDTO;
 import org.example.common.entity.SystemAdjustOrders;
@@ -15,5 +16,9 @@ import java.util.List;
 public interface SystemAdjustOrdersService extends IService<SystemAdjustOrders> {
 
     // 分页查询
-    List<SystemAdjustOrdersVO> search(SystemAdjustOrdersSearchDTO dto);
+    Page<SystemAdjustOrdersVO> search(Page<SystemAdjustOrdersVO> page, SystemAdjustOrdersSearchDTO dto);
+
+    // 新增or修改
+    Boolean addOrUpdate(SystemAdjustOrders orders);
+
 }

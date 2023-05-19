@@ -1,5 +1,6 @@
 package org.example.admin.mapper;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.apache.ibatis.annotations.Param;
 import org.example.common.dto.SystemAdjustOrdersSearchDTO;
 import org.example.common.entity.SystemAdjustOrders;
@@ -17,7 +18,7 @@ import java.util.List;
 public interface SystemAdjustOrdersMapper extends BaseMapper<SystemAdjustOrders> {
 
     // 分页查询
-    List<SystemAdjustOrdersVO> search(@Param(value = "dto") SystemAdjustOrdersSearchDTO dto);
+    Page<SystemAdjustOrdersVO> search(Page<SystemAdjustOrdersVO> page, @Param(value = "dto") SystemAdjustOrdersSearchDTO dto);
 }
 
 

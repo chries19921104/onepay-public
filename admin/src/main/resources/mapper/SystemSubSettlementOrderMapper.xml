@@ -200,5 +200,6 @@
                 and ss.updated_at between #{dto.updatedAtBeginTime}  and  DATE_ADD(#{dto.updatedAtEndTime},INTERVAL 1 day)
             </if>
         </where>
+            order by ss.FX110_ID
     </select>
 </mapper>

@@ -46,79 +46,81 @@
         local_created_at,local_updated_at
     </sql>
 
+    <!--分页查询-->
     <select id="search" resultType="org.example.common.vo.SystemAdjustOrdersVO" resultMap="BaseResultMap2">
         SELECT
-            ao.id,
-            sm.CODE,
-            sm.NAME,
-            ao.trade_type,
-            ao.amount,
-            ao.reason,
-            ao.virtual_bank_reconciliation_id,
-            ao.description,
-            ao.external_description,
-            ao.STATUS,
-            ao.created_at,
-            ao.updated_at,
-            ao.creator,
-            ao.updater
+        ao.id,
+        sm.CODE,
+        sm.NAME,
+        ao.trade_type,
+        ao.amount,
+        ao.reason,
+        ao.virtual_bank_reconciliation_id,
+        ao.description,
+        ao.external_description,
+        ao.STATUS,
+        ao.created_at,
+        ao.updated_at,
+        ao.creator,
+        ao.updater
         FROM
-            system_adjust_orders AS ao
-                left JOIN system_merchant AS sm ON ao.merchant_id = sm.merchant_id
-            <where>
-                <!--币别-->
-                <if test="dto.currency!=null and dto.currency!=''">
-                    and ao.currency = #{dto.currency}
-                </if>
-                <!--商户id-->
-                <if test="dto.merchantId!=null">
-                    and ao.merchant_id in
-                        <foreach collection="dto.merchantId" index="index" item="item" open="(" separator="," close=")">
-                            #{item}
-                        </foreach>
-                </if>
-                <!--交易类型-->
-                <if test="dto.tradeType!=null">
-                    and ao.trade_type in
-                        <foreach collection="dto.tradeType" index="index" item="item" open="(" separator="," close=")">
-                            #{item}
-                        </foreach>
-                </if>
-                <!--选择类型-->
-                <if test="dto.adjustType!=null">
-                    and ao.adjust_type in
-                        <foreach collection="dto.adjustType" index="index" item="item" open="(" separator="," close=")">
-                            #{item}
-                        </foreach>
-                </if>
-                <!--选择原因-->
-                <if test="dto.reason!=null">
-                    and ao.reason in
-                    <foreach collection="dto.reason" index="index" item="item" open="(" separator="," close=")">
-                        #{item}
-                    </foreach>
-                </if>
-                <!--状态-->
-                <if test="dto.status!=null">
-                    and ao.status in
-                    <foreach collection="dto.status" index="index" item="item" open="(" separator="," close=")">
-                        #{item}
-                    </foreach>
-                </if>
-                <!--id-->
-                <if test="dto.id!=null">
-                    and ao.id=#{dto.id}
-                </if>
-                <!--对账单id-->
-                <if test="dto.virtualBankReconciliationId!=null">
-                    and ao.virtual_bank_reconciliation_id=#{dto.virtualBankReconciliationId}
-                </if>
-                <if test="dto.createdAtBeginTime!=null and dto.createdAtEndTime!=null">
-                    and ao.created_at between #{dto.createdAtBeginTime}  and  DATE_ADD(#{dto.createdAtEndTime},INTERVAL 1 day)
-                </if>
-                <if test="dto.updatedAtBeginTime!=null and dto.updatedAtEndTime!=null ">
-                    and ao.updated_at between #{dto.updatedAtBeginTime}  and  DATE_ADD(#{dto.updatedAtEndTime},INTERVAL 1 day)
-                </if>
-            </where>
+        system_adjust_orders AS ao
+        left JOIN system_merchant AS sm ON ao.merchant_id = sm.merchant_id
+        <where>
+            <!--币别-->
+            <if test="dto.currency!=null and dto.currency!=''">
+                and ao.currency = #{dto.currency}
+            </if>
+            <!--商户id-->
+            <if test="dto.merchantId!=null">
+                and ao.merchant_id in
+                <foreach collection="dto.merchantId" index="index" item="item" open="(" separator="," close=")">
+                    #{item}
+                </foreach>
+            </if>
+            <!--交易类型-->
+            <if test="dto.tradeType!=null">
+                and ao.trade_type in
+                <foreach collection="dto.tradeType" index="index" item="item" open="(" separator="," close=")">
+                    #{item}
+                </foreach>
+            </if>
+            <!--选择类型-->
+            <if test="dto.adjustType!=null">
+                and ao.adjust_type in
+                <foreach collection="dto.adjustType" index="index" item="item" open="(" separator="," close=")">
+                    #{item}
+                </foreach>
+            </if>
+            <!--选择原因-->
+            <if test="dto.reason!=null">
+                and ao.reason in
+                <foreach collection="dto.reason" index="index" item="item" open="(" separator="," close=")">
+                    #{item}
+                </foreach>
+            </if>
+            <!--状态-->
+            <if test="dto.status!=null">
+                and ao.status in
+                <foreach collection="dto.status" index="index" item="item" open="(" separator="," close=")">
+                    #{item}
+                </foreach>
+            </if>
+            <!--id-->
+            <if test="dto.id!=null">
+                and ao.id=#{dto.id}
+            </if>
+            <!--对账单id-->
+            <if test="dto.virtualBankReconciliationId!=null">
+                and ao.virtual_bank_reconciliation_id=#{dto.virtualBankReconciliationId}
+            </if>
+            <if test="dto.createdAtBeginTime!=null and dto.createdAtEndTime!=null">
+                and ao.created_at between #{dto.createdAtBeginTime}  and  DATE_ADD(#{dto.createdAtEndTime},INTERVAL 1 day)
+            </if>
+            <if test="dto.updatedAtBeginTime!=null and dto.updatedAtEndTime!=null ">
+                and ao.updated_at between #{dto.updatedAtBeginTime}  and  DATE_ADD(#{dto.updatedAtEndTime},INTERVAL 1 day)
+            </if>
+        </where>
+        order by  ao.id
     </select>
 </mapper>

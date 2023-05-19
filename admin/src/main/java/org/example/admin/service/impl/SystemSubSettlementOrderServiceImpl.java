@@ -1,5 +1,6 @@
 package org.example.admin.service.impl;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.example.common.dto.SubSettlementOrderSearchDTO;
 import org.example.common.entity.SystemSubSettlementOrder;
@@ -25,8 +26,8 @@ public class SystemSubSettlementOrderServiceImpl extends ServiceImpl<SystemSubSe
      * @return
      */
     @Override
-    public List<SubSettlementOrderVO> search(SubSettlementOrderSearchDTO dto) {
-        return this.baseMapper.search(dto);
+    public Page<SubSettlementOrderVO> search(Page<SubSettlementOrderVO> subSettlementOrderVOPage,SubSettlementOrderSearchDTO dto) {
+        return this.baseMapper.search(subSettlementOrderVOPage,dto);
     }
 }
 

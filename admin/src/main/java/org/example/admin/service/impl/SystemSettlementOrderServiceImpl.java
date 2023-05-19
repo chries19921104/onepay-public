@@ -1,5 +1,6 @@
 package org.example.admin.service.impl;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.example.common.dto.SettlementOrderSearchDTO;
 import org.example.common.entity.SystemSettlementOrder;
@@ -21,12 +22,13 @@ public class SystemSettlementOrderServiceImpl extends ServiceImpl<SystemSettleme
 
     /**
      * 分页查询
+     * @param objectPage
      * @param dto
      * @return
      */
     @Override
-    public List<SettlementOrderVO> search(SettlementOrderSearchDTO dto) {
-        return this.baseMapper.search(dto);
+    public Page<SettlementOrderVO> search(Page<SettlementOrderVO> objectPage, SettlementOrderSearchDTO dto) {
+        return  this.baseMapper.search(objectPage,dto);
     }
 }
 

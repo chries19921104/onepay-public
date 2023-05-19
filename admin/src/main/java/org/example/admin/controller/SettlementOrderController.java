@@ -1,5 +1,6 @@
 package org.example.admin.controller;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.SneakyThrows;
@@ -28,8 +29,9 @@ public class SettlementOrderController extends BaseController {
     @ApiOperation(value = "分页查询")
     @GetMapping(value = "search")
     public R search(SettlementOrderSearchDTO dto) {
-        super.startPageHelper();
-        List<SettlementOrderVO> list = this.systemSettlementOrderService.search(dto);
-        return super.pageToPageVO(list);
+
+        Page<SettlementOrderVO> list=this.systemSettlementOrderService.search(new Page<SettlementOrderVO>(dto.getPage(),dto.getSize()),dto);
+
+        return R.okHasData(list);
     }
 }

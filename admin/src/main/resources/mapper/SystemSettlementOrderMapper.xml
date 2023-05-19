@@ -139,5 +139,6 @@
                 and s.completed_at between #{dto.completedAtBeginTime}  and  DATE_ADD(#{dto.completedAtEndTime},INTERVAL 1 day)
             </if>
         </where>
+            order by s.fx_id
     </select>
 </mapper>

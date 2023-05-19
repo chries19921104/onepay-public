@@ -1,5 +1,6 @@
 package org.example.admin.service;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.example.common.dto.SubSettlementOrderSearchDTO;
 import org.example.common.entity.SystemSubSettlementOrder;
 import com.baomidou.mybatisplus.extension.service.IService;
@@ -15,5 +16,5 @@ import java.util.List;
 public interface SystemSubSettlementOrderService extends IService<SystemSubSettlementOrder> {
 
     // 分页查询
-    List<SubSettlementOrderVO> search(SubSettlementOrderSearchDTO dto);
+    Page<SubSettlementOrderVO> search(Page<SubSettlementOrderVO> subSettlementOrderVOPage, SubSettlementOrderSearchDTO dto);
 }
