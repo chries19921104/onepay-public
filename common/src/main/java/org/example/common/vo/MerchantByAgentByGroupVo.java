@@ -2,11 +2,13 @@ package org.example.common.vo;
 
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import io.swagger.annotations.ApiModel;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
 @Data
+@ApiModel(description = "返回商户卡群数据")
 public class MerchantByAgentByGroupVo {
 
     /**

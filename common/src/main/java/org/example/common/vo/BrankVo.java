@@ -1,9 +1,11 @@
 package org.example.common.vo;
 
 import com.baomidou.mybatisplus.annotation.TableId;
+import io.swagger.annotations.ApiModel;
 import lombok.Data;
 
 @Data
+@ApiModel(description = "返回银行数据")
 public class BrankVo {
     /**
      * 银行ID

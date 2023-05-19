@@ -1,6 +1,8 @@
 package org.example.admin.controller;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.example.admin.service.SystemMerchantService;
 import org.example.common.base.MerchantByBrandResp;
 import org.example.common.base.MerchantData;
@@ -33,6 +35,7 @@ import java.util.stream.Collectors;
 * @author asus
 * @since 2023-05-16 14:27:59
 */
+@Api(tags = "商户资讯模块")
 @RestController
 @RequestMapping()
 public class SystemMerchantController {
@@ -40,13 +43,9 @@ public class SystemMerchantController {
     @Autowired
     private SystemMerchantService systemMerchantService;
 
-    /**
-     * 有关商户的一些选项列表查询接口，注意不同的请求需要判断with的内容。
-     * @param with
-     * @return
-     */
     //http://localhost:8088/api/sh100/simple?with=currency,agent_id&with=currency,PG100_ID（选择商户）
     //http://localhost:8088/api/sh100/simple?with=currency,agent_id
+    @ApiOperation(value = "有关商户的一些选项列表查询接口，注意不同的请求需要判断with的内容。")
     @GetMapping("/sh100/simple")
     public List<MerchantByAgentByGroupVo> getMerchant(@RequestParam("with") List<String> with) {
         //查询出所有商户资料，相关表为system_merchant
@@ -54,11 +53,8 @@ public class SystemMerchantController {
         return systemMerchantService.getMerchant();
     }
 
-    /**
-     * 有关代理的一些选项列表查询接口
-     * @return
-     */
     //http://localhost:8088/api/agent/simple(选择代理)
+    @ApiOperation(value = "有关代理的一些选项列表查询接口")
     @GetMapping("/agent/simple")
     public List<AgentsVo> getAgents() {
         //查询出所有代理信息，相关表为system_agents
@@ -66,15 +62,10 @@ public class SystemMerchantController {
         return systemMerchantService.getAgents();
     }
 
-    /**
-     * 有关群组的一些选项列表查询接口
-     * @param with
-     * @return
-     */
     //http://localhost:8088/api/pg100/simple?with=currency,model(选择账户群组)
     @GetMapping("/pg100/simple")
+    @ApiOperation(value = "有关群组的一些选项列表查询接口")
     public List<AgentsByCardGroupVo> getGroup(String with) {
-        //查询出所有的账户群组返回
         //返回的数据类型：{PG100_ID: 1, PG100_name: "DEV-THB", currency: "THB"}
         //里面牵涉表，system_bank_card_group
         if ("currency,model".equals(with)){
@@ -83,12 +74,8 @@ public class SystemMerchantController {
         return null;
     }
 
-    /**
-     * 有关银行的一些选项列表查询接口
-     * @param status
-     * @return
-     */
     //http://localhost:8088/api/bk100/simple?status=1
+    @ApiOperation(value = "有关银行的一些选项列表查询接口")
     @GetMapping("/bk100/simple")
     public List<BrankVo> getBrank(Integer status) {
         return systemMerchantService.getBranks(status);
@@ -107,23 +94,8 @@ public class SystemMerchantController {
     // rp=100&
     // page=1&
     // PG100_ID=1
-    /**
-     * 商户资讯-商户列表-查询接口
-     * @param merchantId
-     * @param agentId
-     * @param currency
-     * @param startDate
-     * @param endDate
-     * @param status
-     * @param notAllowedTypes
-     * @param notAllowedBk100Id
-     * @param rp
-     * @param page
-     * @param groupId
-     * @param request
-     * @return
-     */
     @GetMapping("/sh100")
+    @ApiOperation(value = "商户资讯-商户列表-查询接口")
     public MerchantResp selectMerchant(@RequestParam("SH100_ID[]") List<Integer> merchantId,
                                              @RequestParam("agent_id[]") List<String> agentId,
                                              @RequestParam("currency") String currency,
@@ -157,12 +129,8 @@ public class SystemMerchantController {
         return getMerchantResp(merchantData,totals,request,merchantDto);
     }
 
-    /**
-     *商户资讯-商户列表-新增接口
-     * @param merchantBodyDto
-     * @return
-     */
     //http://localhost:8088/api/sh100
+    @ApiOperation(value = "商户资讯-商户列表-新增接口")
     @PostMapping("/sh100")
     public Map<String,MerchantByCreateVo> merchantCreate(@RequestBody MerchantBodyDto merchantBodyDto){
         //将接收的部分信息存贮在merchant表中
@@ -178,20 +146,7 @@ public class SystemMerchantController {
     // card_number=&
     // start_date=&end_date=&
     // rp=100&page=1
-
-    /**
-     * 商户资讯-银行账户-查询接口
-     * @param currency
-     * @param merchantId
-     * @param status
-     * @param cardNumber
-     * @param startDate
-     * @param endDate
-     * @param rp
-     * @param page
-     * @param request
-     * @return
-     */
+    @ApiOperation(value = "商户资讯-银行账户-查询接口")
     @GetMapping("/sh120")
     public MerchantByBrandResp selectMerchant(@RequestParam("currency") String currency,
                                               @RequestParam("SH100_ID[]") List<Integer> merchantId,
@@ -217,13 +172,9 @@ public class SystemMerchantController {
         return getMerchantByBrandResp(bankCardPage,request,merchantDto);
     }
 
-    /**
-     * 商户资讯-银行账户-更新接口
-     * @param merchant
-     * @return
-     */
     //http://localhost:8088/api/sh120/16
     @PostMapping("sh120/{id}")
+    @ApiOperation(value = "商户资讯-银行账户-更新接口")
     public Map<String,Boolean> updateBankCount(@RequestBody MerchantByBrandVo merchant){
         Map<String,Boolean> map = new HashMap<>();
         //更新状态

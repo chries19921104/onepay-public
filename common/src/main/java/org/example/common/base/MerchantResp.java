@@ -1,10 +1,12 @@
 package org.example.common.base;
 
+import io.swagger.annotations.ApiModel;
 import lombok.Data;
 
 import java.util.List;
 
 @Data
+@ApiModel(description = "用于常用商户查询返回数据类")
 public class MerchantResp {
     private Integer current_page;
     private List<MerchantData> data;

@@ -9,6 +9,7 @@ import org.example.common.dto.MerchantDto;
 import org.example.common.entity.SystemMerchantBankCard;
 import org.example.common.vo.*;
 import org.example.common.entity.SystemMerchant;
+import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
@@ -21,6 +22,7 @@ import java.util.List;
 * @author Administrator
 * @since 2023-05-16 14:57:07
 */
+@Service
 public interface SystemMerchantService extends IService<SystemMerchant> {
 
     /**

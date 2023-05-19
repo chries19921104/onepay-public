@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import io.swagger.annotations.ApiModel;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -22,6 +23,7 @@ import java.sql.Timestamp;
 @Getter
 @Setter
 @TableName("system_bank")
+@ApiModel(description = "银行实体类")
 public class SystemBank implements Serializable {
     private static final long serialVersionUID = 1L;
 

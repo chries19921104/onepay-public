@@ -3,6 +3,7 @@ package org.example.admin.service;
 import com.baomidou.mybatisplus.extension.service.IService;
 import org.example.common.base.CommResp;
 import org.example.common.entity.SystemMenu;
+import org.springframework.stereotype.Service;
 
 
 /**
@@ -13,6 +14,7 @@ import org.example.common.entity.SystemMenu;
 * @author Administrator
 * @since 2023-05-11 16:34:34
 */
+@Service
 public interface SystemMenuService extends IService<SystemMenu> {
 
     /**

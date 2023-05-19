@@ -1,9 +1,11 @@
 package org.example.common.vo;
 
+import io.swagger.annotations.ApiModel;
 import io.swagger.models.auth.In;
 import lombok.Data;
 
 @Data
+@ApiModel(description = "返回商户银行数据")
 public class MerchantByBrandVo {
     private Integer merchantId;
     private String code;

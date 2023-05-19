@@ -2,6 +2,7 @@ package org.example.common.entity;
 
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import io.swagger.annotations.ApiModel;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -20,6 +21,7 @@ import java.sql.Timestamp;
 @Getter
 @Setter
 @TableName("system_merchant")
+@ApiModel(description = "商户实体类")
 public class SystemMerchant implements Serializable {
     private static final long serialVersionUID = 1L;
 

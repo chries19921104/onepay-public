@@ -1,11 +1,13 @@
 package org.example.common.dto;
 
 
+import io.swagger.annotations.ApiModel;
 import lombok.Data;
 
 import java.util.List;
 
 @Data
+@ApiModel(description = "接收商户数据")
 public class MerchantDto {
     private List<Integer> merchantId;
     private List<String> agentId;

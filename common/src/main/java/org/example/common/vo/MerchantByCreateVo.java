@@ -1,11 +1,13 @@
 package org.example.common.vo;
 
+import io.swagger.annotations.ApiModel;
 import io.swagger.models.auth.In;
 import lombok.Data;
 
 import java.util.List;
 
 @Data
+@ApiModel(description = "返回商户新增数据")
 public class MerchantByCreateVo {
     private String FI_bank_max;
     private String FI_bank_min;

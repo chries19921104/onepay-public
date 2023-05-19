@@ -1,5 +1,6 @@
 package org.example.common.dto;
 
+import io.swagger.annotations.ApiModel;
 import io.swagger.models.auth.In;
 import lombok.Data;
 
@@ -7,6 +8,7 @@ import java.util.List;
 import java.util.stream.Stream;
 
 @Data
+@ApiModel(description = "接收商户数据")
 public class MerchantBodyDto {
     private String FI_Tpi_driver;//
     private List<String> FI_Tpi_services_enable;//
@@ -14,6 +16,11 @@ public class MerchantBodyDto {
     private String FI_True_min;//
     private String FI_bank_max;//1
     private String FI_bank_min;//1
+
+    public String getFI_true_max() {
+        return FI_true_max;
+    }
+
     private String FI_local_max;//1
     private String FI_local_min;//1
     private String FI_qrpay_max;//1

@@ -7,7 +7,7 @@ import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.scheduling.annotation.EnableAsync;
 
 @SpringBootApplication
-@MapperScan("org.example.admin.mapper")
+@MapperScan("org/example/admin/mapper")
 public class AdminApplication {
 
     public static void main(String[] args) {
