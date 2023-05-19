@@ -2,6 +2,7 @@ package org.example.common.entity;
 
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import io.swagger.annotations.ApiModel;
 import lombok.Data;
 
 import java.io.Serializable;
@@ -18,6 +19,7 @@ import java.time.LocalDateTime;
 */
 @Data
 @TableName("system_bank_card_group")
+@ApiModel(description = "银行卡群组实体类")
 public class SystemBankCardGroup implements Serializable {
     private static final long serialVersionUID = 1L;
 

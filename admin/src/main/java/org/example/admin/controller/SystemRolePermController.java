@@ -1,11 +1,9 @@
 package org.example.admin.controller;
 
-
-
-import org.example.admin.dto.RolePermDto;
 import org.example.admin.service.SystemRolePermService;
 import org.example.admin.vo.RolePermVo;
 import org.example.common.base.CommResp;
+import org.example.common.dto.RolePermDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 

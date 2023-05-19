@@ -3,18 +3,18 @@ package org.example.admin.mapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
-import org.example.common.entity.SystemMerchantWallet;
+import org.example.common.entity.SystemMerchantBankCard;
 
 /**
 * <p>
-* system_merchant_wallet Mapper 接口
+* system_merchant_bank_card Mapper 接口
 * </p>
 *
 * @author Administrator
-* @since 2023-05-17 15:05:58
+* @since 2023-05-18 18:57:49
 */
 @Mapper
-public interface SystemMerchantWalletMapper extends BaseMapper<SystemMerchantWallet> {
+public interface SystemMerchantBankCardMapper extends BaseMapper<SystemMerchantBankCard> {
 
 
 }

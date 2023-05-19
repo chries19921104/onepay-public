@@ -1,5 +1,7 @@
 package org.example.common.entity;
-
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.annotations.ApiModel;
@@ -11,49 +13,59 @@ import java.time.LocalDateTime;
 
 /**
 * <p>
-* system_merchant_support_bank 实体类
+* system_merchant_bank_card 实体类
 * </p>
 *
 * @author Administrator
-* @since 2023-05-17 17:01:04
+* @since 2023-05-18 18:57:31
 */
 @Getter
 @Setter
-@TableName("system_merchant_support_bank")
-@ApiModel(description = "商户开放银行实体类")
-public class SystemMerchantSupportBank implements Serializable {
+@TableName("system_merchant_bank_card")
+@ApiModel(description = "商户银行账户实体类")
+public class SystemMerchantBankCard implements Serializable {
     private static final long serialVersionUID = 1L;
 
     /**
-    * 商户支持银行主键 ID
+    * 商户银行账户ID
     */
     @TableId
-    private Long msId;
+    private Long mbId;
 
     /**
     * 商户ID
     */
-    private Integer merchantId;
+    private Long merchantId;
 
     /**
-    * 银行ID
+    * 银行
     */
-    private Integer bankId;
+    private String bankCode;
 
     /**
-    * 交易类别, 1: FI bank, 2: FI QRPay, 3: FO
+    * 银行名称
     */
-    private Integer txnType;
+    private String bankName;
 
     /**
-    * 是否启用
+    * 支行
     */
-    private Integer isEnabled;
+    private String branch;
 
     /**
-    * 商户接口不支持此银行时返回的错误信息
+    * 户名
     */
-    private String message;
+    private String accName;
+
+    /**
+    * 卡号
+    */
+    private String cardNumber;
+
+    /**
+    * 状态 1 Available(可用) 0 Suspended(暂停) BS200"
+    */
+    private Integer status;
 
     /**
     * 创建人员

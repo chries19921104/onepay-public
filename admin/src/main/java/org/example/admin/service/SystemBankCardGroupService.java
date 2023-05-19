@@ -4,6 +4,7 @@ package org.example.admin.service;
 import com.baomidou.mybatisplus.extension.service.IService;
 import org.example.common.base.CommResp;
 import org.example.common.entity.SystemBankCardGroup;
+import org.springframework.stereotype.Service;
 
 
 /**
@@ -14,6 +15,7 @@ import org.example.common.entity.SystemBankCardGroup;
 * @author zhangmi
 * @since 2023-05-17 13:44:10
 */
+@Service
 public interface SystemBankCardGroupService extends IService<SystemBankCardGroup> {
 
     CommResp currency();
