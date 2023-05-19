@@ -10,6 +10,7 @@ import org.example.admin.service.SystemMerchantStatementService;
 import org.example.common.vo.R;
 import org.example.common.vo.SystemMerchantStatementVO;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -24,7 +25,7 @@ public class SystemMerchantStatementController extends BaseController {
 
     @ApiOperation(value = "分页查询")
     @GetMapping(value = "/search")
-    public R search(SystemMerchantStatementSearchDTO dto){
+    public R search(@Validated SystemMerchantStatementSearchDTO dto){
 
         Page<SystemMerchantStatementVO> list=this.systemMerchantStatementService.search(new Page<SystemMerchantStatementVO>(dto.getPage(),dto.getSize()),dto);
         return R.okHasData(list);

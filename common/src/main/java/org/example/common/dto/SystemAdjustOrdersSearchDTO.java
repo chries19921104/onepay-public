@@ -5,6 +5,7 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import org.springframework.format.annotation.DateTimeFormat;
 
+import javax.validation.constraints.NotNull;
 import java.util.Date;
 
 @ApiModel(value = "调整订单查询模型")
@@ -39,10 +40,12 @@ public class SystemAdjustOrdersSearchDTO extends PageDTO{
 
     @ApiModelProperty(value = "更新开始时间" )
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @NotNull(message = "更新日期不能为空")
     private Date updatedAtBeginTime;
 
     @ApiModelProperty(value = "更新结束时间")
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @NotNull(message = "更新日期不能为空")
     private Date updatedAtEndTime;
 
     @ApiModelProperty(value = "主键id" )
