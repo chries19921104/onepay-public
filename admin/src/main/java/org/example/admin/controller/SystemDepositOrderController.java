@@ -29,9 +29,6 @@ public class SystemDepositOrderController {
 
     @GetMapping("/dashboard")
     public CommResp create(@RequestParam String currency) {
-
-
-
         return systemDepositOrderService.selectTxnModeByRegion(currency);
     }
 

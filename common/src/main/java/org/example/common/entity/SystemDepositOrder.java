@@ -1,9 +1,12 @@
 package org.example.common.entity;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import io.swagger.annotations.ApiModel;
+import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.awt.*;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
@@ -17,9 +20,9 @@ import java.time.LocalDateTime;
 * @author zhangmi
 * @since 2023-05-17 19:16:15
 */
-@Getter
-@Setter
+@Data
 @TableName("system_deposit_order")
+@ApiModel(value = "充值订单")
 public class SystemDepositOrder implements Serializable {
     private static final long serialVersionUID = 1L;
 
@@ -375,6 +378,60 @@ public class SystemDepositOrder implements Serializable {
     * 重新整理点击次数
     */
     private Integer runmonNumber;
+    enum DepositOrder_enum{
+        BANK_TNX_MODE("1","银行订单类型"),
+        QR_TNX_MODE("2","QR充值订单类型"),
+        TW_TNX_MODE("3","True Wallet充值订单类型"),
+        LOCAL_TNX_MODE("4","本地银行订单类型");
 
+
+
+
+
+
+
+        private String code;
+        private String desc;
+
+        DepositOrder_enum(String code, String desc) {
+            this.code = code;
+            this.desc = desc;
+        }
+
+        /**
+         * 自己定义一个静态方法,通过code返回枚举常量对象
+         * @param code
+         * @return
+         */
+        public static DepositOrder_enum getValue(String code){
+
+            for (DepositOrder_enum  color: values()) {
+                if(color.getCode().equals(code)){
+                    return  color;
+                }
+            }
+            return null;
+
+        }
+
+
+        public String getCode() {
+            return code;
+        }
+
+        public void setCode(String code) {
+            this.code = code;
+        }
+
+        public String getDesc() {
+            return desc;
+        }
+
+        public void setDesc(String desc) {
+            this.desc = desc;
+        }
+
+    }
 
 }
+

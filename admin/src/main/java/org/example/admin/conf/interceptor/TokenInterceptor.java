@@ -44,8 +44,8 @@ public class TokenInterceptor implements HandlerInterceptor {
 
         //如果token不为空，进行token验证
         if (StrUtil.isNotEmpty(token)) {
-            // 证token   verify(toen,秘钥.getBytes) hu-tool工具类  返回布尔类型  验证内容是否相当和是否过期
-            boolean pass = JWTUtil.verify(token, tokenKey.getBytes());
+            // 证token   validate(long leeway)验证token是否有效 0容忍
+            boolean pass = JWT.of(token).setKey(tokenKey.getBytes()).validate(0);
 
             if (!pass) {
                 //验证失败，返回401

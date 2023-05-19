@@ -5,6 +5,7 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.example.common.entity.SystemDepositOrder;
 import org.example.common.vo.SelectVo;
+import org.example.common.vo.SystemDepositOrderVo;
 
 import java.util.List;
 import java.util.Map;
@@ -19,14 +20,11 @@ import java.util.Map;
 */
 @Mapper
 public interface SystemDepositOrderMapper extends BaseMapper<SystemDepositOrder> {
-    SelectVo selectSuccess(
-            @Param("currency") String currency,
-            @Param("beginTime") String beginTime,
-            @Param("endTime") String endTime,
-            @Param("txnMode") String txnMode,
-            @Param("status") String status
-    );
 
+    List<SystemDepositOrderVo> selectMoneyAndCount(@Param("currency") String currency,
+                                                   @Param("beginTime") String beginTime,
+                                                   @Param("endTime")String endTime,
+                                                   @Param("status")String status);
 
 
 }
