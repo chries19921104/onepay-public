@@ -13,4 +13,5 @@ public class SystemDepositOrderVo {
     private Integer successCount;
     private Integer failCount;
 
+    private BigDecimal bankFee;
 }

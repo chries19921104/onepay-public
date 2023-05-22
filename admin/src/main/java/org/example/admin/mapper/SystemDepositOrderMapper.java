@@ -24,7 +24,30 @@ public interface SystemDepositOrderMapper extends BaseMapper<SystemDepositOrder>
     List<SystemDepositOrderVo> selectMoneyAndCount(@Param("currency") String currency,
                                                    @Param("beginTime") String beginTime,
                                                    @Param("endTime")String endTime,
-                                                   @Param("status")String status);
+                                                   @Param("status")String status,
+                                                   @Param("cardId")String cardId,
+                                                   @Param("merchantId")String merchantId
+    );
+    SystemDepositOrderVo selectSettlement(@Param("currency") String currency,
+                                                   @Param("beginTime") String beginTime,
+                                                   @Param("endTime")String endTime,
+                                                   @Param("status")String status,
+                                                   @Param("cardId")String cardId
+
+    );
+    SystemDepositOrderVo selectWithdrawal(@Param("currency") String currency,
+                                                   @Param("beginTime") String beginTime,
+                                                   @Param("endTime")String endTime,
+                                                   @Param("status")String status,
+                                                   @Param("cardId")String cardId
+
+    );
+    SystemDepositOrderVo selectCrypto(@Param("currency") String currency,
+                                                   @Param("beginTime") String beginTime,
+                                                   @Param("endTime")String endTime,
+                                                   @Param("status")String status,
+                                                   @Param("cardId")String cardId
+    );
 
 
 }

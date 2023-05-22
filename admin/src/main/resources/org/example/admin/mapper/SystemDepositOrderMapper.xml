@@ -79,19 +79,103 @@
     <select id="selectSuccess" resultType="org.example.common.vo.SelectVo">
 
     </select>
+<!--    前四个-->
     <select id="selectMoneyAndCount" resultType="org.example.common.vo.SystemDepositOrderVo">
-        SELECT `txn_mode`                             as txnMode,
-               SUM(paid_amount)                       as successMoney,
-               SUM(request_amount)                    as failMoney,
-               COUNT(IF(paid_amount > 0, 1, null))    as successCount,
-               COUNT(IF(request_amount > 0, 1, null)) as failCount
+        SELECT `txn_mode` as txnMode,
+        bank_fee as bankFee,
+        SUM(paid_amount) as successMoney,
+        SUM(request_amount) as failMoney,
+        COUNT(IF(paid_amount > 0, 1, null)) as successCount,
+        COUNT(IF(request_amount > 0, 1, null)) as failCount
         FROM system_deposit_order
+        WHERE currency = #{currency}
+        AND completed_at <![CDATA[>=]]> #{beginTime}
+        AND completed_at <![CDATA[<]]> #{endTime}
+        AND status in(#{status})
+        <if test="cardId != null and cardId!= ''">
+            AND bank_card_id in(#{cardId})
+        </if>
+        <if test="merchantId != null and merchantId!=''">
+            AND merchant_id in(#{merchantId})
+        </if>
+        GROUP BY txn_mode;
+    </select>
+<!--    下发-->
+    <select id="selectSettlement" resultType="org.example.common.vo.SystemDepositOrderVo">
+        SELECT `txn_mode` as txnMode,
+               bank_fee as bankFee,
+               SUM(paid_amount) as successMoney,
+               SUM(request_amount) as failMoney,
+               COUNT(IF(paid_amount > 0, 1, null)) as successCount,
+               COUNT(IF(request_amount > 0, 1, null)) as failCount
+        FROM system_sub_settlement_order
         WHERE currency = #{currency}
           AND completed_at <![CDATA[>=]]> #{beginTime}
           AND completed_at <![CDATA[<]]> #{endTime}
           AND status in(#{status})
-        GROUP BY txn_mode;
+    </select>
+<!--代付-->
+    <select id="selectWithdrawal" resultType="org.example.common.vo.SystemDepositOrderVo">
+        SELECT `txn_mode` as txnMode,
+               bank_fee as bankFee,
+               SUM(paid_amount) as successMoney,
+               SUM(request_amount) as failMoney,
+               COUNT(IF(paid_amount > 0, 1, null)) as successCount,
+               COUNT(IF(request_amount > 0, 1, null)) as failCount
+        FROM system_withdrawal_order
+        WHERE currency = #{currency}
+          AND completed_at <![CDATA[>=]]> #{beginTime}
+          AND completed_at <![CDATA[<]]> #{endTime}
+          AND status in(#{status})
+    </select>
+<!--    虚拟币-->
+    <select id="selectCrypto" resultType="org.example.common.vo.SystemDepositOrderVo">
+        SELECT SUM(paid_amount)                       as successMoney,
+               SUM(request_amount)                    as failMoney,
+               COUNT(IF(paid_amount > 0, 1, null))    as successCount,
+               COUNT(IF(request_amount > 0, 1, null)) as failCount
+        FROM system_crypto_order
+        WHERE currency = #{currency}
+          AND completed_at <![CDATA[>=]]> #{beginTime}
+          AND completed_at <![CDATA[<]]> #{endTime}
+          AND status in (#{status})
     </select>
 
-
+<!--    info-->
+    <select id="selectWithdrawalInfo1" resultType="org.example.common.vo.SystemDepositOrderInfoVo">
+        SELECT SUM(request_amount) as amount,
+               COUNT(*)            as amount
+        FROM #{table}
+        WHERE currency = #{currency}
+          AND status in (1,2)
+    </select>
+    <select id="selectWithdrawalInfo2" resultType="org.example.common.vo.SystemDepositOrderInfoVo">
+        SELECT SUM(request_amount) as amount,
+               COUNT(*)            as amount
+        FROM system_withdrawal_order
+        WHERE currency = #{currency}
+          AND confirm_accname = #{confirmAccName}
+          AND status in (1,2)
+    </select>
+    <select id="selectWithdrawalInfo3" resultType="org.example.common.vo.SystemDepositOrderInfoVo">
+        SELECT SUM(request_amount) as amount,
+               COUNT(*)            as amount
+        FROM system_external_trade_order
+        WHERE currency = #{currency}
+          AND status in (9)
+    </select>
+    <select id="selectWithdrawalInfo4" resultType="org.example.common.vo.SystemDepositOrderInfoVo">
+        SELECT SUM(request_amount) as amount,
+               COUNT(*)            as amount
+        FROM system_withdrawal_order
+        WHERE currency = #{currency}
+          AND is_urgent in (#{status})
+    </select>
+    <select id="selectWithdrawalInfo5" resultType="org.example.common.vo.SystemDepositOrderInfoVo">
+        SELECT SUM(request_amount) as amount,
+               COUNT(*)            as amount
+        FROM system_withdrawal_order
+        WHERE currency = #{currency}
+          AND is_urgent in (#{status})
+    </select>
 </mapper>
