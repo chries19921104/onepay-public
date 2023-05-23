@@ -141,41 +141,135 @@
           AND status in (#{status})
     </select>
 
-<!--    info-->
-    <select id="selectWithdrawalInfo1" resultType="org.example.common.vo.SystemDepositOrderInfoVo">
-        SELECT SUM(request_amount) as amount,
-               COUNT(*)            as amount
-        FROM #{table}
-        WHERE currency = #{currency}
-          AND status in (1,2)
-    </select>
-    <select id="selectWithdrawalInfo2" resultType="org.example.common.vo.SystemDepositOrderInfoVo">
-        SELECT SUM(request_amount) as amount,
-               COUNT(*)            as amount
+    <select id="selectWithdrawalrCommission" resultType="org.example.common.vo.SystemDepositOrderCommissionVo">
+        SELECT SUM(request_amount) as money,
+        bank_fee_merchant as merchantFee,
+        bank_fee as bankFee
         FROM system_withdrawal_order
         WHERE currency = #{currency}
-          AND confirm_accname = #{confirmAccName}
-          AND status in (1,2)
+        AND status in(3)
+        AND completed_at <![CDATA[>=]]> #{beginTime}
+        AND completed_at <![CDATA[<]]> #{endTime}
+        <if test="cardId != null and cardId!= ''">
+            AND bank_card_id in(#{cardId})
+        </if>
+        <if test="merchantId != null and merchantId!=''">
+            AND merchant_id in(#{merchantId})
+        </if>
+        GROUP BY pay_bank_fee;
     </select>
-    <select id="selectWithdrawalInfo3" resultType="org.example.common.vo.SystemDepositOrderInfoVo">
-        SELECT SUM(request_amount) as amount,
-               COUNT(*)            as amount
+    <select id="selectSettlementCommission" resultType="org.example.common.vo.SystemDepositOrderCommissionVo">
+        SELECT SUM(request_amount) as money,
+        bank_fee as bankFee
+        FROM system_settlement_order
+        WHERE currency = #{currency}
+        AND status in(3)
+        AND completed_at <![CDATA[>=]]> #{beginTime}
+        AND completed_at <![CDATA[<]]> #{endTime}
+        <if test="cardId != null and cardId!= ''">
+            AND bank_card_id in(#{cardId})
+        </if>
+        <if test="merchantId != null and merchantId!=''">
+            AND merchant_id in(#{merchantId})
+        </if>
+    </select>
+    <select id="selectExternalTradeCommission" resultType="org.example.common.vo.SystemDepositOrderCommissionVo">
+        SELECT SUM(request_amount) as money,
+        bank_fee as bankFee
         FROM system_external_trade_order
         WHERE currency = #{currency}
-          AND status in (9)
+        AND status in(3)
+        AND completed_at <![CDATA[>=]]> #{beginTime}
+        AND completed_at <![CDATA[<]]> #{endTime}
+        <if test="cardId != null and cardId!= ''">
+            AND bank_card_id in(#{cardId})
+        </if>
+        <if test="merchantId != null and merchantId!=''">
+            AND merchant_id in(#{merchantId})
+        </if>
+
     </select>
-    <select id="selectWithdrawalInfo4" resultType="org.example.common.vo.SystemDepositOrderInfoVo">
-        SELECT SUM(request_amount) as amount,
-               COUNT(*)            as amount
-        FROM system_withdrawal_order
+    <select id="selectIntroversionCommission" resultType="org.example.common.vo.SystemDepositOrderCommissionVo">
+        SELECT SUM(request_amount) as money,
+        bank_fee as bankFee
+        FROM system_introversion_order
         WHERE currency = #{currency}
-          AND is_urgent in (#{status})
+        AND status in(3)
+        AND completed_at <![CDATA[>=]]> #{beginTime}
+        AND completed_at <![CDATA[<]]> #{endTime}
+        <if test="cardId != null and cardId!= ''">
+            AND bank_card_id in(#{cardId})
+        </if>
+        <if test="merchantId != null and merchantId!=''">
+            AND merchant_id in(#{merchantId})
+        </if>
+
     </select>
-    <select id="selectWithdrawalInfo5" resultType="org.example.common.vo.SystemDepositOrderInfoVo">
-        SELECT SUM(request_amount) as amount,
-               COUNT(*)            as amount
-        FROM system_withdrawal_order
+    <select id="selectDepositQRLossCommission" resultType="org.example.common.vo.DepositQRLossCommissionVo">
+        SELECT SUM(loss_amount) as money,
+        COUNT(*) as count
+        FROM system_deposit_order
         WHERE currency = #{currency}
-          AND is_urgent in (#{status})
+        and txn_mode = 2
+        AND status in(3)
+        <if test="beginTime != null and beginTime!= ''">
+            AND completed_at <![CDATA[>=]]> #{beginTime}
+        </if>
+        <if test="endTime != null and endTime!= ''">
+            AND completed_at <![CDATA[<]]> #{endTime}
+        </if>
+        <if test="cardId != null and cardId!= ''">
+            AND bank_card_id in(#{cardId})
+        </if>
+        <if test="merchantId != null and merchantId!=''">
+            AND merchant_id in(#{merchantId})
+        </if>
     </select>
+    <select id="selectDepositTrueLossCommission" resultType="org.example.common.vo.DepositQRLossCommissionVo">
+        SELECT SUM(loss_amount) as money,
+        COUNT(*) as count
+        FROM system_deposit_order
+        WHERE currency = #{currency}
+        and txn_mode = 3
+        AND status in(3)
+        <if test="beginTime != null and beginTime!= ''">
+            AND completed_at <![CDATA[>=]]> #{beginTime}
+        </if>
+        <if test="endTime != null and endTime!= ''">
+            AND completed_at <![CDATA[<]]> #{endTime}
+        </if>
+        <if test="cardId != null and cardId!= ''">
+            AND bank_card_id in(#{cardId})
+        </if>
+        <if test="merchantId != null and merchantId!=''">
+            AND merchant_id in(#{merchantId})
+        </if>
+    </select>
+    <select id="selectMerchantRegister" resultType="int">
+        SELECT
+        COUNT(*) as count
+        FROM system_merchant
+        WHERE currency = #{currency}
+        <if test="beginTime != null and beginTime!= ''">
+            AND completed_at <![CDATA[>=]]> #{beginTime}
+        </if>
+        <if test="endTime != null and endTime!= ''">
+            AND completed_at <![CDATA[<]]> #{endTime}
+        </if>
+        <if test="cardId != null and cardId!= ''">
+            AND card_group_id in(#{cardGroupId})
+        </if>
+    </select>
+    <select id="selectMerchantExamine" resultType="int">
+        SELECT
+        COUNT(*) as count
+        FROM system_merchant
+        WHERE currency = #{currency}
+        AND status = #{status}
+        <if test="cardId != null and cardId!= ''">
+            AND card_group_id in(#{cardGroupId})
+        </if>
+    </select>
+
+
 </mapper>

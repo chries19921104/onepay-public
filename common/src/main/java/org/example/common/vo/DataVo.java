@@ -81,6 +81,74 @@ public class DataVo {
     private int yesterdayFailXNCount;
 
 
+    private BigDecimal todayBankIncome;
+    private BigDecimal todayQRIncome;
+    private BigDecimal todayTWIncome;
+    private BigDecimal todayBDBankIncome;
+    private BigDecimal todayDFIncome;
+    private BigDecimal todayXFIncome;
+    private BigDecimal todayXNIncome;
 
+    private BigDecimal yesterdayBankIncome;
+    private BigDecimal yesterdayQRIncome;
+    private BigDecimal yesterdayTWIncome;
+    private BigDecimal yesterdayBDBankIncome;
+    private BigDecimal yesterdayDFIncome;
+    private BigDecimal yesterdayXFIncome;
+    private BigDecimal yesterdayXNIncome;
+
+    private BigDecimal thisMonthBankIncome;
+    private BigDecimal thisMonthQRIncome;
+    private BigDecimal thisMonthTWIncome;
+    private BigDecimal thisMonthBDBankIncome;
+    private BigDecimal thisMonthDFIncome;
+    private BigDecimal thisMonthXFIncome;
+    private BigDecimal thisMonthXNIncome;
+
+    private BigDecimal lastMonthBankIncome;
+    private BigDecimal lastMonthQRIncome;
+    private BigDecimal lastMonthTWIncome;
+    private BigDecimal lastMonthBDBankIncome;
+    private BigDecimal lastMonthDFIncome;
+    private BigDecimal lastMonthXFIncome;
+    private BigDecimal lastMonthXNIncome;
+
+    private BigDecimal todayMerchantCommission;
+    private BigDecimal yesterdayMerchantCommission;
+
+
+    private BigDecimal todayMyCommission;
+    private BigDecimal yesterdayMyCommission;
+
+    private BigDecimal todayJSCommission;
+    private BigDecimal yesterdayJSCommission;
+    private BigDecimal todayNZCommission;
+    private BigDecimal yesterdayNZCommission;
+    private BigDecimal todayWZCommission;
+    private BigDecimal yesterdayWZCommission;
+
+    private BigDecimal todayQRLoss;
+    private int todayQRCount;
+    private BigDecimal thisQRLoss;
+    private int thisQRCount;
+    private BigDecimal lastQRLoss;
+    private int lastQRCount;
+    private BigDecimal allQRLoss;
+    private int allQRCount;
+
+    private BigDecimal todayTrueLoss;
+    private int todayTrueCount;
+    private BigDecimal thisTrueLoss;
+    private int thisTrueCount;
+    private BigDecimal lastTrueLoss;
+    private int lastTrueCount;
+    private BigDecimal allTrueLoss;
+    private int allTrueCount;
+
+    private int todayMerchantRegister;
+    private int yesterdayMerchantRegister;
+
+    private int successMerchantExamine;
+    private int failMerchantExamine;
 
 }
