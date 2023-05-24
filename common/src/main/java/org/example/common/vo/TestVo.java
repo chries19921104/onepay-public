@@ -3,6 +3,7 @@ package org.example.common.vo;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
+import lombok.Setter;
 
 import javax.validation.constraints.NotEmpty;
 
