@@ -22,5 +22,7 @@ import java.util.Map;
 public interface SystemDepositOrderService extends IService<SystemDepositOrder> {
     CommResp selectTxnModeByRegion(DashboardDto dashboardDto);
 
+   CommResp infoText();
+
 
 }

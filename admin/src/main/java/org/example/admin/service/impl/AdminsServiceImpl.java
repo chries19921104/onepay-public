@@ -63,7 +63,7 @@ public class AdminsServiceImpl extends ServiceImpl<AdminsMapper, Admins> impleme
         HashMap<String,Object> payload =new HashMap<>();
         //
         DateTime now = DateTime.now();
-        DateTime newTime = now.offsetNew(DateField.MINUTE, 10);
+        DateTime newTime = now.offsetNew(DateField.MINUTE, 60);
         //签发时间
         payload .put(JWTPayload.ISSUED_AT,now);
         //过期时间

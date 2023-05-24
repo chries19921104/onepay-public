@@ -82,7 +82,7 @@
 <!--    前四个-->
     <select id="selectMoneyAndCount" resultType="org.example.common.vo.SystemDepositOrderVo">
         SELECT `txn_mode` as txnMode,
-        bank_fee as bankFee,
+        max(bank_fee) as bankFee,
         SUM(paid_amount) as successMoney,
         SUM(request_amount) as failMoney,
         COUNT(IF(paid_amount > 0, 1, null)) as successCount,
@@ -102,13 +102,13 @@
     </select>
 <!--    下发-->
     <select id="selectSettlement" resultType="org.example.common.vo.SystemDepositOrderVo">
-        SELECT `txn_mode` as txnMode,
+        SELECT
                bank_fee as bankFee,
                SUM(paid_amount) as successMoney,
                SUM(request_amount) as failMoney,
                COUNT(IF(paid_amount > 0, 1, null)) as successCount,
                COUNT(IF(request_amount > 0, 1, null)) as failCount
-        FROM system_sub_settlement_order
+        FROM system_settlement_order
         WHERE currency = #{currency}
           AND completed_at <![CDATA[>=]]> #{beginTime}
           AND completed_at <![CDATA[<]]> #{endTime}
@@ -116,7 +116,7 @@
     </select>
 <!--代付-->
     <select id="selectWithdrawal" resultType="org.example.common.vo.SystemDepositOrderVo">
-        SELECT `txn_mode` as txnMode,
+        SELECT
                bank_fee as bankFee,
                SUM(paid_amount) as successMoney,
                SUM(request_amount) as failMoney,
@@ -136,8 +136,8 @@
                COUNT(IF(request_amount > 0, 1, null)) as failCount
         FROM system_crypto_order
         WHERE currency = #{currency}
-          AND completed_at <![CDATA[>=]]> #{beginTime}
-          AND completed_at <![CDATA[<]]> #{endTime}
+          AND complete_at <![CDATA[>=]]> #{beginTime}
+          AND complete_at <![CDATA[<]]> #{endTime}
           AND status in (#{status})
     </select>
 
@@ -251,12 +251,12 @@
         FROM system_merchant
         WHERE currency = #{currency}
         <if test="beginTime != null and beginTime!= ''">
-            AND completed_at <![CDATA[>=]]> #{beginTime}
+            AND created_at <![CDATA[>=]]> #{beginTime}
         </if>
         <if test="endTime != null and endTime!= ''">
-            AND completed_at <![CDATA[<]]> #{endTime}
+            AND created_at <![CDATA[<]]> #{endTime}
         </if>
-        <if test="cardId != null and cardId!= ''">
+        <if test="cardGroupId != null and cardGroupId!= ''">
             AND card_group_id in(#{cardGroupId})
         </if>
     </select>
@@ -266,10 +266,54 @@
         FROM system_merchant
         WHERE currency = #{currency}
         AND status = #{status}
-        <if test="cardId != null and cardId!= ''">
+        <if test="cardGroupId != null and cardGroupId!= ''">
             AND card_group_id in(#{cardGroupId})
         </if>
     </select>
+    <select id="selectBankCardFreeze" resultType="org.example.common.vo.SystemDepositOrderInfoVo">
+        SELECT
+        COUNT(*) as count,
+        sum(if(system_bank_card_bill.current_balance!=null,1,null)) as amount
+        FROM system_bank_card
+        join system_bank_card_bill on system_bank_card.card_id = system_bank_card_bill.bank_card_id
+        WHERE system_bank_card.currency = #{currency}
+        AND system_bank_card.status = 5
+        <if test="cardGroupId != null and cardGroupId!= ''">
+            AND card_group_id in(#{cardGroupId})
+        </if>
+        <if test="beginTime != null and beginTime!= ''">
+            AND system_bank_card.updated_at <![CDATA[>=]]> #{beginTime}
+        </if>
+        <if test="endTime != null and endTime!= ''">
+            AND system_bank_card.updated_at <![CDATA[<]]> #{endTime}
+        </if>
+    </select>
+    <select id="processingFoAmount" resultType="org.example.common.vo.DepositQRLossCommissionVo">
+        SELECT SUM(request_amount) AS amount,
+        COUNT(*) as count
+        FROM ${table}
+        WHERE currency = #{currency}
+        AND status in(1,2)
+
+    </select>
+    <select id="confirmableFoAmount" resultType="org.example.common.vo.DepositQRLossCommissionVo">
+        SELECT SUM(request_amount) AS amount,
+               COUNT(*) as count
+        FROM system_withdrawal_order
+        WHERE currency = #{currency}
+          AND status in(1,2)
+          AND confirm_accname = #{confirmAccName}
+
+    </select>
+    <select id="approvalEtAmount" resultType="org.example.common.vo.DepositQRLossCommissionVo">
+        SELECT SUM(request_amount) AS amount,
+               COUNT(*) as count
+        FROM system_external_trade_order
+        WHERE currency = #{currency}
+          AND status in(9)
+    </select>
+
+
 
 
 </mapper>

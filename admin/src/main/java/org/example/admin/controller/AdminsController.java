@@ -20,7 +20,7 @@ import javax.servlet.http.HttpServletRequest;
 * @author zhangmi
 * @since 2023-05-11 16:44:33
 */
-@Api(tags = "管理员登录")
+@Api(tags = "管理员")
 @RestController
 @RequestMapping()
 public class AdminsController {

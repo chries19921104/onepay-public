@@ -1,6 +1,7 @@
 package org.example.admin.controller;
 
 import cn.hutool.core.date.DateUtil;
+import org.example.admin.conf.interceptor.NoAuthorization;
 import org.example.common.base.CommResp;
 import org.example.common.dto.DashboardDto;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,6 +32,11 @@ public class SystemDepositOrderController {
     @GetMapping("/dashboard")
     public CommResp dashboard(DashboardDto dashboardDto) {
         return systemDepositOrderService.selectTxnModeByRegion(dashboardDto);
+    }
+    @GetMapping("/status/info")
+    @NoAuthorization
+    public CommResp info(){
+      return   systemDepositOrderService.infoText();
     }
 
 

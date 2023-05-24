@@ -151,4 +151,10 @@ public class DataVo {
     private int successMerchantExamine;
     private int failMerchantExamine;
 
+    private BigDecimal todayFreezeLoss;
+    private int todayFreezeCount;
+    private BigDecimal allFreezeLoss;
+    private int allFreezeCount;
+
+
 }

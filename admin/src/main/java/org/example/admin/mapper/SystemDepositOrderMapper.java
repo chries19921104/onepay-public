@@ -4,10 +4,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.example.common.entity.SystemDepositOrder;
-import org.example.common.vo.DepositQRLossCommissionVo;
-import org.example.common.vo.SelectVo;
-import org.example.common.vo.SystemDepositOrderCommissionVo;
-import org.example.common.vo.SystemDepositOrderVo;
+import org.example.common.vo.*;
 
 import java.util.List;
 import java.util.Map;
@@ -88,8 +85,18 @@ public interface SystemDepositOrderMapper extends BaseMapper<SystemDepositOrder>
     int selectMerchantRegister(@Param("currency") String currency,
                                @Param("beginTime") String beginTime,
                                @Param("endTime") String endTime,
-                               @Param("cardGroupId") Long cardGroupId);
+                               @Param("cardGroupId") Integer cardGroupId);
     int selectMerchantExamine(@Param("currency") String currency
             ,@Param("status") String status
-            ,@Param("cardGroupId") Long cardGroupId);
+            ,@Param("cardGroupId") Integer cardGroupId);
+    SystemDepositOrderInfoVo selectBankCardFreeze(@Param("currency") String currency,
+                                                  @Param("beginTime") String beginTime,
+                                                  @Param("endTime") String endTime,
+                                                  @Param("cardGroupId") Integer cardGroupId);
+    DepositQRLossCommissionVo processingFoAmount(@Param("currency") String currency,@Param("table") String table);
+    DepositQRLossCommissionVo confirmableFoAmount(@Param("currency") String currency,
+
+                                                  @Param("confirmAccName")String confirmAccName);
+
+    DepositQRLossCommissionVo approvalEtAmount(@Param("currency") String currency);
 }
