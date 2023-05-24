@@ -9,6 +9,7 @@ import javax.validation.constraints.NotEmpty;
 
 @Data
 public class TestVo {
+
     @JsonProperty("active_merchant")
     private int activeMerchant;
 

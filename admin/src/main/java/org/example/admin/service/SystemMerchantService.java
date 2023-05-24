@@ -2,9 +2,10 @@ package org.example.admin.service;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
-import org.example.common.base.MerchantData;
+import org.example.common.dto.MerchantDataDto;
 import org.example.common.dto.*;
 import org.example.common.entity.SystemMerchantBankCard;
+import org.example.common.entity.SystemMerchantOperateLog;
 import org.example.common.entity.SystemMerchantWhiteList;
 import org.example.common.vo.*;
 import org.example.common.entity.SystemMerchant;
@@ -46,7 +47,7 @@ public interface SystemMerchantService extends IService<SystemMerchant> {
      * @param merchantDto
      * @return
      */
-    Page<MerchantData> selectData(MerchantDto merchantDto);
+    Page<MerchantDataDto> selectData(MerchantDto merchantDto);
 
     /**
      * 银行信息
@@ -59,7 +60,7 @@ public interface SystemMerchantService extends IService<SystemMerchant> {
      * 新增商户信息
      * @param merchantBodyDto
      */
-    Long saveMerchant(MerchantBodyDto merchantBodyDto);
+    SystemMerchant saveMerchant(MerchantBodyDto merchantBodyDto);
 
     /**
      * 银行账户条件查询返回data信息
@@ -91,4 +92,19 @@ public interface SystemMerchantService extends IService<SystemMerchant> {
      * @param merchantByWhiteVo
      */
     void updateWhite(MerchantByWhiteVo merchantByWhiteVo);
+
+    //商户列表-详情-商户资讯-重置密码接口
+    String rechargePassword(Long id);
+
+    //商户列表-详情-商户资讯-重置2FA接口
+    void recharge2FA(Long id);
+
+    //商户列表-详情-Log-搜索接口
+    Page<SystemMerchantOperateLog> getMerchantByLog(MerchantByLogDto merchantByLogDto);
+
+    //商户资讯-商户列表-单个详情
+    MerchantVo selectMerchantById(Long id);
+
+    //商户资讯-商户列表-单个详情编辑
+    void updateMerchant(MerchantDto1 merchantDto1);
 }

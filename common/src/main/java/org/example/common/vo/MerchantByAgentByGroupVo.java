@@ -2,6 +2,7 @@ package org.example.common.vo;
 
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModel;
 import lombok.Data;
 import lombok.Getter;
@@ -40,5 +41,6 @@ public class MerchantByAgentByGroupVo {
     /**
      * 代理id
      */
-    private Long agent_id;
+    @JsonProperty("agent_id")
+    private Long agentId;
 }

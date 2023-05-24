@@ -1,14 +1,17 @@
 package org.example.common.entity;
 
+import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.annotations.ApiModel;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.beans.BeanUtils;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 /**
 * <p>
@@ -28,7 +31,7 @@ public class SystemMerchant implements Serializable {
     /**
     * 商户ID
     */
-    @TableId
+    @TableId(type = IdType.AUTO)
     private Long merchantId;
 
     /**
@@ -261,9 +264,9 @@ public class SystemMerchant implements Serializable {
     */
     private String updatedMan;
 
-    private Timestamp createdAt;
+    private LocalDateTime createdAt;
 
-    private Timestamp updatedAt;
+    private LocalDateTime updatedAt;
 
     /**
     * GCash费率
@@ -276,7 +279,7 @@ public class SystemMerchant implements Serializable {
     private BigDecimal fiGcashMax;
 
     /**
-    * 最大GCash收款
+    * 最小GCash收款
     */
     private BigDecimal fiGcashMin;
 

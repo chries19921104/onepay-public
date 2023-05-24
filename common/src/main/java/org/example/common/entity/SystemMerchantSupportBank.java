@@ -33,12 +33,12 @@ public class SystemMerchantSupportBank implements Serializable {
     /**
     * 商户ID
     */
-    private Integer merchantId;
+    private Long merchantId;
 
     /**
     * 银行ID
     */
-    private Integer bankId;
+    private Long bankId;
 
     /**
     * 交易类别, 1: FI bank, 2: FI QRPay, 3: FO

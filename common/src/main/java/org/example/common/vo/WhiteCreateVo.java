@@ -1,7 +1,11 @@
 package org.example.common.vo;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.Data;
 
+import java.time.LocalDateTime;
+
+@Data
 public class WhiteCreateVo {
     @JsonProperty("SH100_ID")
     private Long merchantId;
@@ -10,7 +14,7 @@ public class WhiteCreateVo {
     private Long whiteId;
 
     @JsonProperty("created_at")
-    private String createdAt;
+    private LocalDateTime createdAt;
 
     @JsonProperty("created_man")
     private String creator;
@@ -20,7 +24,7 @@ public class WhiteCreateVo {
     private Integer type;
 
     @JsonProperty("updated_at")
-    private String updatedAt;
+    private LocalDateTime updatedAt;
 
     @JsonProperty("updated_man")
     private String updater;

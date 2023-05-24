@@ -7,7 +7,7 @@ import java.math.BigDecimal;
 
 @Data
 @ApiModel(description = "用于常用返回数据中的totals数据")
-public class Totals {
+public class    Totals {
     private BigDecimal availableBalance;
     private BigDecimal currentBalance;
     private BigDecimal depositOutstandingBalance;

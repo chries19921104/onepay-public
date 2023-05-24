@@ -21,17 +21,11 @@ import java.util.HashMap;
 @Controller
 public class IndexController {
 
-    /**
-     * shiro登陆跳转
-     * @param request
-     * @param response
-     * @return
-     */
-    @RequestMapping("/login")
+/*    @RequestMapping("/login")
     @ResponseBody
     public CommResp login(HttpServletRequest request, HttpServletResponse response) {
         return CommResp.FAIL("unauthorized >  401 ");
-    }
+    }*/
     @GetMapping("/login")
     public String login11(){
         return "login";

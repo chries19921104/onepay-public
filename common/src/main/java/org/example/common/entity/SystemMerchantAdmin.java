@@ -4,7 +4,6 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
-import io.swagger.annotations.ApiModel;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -13,24 +12,23 @@ import java.time.LocalDateTime;
 
 /**
 * <p>
-* system_merchant_white_list 实体类
+* system_merchant_admin 实体类
 * </p>
 *
 * @author Administrator
-* @since 2023-05-19 13:37:58
+* @since 2023-05-22 11:19:34
 */
 @Getter
 @Setter
-@TableName("system_merchant_white_list")
-@ApiModel(description = "商户白名单实体类")
-public class SystemMerchantWhiteList implements Serializable {
+@TableName("system_merchant_admin")
+public class SystemMerchantAdmin implements Serializable {
     private static final long serialVersionUID = 1L;
 
     /**
-    * 商户白名单ID
+    * 主键ID
     */
-    @TableId(type = IdType.AUTO)
-    private Long whiteId;
+    @TableId
+    private Long id;
 
     /**
     * 商户ID
@@ -38,24 +36,41 @@ public class SystemMerchantWhiteList implements Serializable {
     private Long merchantId;
 
     /**
-    * 白名单IP
+    * 商户后台登录账号
     */
-    private String ip;
+    private String username;
 
     /**
-    * IP 格式, 1: IPv4, 2: IPv4 CIDR
+    * 角色ID
     */
-    private Integer ipFormat;
+    private Integer roleId;
 
     /**
-    * 类型: 1 Withdraw(充值) 2 Deposit(提现) BS200
+    * 登录密码
     */
-    private Integer type;
+    private String password;
 
     /**
-    * 类型: 1 Active(启用) 0 Inactive(禁用) BS200"
+    * 全称
+    */
+    private String fullName;
+
+    /**
+    * 状态  0-停用 1-启用
     */
     private Integer status;
+
+    /**
+    * 超级管理员, 此用户不允许被修改及移除
+    */
+    private Integer superAdmin;
+
+    /**
+    * 登录token
+    */
+    private String rememberToken;
+
+    private String totpSecret;
 
     /**
     * 创建人员

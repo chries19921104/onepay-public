@@ -1,17 +1,17 @@
 package org.example.admin.controller;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.example.admin.conf.interceptor.NoAuthorization;
 import org.example.admin.service.SystemMerchantService;
-import org.example.common.base.MerchantByBrandResp;
-import org.example.common.base.MerchantData;
+import org.example.common.dto.MerchantDataDto;
 import org.example.common.base.MerchantResp;
 import org.example.common.base.Totals;
 import org.example.common.dto.*;
-import org.example.common.entity.SystemMerchant;
-import org.example.common.entity.SystemMerchantBankCard;
-import org.example.common.entity.SystemMerchantWhiteList;
+import org.example.common.entity.*;
+import org.example.common.utils.BaseContext;
 import org.example.common.utils.URLUtils;
 import org.example.common.vo.*;
 import org.springframework.beans.BeanUtils;
@@ -20,6 +20,8 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.math.BigDecimal;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -35,7 +37,7 @@ import java.util.stream.Collectors;
 */
 @Api(tags = "商户资讯模块")
 @RestController
-@RequestMapping()
+@RequestMapping("/api")
 public class SystemMerchantController {
 
     @Autowired
@@ -78,7 +80,7 @@ public class SystemMerchantController {
     //http://localhost:8088/api/bk100/simple?status=1
     @ApiOperation(value = "有关银行的一些选项列表查询接口")
     @GetMapping("/bk100/simple")
-    public List<BrankVo> getBrank(Integer status) {
+    public List<BrankVo> getBrank(@RequestParam("status") Integer status) {
         return systemMerchantService.getBranks(status);
     }
 
@@ -96,13 +98,18 @@ public class SystemMerchantController {
     // PG100_ID=1
     @GetMapping("/sh100")
     @ApiOperation(value = "商户资讯-商户列表-查询接口")
+    @NoAuthorization
     public MerchantResp selectMerchant(MerchantDto merchantDto, HttpServletRequest request) {
         //data
-        Page<MerchantData> merchantData = systemMerchantService.selectData(merchantDto);
+        Page<MerchantDataDto> merchantData = systemMerchantService.selectData(merchantDto);
         //totals
-        Totals totals = getTotals(merchantData.getRecords());
-        //其他信息MerchantResp
-        return getMerchantResp(merchantData,totals,request,merchantDto);
+        if (merchantData != null){
+            Totals totals = getTotals(merchantData.getRecords());
+            //其他信息MerchantResp
+            return getMerchantResp(merchantData,totals,request,merchantDto);
+        }
+        return getNoMerchantResp(request,merchantDto);
+
     }
 
     //http://localhost:8088/api/sh100
@@ -110,8 +117,7 @@ public class SystemMerchantController {
     @PostMapping("/sh100")
     public Map<String,MerchantByCreateVo> merchantCreate(@RequestBody MerchantBodyDto merchantBodyDto){
         //将接收的部分信息存贮在merchant表中
-        Long merchantId = systemMerchantService.saveMerchant(merchantBodyDto);
-        //存储商户与银行对应的数据
+        SystemMerchant merchantId = systemMerchantService.saveMerchant(merchantBodyDto);
         //返回数据
         return getMerchantByCreateVo(merchantId,merchantBodyDto);
     }
@@ -124,7 +130,7 @@ public class SystemMerchantController {
     // rp=100&page=1
     @ApiOperation(value = "商户资讯-银行账户-查询接口")
     @GetMapping("/sh120")
-    public MerchantByBrandResp selectMerchant(MerchantByBrandDto merchantDto, HttpServletRequest request){
+    public MerchantResp selectMerchant(MerchantByBrandDto merchantDto, HttpServletRequest request){
         //data
         Page<SystemMerchantBankCard> bankCardPage = systemMerchantService.selectBrandData(merchantDto);
         //MerchantByBrandResp
@@ -132,7 +138,7 @@ public class SystemMerchantController {
     }
 
     //http://localhost:8088/api/sh120/16
-    @PostMapping("sh120/{id}")
+    @PutMapping("sh120/{id}")
     @ApiOperation(value = "商户资讯-银行账户-更新接口")
     public Map<String,Boolean> updateBankCount(@RequestBody MerchantByBrandVo merchant){
         Map<String,Boolean> map = new HashMap<>();
@@ -151,17 +157,17 @@ public class SystemMerchantController {
     // rp=100&page=1
     @ApiOperation(value = "商户资讯-白名单-查询接口")
     @GetMapping("/sh130")
-    public MerchantByBrandResp selectMerchantWhite(MerchantByWhiteDto merchantByWhiteDto, HttpServletRequest request){
+    public MerchantResp selectMerchantWhite(MerchantByWhiteDto merchantByWhiteDto, HttpServletRequest request){
         //data
         Page<SystemMerchantWhiteList> whiteListPage = systemMerchantService.getMerchantByWhite(merchantByWhiteDto);
-        //MerchantByBrandResp
+        //MerchantResp
         return getMerchantByWhiteResp(whiteListPage,request,merchantByWhiteDto);
     }
 
     //http://localhost:8088/api/sh130
     @PostMapping("/sh130")
     @ApiOperation(value = "商户资讯-白名单-新增接口")
-    public Map<String,WhiteCreateVo> updateBankCount(@RequestBody WhiteBodyDto whiteBodyDto){
+    public Map<String,WhiteCreateVo> createWhite(@RequestBody WhiteBodyDto whiteBodyDto){
         //新增数据
         SystemMerchantWhiteList merchantWhiteList = systemMerchantService.saveWhite(whiteBodyDto);
         //返回数据
@@ -173,9 +179,9 @@ public class SystemMerchantController {
     }
 
     //http://localhost:8088/api/sh130/388
-    @PostMapping("sh130/{id}")
+    @PutMapping("sh130/{id}")
     @ApiOperation(value = "商户资讯-白名单-更新接口")
-    public Map<String,Boolean> updateBankCount(@RequestBody MerchantByWhiteVo merchantByWhiteVo){
+    public Map<String,Boolean> updateWhite(@RequestBody MerchantByWhiteVo merchantByWhiteVo){
         Map<String,Boolean> map = new HashMap<>();
         //更新状态
         systemMerchantService.updateWhite(merchantByWhiteVo);
@@ -183,12 +189,109 @@ public class SystemMerchantController {
         return map;
     }
 
-    private MerchantByBrandResp getMerchantByWhiteResp(Page<SystemMerchantWhiteList> whiteListPage, HttpServletRequest request, MerchantByWhiteDto merchantByWhiteDto) {
-        MerchantByBrandResp merchantResp = new MerchantByBrandResp();
+
+    //http://localhost:8088/api/sh100/153
+    @ApiOperation(value = "商户资讯-商户列表-单个详情")
+    @GetMapping("/sh100/{id}")
+    public Map<String,MerchantVo> selectMerchantById(@PathVariable("id") Long id){
+        //通过id查询数据,返回的数据集包含
+        // system_merchant，system_agents，system_merchant_wallet，system_merchant_admin,system_merchant_support_bank五张表的数据
+        MerchantVo merchantVo = systemMerchantService.selectMerchantById(id);
+
+        Map<String,MerchantVo> map = new HashMap<>();
+        map.put("data",merchantVo);
+        return map;
+    }
+
+    //http://localhost:8088/api/sh100/153
+    @ApiOperation(value = "商户资讯-商户列表-单个详情编辑")
+    @PutMapping("/sh100/{id}")
+    public Map<String,Object> selectMerchantById(@RequestBody MerchantDto1 merchantDto1){
+        //将对应的不同信息存储在不同的五张表中。
+        systemMerchantService.updateMerchant(merchantDto1);
+
+        Map<String,Object> map = new HashMap<>();
+        map.put("data",merchantDto1);
+        map.put("tpi_settled",true);
+        return map;
+    }
+
+
+    //http://localhost:8088/api/user/374/password/reset
+    @PutMapping("/user/{id}/password/reset")
+    @ApiOperation(value = "商户列表-详情-商户资讯-重置密码接口")
+    public Map<String,Map<String,String>> rechargePassword(@PathVariable("id") Long id) {
+        // 修改system_merchant_admin表
+        String password = systemMerchantService.rechargePassword(id);
+        Map<String,Map<String,String>> map = new HashMap<>();
+        Map<String,String> map1 = new HashMap<>();
+        map1.put("password",password);
+        map.put("data",map1);
+        return map;
+    }
+
+    //http://localhost:8088/api/user/374/totpSecret/reset
+    @PutMapping("/user/{id}/totpSecret/reset")
+    @ApiOperation(value = "商户列表-详情-商户资讯-重置2FA接口")
+    public Map<String,Boolean> recharge2FA(@PathVariable("id") Long id) {
+        systemMerchantService.recharge2FA(id);
+        Map<String,Boolean> map = new HashMap<>();
+        map.put("data",true);
+        return map;
+    }
+
+    //http://localhost:8088/api/sh100log?
+    //SH100_ID=153&
+    //type=name&
+    //admin_name=admin&
+    //rp=100&page=1&start_date=2023-05-01&end_date=2023-05-22
+    @ApiOperation(value = "商户列表-详情-Log-搜索接口")
+    @GetMapping("/sh100log")
+    public MerchantResp selectMerchantLog(MerchantByLogDto merchantByLogDto, HttpServletRequest request){
+        Page<SystemMerchantOperateLog> page = systemMerchantService.getMerchantByLog(merchantByLogDto);
+        //MerchantResp
+        return getMerchantByLogResp(page,request,merchantByLogDto);
+    }
+
+    private MerchantResp getMerchantByLogResp(Page<SystemMerchantOperateLog> page, HttpServletRequest request, MerchantByLogDto merchantByLogDto) {
+        MerchantResp merchantResp = new MerchantResp();
+        //拷贝属性data
+        List<MerchantByLogVo> collect = page.getRecords().stream().map(iter -> {
+            MerchantByLogVo merchant = new MerchantByLogVo();
+            BeanUtils.copyProperties(iter,merchant);
+            return merchant;
+        }).collect(Collectors.toList());
+        //获取当前接口的url
+        String url = URLUtils.getCurrentURL(request);
+        //拼接url
+        merchantResp.setFirst_page_url(url + "?page=1");
+        merchantResp.setLast_page_url(url + "?page=" + page.getPages());
+        if (page.getPages()>page.getCurrent()){
+            merchantResp.setNext_page_url(url + "?page=" + (page.getCurrent()+1));
+        }
+        merchantResp.setPath(url);
+        //保存其他信息
+        merchantResp.setCurrent_page((int) page.getCurrent());
+        merchantResp.setData(collect);
+        if (page.getTotal() != 0){
+            merchantResp.setFrom((int) page.getCurrent());
+        }
+        merchantResp.setLast_page((int) page.getPages());
+        merchantResp.setPer_page(merchantByLogDto.getRp()+ "");
+        merchantResp.setPrev_page_url(null);
+        if (page.getTotal() != 0){
+            merchantResp.setTo((int) page.getTotal());
+        }
+        merchantResp.setTotal((int) page.getTotal());
+        return merchantResp;
+    }
+
+    private MerchantResp getMerchantByWhiteResp(Page<SystemMerchantWhiteList> whiteListPage, HttpServletRequest request, MerchantByWhiteDto merchantByWhiteDto) {
+        MerchantResp merchantResp = new MerchantResp();
         //拷贝属性data
         List<MerchantByWhiteVo> collect = whiteListPage.getRecords().stream().map(iter -> {
             MerchantByWhiteVo merchant = new MerchantByWhiteVo();
-            BeanUtils.copyProperties(iter,merchant,"whiteId","creator","ip","status","type");
+            BeanUtils.copyProperties(iter,merchant);
             //手动将创建时间拷贝一下，类型不一样
             merchant.setCreatedAt(iter.getCreatedAt()+"");
             //再通过商户id去查询商户表，将code和name字段补齐
@@ -222,8 +325,8 @@ public class SystemMerchantController {
         return merchantResp;
     }
 
-    private MerchantByBrandResp getMerchantByBrandResp(Page<SystemMerchantBankCard> bankCardPage, HttpServletRequest request,MerchantByBrandDto merchantDto) {
-        MerchantByBrandResp merchantResp = new MerchantByBrandResp();
+    private MerchantResp getMerchantByBrandResp(Page<SystemMerchantBankCard> bankCardPage, HttpServletRequest request,MerchantByBrandDto merchantDto) {
+        MerchantResp merchantResp = new MerchantResp();
         //拷贝属性data
         List<MerchantByBrandVo> collect = bankCardPage.getRecords().stream().map(iter -> {
             MerchantByBrandVo merchant = new MerchantByBrandVo();
@@ -267,26 +370,21 @@ public class SystemMerchantController {
         return merchantResp;
     }
 
-    private Map<String, MerchantByCreateVo> getMerchantByCreateVo(Long merchantId , MerchantBodyDto merchantBodyDto) {
+    private Map<String, MerchantByCreateVo> getMerchantByCreateVo(SystemMerchant merchantId , MerchantBodyDto merchantBodyDto) {
         //拷贝存在的属性
         MerchantByCreateVo merchant = new MerchantByCreateVo();
         BeanUtils.copyProperties(merchantBodyDto,merchant);
         //补充属性
-        merchant.setMerchantId(Long.valueOf(merchantId).intValue());
+        BeanUtils.copyProperties(merchantId,merchant);
         merchant.setTpi_settled(true);
         merchant.setUse_qr_pairing_code(true);
-//        merchant.setCreated_at();
-//        merchant.setCreated_man();
-//        merchant.setUpdated_at();
-//        merchant.setUpdated_man();
-//        merchant.setPassword();
-//        merchant.setUser_id();
+
         Map<String,MerchantByCreateVo> map = new HashMap<>();
         map.put("data",merchant);
         return map;
     }
 
-    private MerchantResp getMerchantResp(Page<MerchantData> merchantData, Totals totals, HttpServletRequest request, MerchantDto merchantDto) {
+    private MerchantResp getMerchantResp(Page<MerchantDataDto> merchantData, Totals totals, HttpServletRequest request, MerchantDto merchantDto) {
         MerchantResp merchantResp = new MerchantResp();
         //
         //获取当前接口的url
@@ -316,23 +414,30 @@ public class SystemMerchantController {
         return merchantResp;
     }
 
-    private Totals getTotals(List<MerchantData> merchantData) {
+    private Totals getTotals(List<MerchantDataDto> merchantData) {
         Totals totals = new Totals();
-        BigDecimal availableBalance = null;
-        BigDecimal depositOutstandingBalance= null;
-        BigDecimal currentBalance= null;
-        BigDecimal holdBalance= null;
-        BigDecimal frozenBalance= null;
-        BigDecimal todayTrFee= null;
+        BigDecimal availableBalance = BigDecimal.ZERO;
+        BigDecimal depositOutstandingBalance= BigDecimal.ZERO;
+        BigDecimal currentBalance= BigDecimal.ZERO;
+        BigDecimal holdBalance= BigDecimal.ZERO;
+        BigDecimal frozenBalance= BigDecimal.ZERO;
+        BigDecimal todayTrFee= BigDecimal.ZERO;
         //遍历merchant
-        for (MerchantData merchantDatum : merchantData) {
+        for (MerchantDataDto merchantDatum : merchantData) {
             //将每个商户的余额相加
-            availableBalance = availableBalance.add(merchantDatum.getAvailableBalance());
-            depositOutstandingBalance = depositOutstandingBalance.add(merchantDatum.getDepositOutstandingBalance());
-            currentBalance = currentBalance.add(merchantDatum.getCurrentBalance());
-            holdBalance = holdBalance.add(merchantDatum.getHoldBalance());
-            frozenBalance = frozenBalance.add(merchantDatum.getFrozenBalance());
-            todayTrFee = todayTrFee.add(merchantDatum.getTodayTrFee());
+            if (merchantDatum.getAvailableBalance() != null){
+                availableBalance = availableBalance.add(merchantDatum.getAvailableBalance());
+            }if (merchantDatum.getDepositOutstandingBalance() != null){
+                depositOutstandingBalance = depositOutstandingBalance.add(merchantDatum.getDepositOutstandingBalance());
+            }if (merchantDatum.getCurrentBalance() != null){
+                currentBalance = currentBalance.add(merchantDatum.getCurrentBalance());
+            }if (merchantDatum.getHoldBalance() != null){
+                holdBalance = holdBalance.add(merchantDatum.getHoldBalance());
+            }if (merchantDatum.getFrozenBalance() != null){
+                frozenBalance = frozenBalance.add(merchantDatum.getFrozenBalance());
+            }if (merchantDatum.getTodayTrFee() != null){
+                todayTrFee = todayTrFee.add(merchantDatum.getTodayTrFee());
+            }
         }
         //将totals数据存储
         totals.setCurrentBalance(currentBalance);
@@ -342,6 +447,30 @@ public class SystemMerchantController {
         totals.setTodayTrFee(todayTrFee);
         totals.setDepositOutstandingBalance(depositOutstandingBalance);
         return totals;
+    }
+
+    private MerchantResp getNoMerchantResp(HttpServletRequest request, MerchantDto merchantDto) {
+        MerchantResp merchantResp = new MerchantResp();
+        merchantResp.setCurrent_page(1);
+        merchantResp.setLast_page(1);
+        merchantResp.setPer_page(merchantDto.getRp()+"");
+        merchantResp.setTotal(0);
+        Totals totals = new Totals();
+        totals.setCurrentBalance(BigDecimal.valueOf(0));
+        totals.setTodayTrFee(BigDecimal.valueOf(0));
+        totals.setHoldBalance(BigDecimal.valueOf(0));
+        totals.setDepositOutstandingBalance(BigDecimal.valueOf(0));
+        totals.setFrozenBalance(BigDecimal.valueOf(0));
+        totals.setAvailableBalance(BigDecimal.valueOf(0));
+        merchantResp.setTotals(totals);
+
+        //获取当前接口的url
+        String url = URLUtils.getCurrentURL(request);
+        merchantResp.setFirst_page_url(url + "?page=1");
+        merchantResp.setLast_page_url(url + "?page=1");
+        merchantResp.setPath(url);
+
+        return merchantResp;
     }
 
 }
