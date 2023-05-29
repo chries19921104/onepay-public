@@ -2,6 +2,7 @@ package org.example.common.entity;
 
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import io.swagger.models.auth.In;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -168,7 +169,7 @@ public class SystemBankCard implements Serializable {
     /**
     * 0.Standby-沒有Group或尚未开卡。1.Active - 启用（有group&开卡完成，财务手动更改状态）2.Blocked-银行登录被锁  3.Inactive-禁用。4.Temp. freeze-暂时冻结（temporary freeze ）5.Perm. freeze-永久冻结（Permanently freeze）6.Hold-暂停，不对外    7.Maintenance-维护
     */
-    private Long status;
+    private Integer status;
 
     /**
     * 账户码

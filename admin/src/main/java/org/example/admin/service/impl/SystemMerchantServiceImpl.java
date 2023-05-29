@@ -8,7 +8,6 @@ import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 
-import com.sun.org.apache.regexp.internal.RE;
 import lombok.extern.slf4j.Slf4j;
 import org.example.admin.mapper.*;
 import org.example.admin.service.SystemMerchantService;
@@ -23,16 +22,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.awt.*;
-import java.math.BigDecimal;
 import java.nio.ByteBuffer;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Base64;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -514,6 +508,20 @@ public class SystemMerchantServiceImpl extends ServiceImpl<SystemMerchantMapper,
             }
         }
 
+    }
+
+    //按商户status查询
+    @Override
+    public List<Merchant1Vo> getMerchantByStatus(MerchantDto merchantDto) {
+        List<SystemMerchant> systemMerchants = systemMerchantMapper.selectList(new LambdaQueryWrapper<SystemMerchant>()
+                .eq(SystemMerchant::getCurrency, merchantDto.getCurrency())
+                .eq(SystemMerchant::getStatus, merchantDto.getAssigned()));
+        List<Merchant1Vo> merchant1Vos = systemMerchants.stream().map(iter -> {
+            Merchant1Vo merchant1Vo = new Merchant1Vo();
+            BeanUtils.copyProperties(iter, merchant1Vo);
+            return merchant1Vo;
+        }).collect(Collectors.toList());
+        return merchant1Vos;
     }
 
     //获取随机数base64

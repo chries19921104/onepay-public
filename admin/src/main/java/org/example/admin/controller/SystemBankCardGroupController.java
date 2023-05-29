@@ -5,8 +5,14 @@ import org.example.admin.conf.interceptor.NoAuthorization;
 import org.example.admin.service.SystemBankCardGroupService;
 import org.example.common.base.CommResp;
 import org.example.common.base.MerchantResp;
+import org.example.common.dto.BankCardDto;
 import org.example.common.dto.BankCardGroupDto;
+import org.example.common.dto.MerchantDto;
+import org.example.common.dto.SystemBankCardDto;
+import org.example.common.vo.BankCardAllVo;
 import org.example.common.vo.BankGroupVo;
+import org.example.common.vo.Merchant1Vo;
+import org.example.common.vo.MerchantVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -81,8 +87,29 @@ public class SystemBankCardGroupController {
     //http://localhost:8088/api/pg100/5/sh100/all
     @GetMapping("/pg100/{id}/sh100/all")
     @ApiOperation(value = "银行账户管理-账户群组-详情-商户")
-    public Map<String,BankGroupVo> getMerchantByGroup(@PathVariable("id") Long id) {
+    public List<Map<String, List<MerchantVo>>> getMerchantByGroup(@PathVariable("id") Long id) {
         return systemBankCardGroupService.getMerchantByGroup(id);
     }
 
+    //http://localhost:8088/api/pg100/5/sh100
+    @PutMapping("/pg100/{id}/sh100")
+    @ApiOperation(value = "银行账户管理-账户群组-详情-商户删除或新增")
+    public Map<String,Boolean> deleteMerchant(BankCardGroupDto bankCardGroupDto) {
+        return systemBankCardGroupService.deleteOrAddMerchant(bankCardGroupDto);
+    }
+
+    //http://localhost:8088/api/pg100/5/bc100/all?PG100_ID=5&type=1
+    @GetMapping("/pg100/{id}/bc100/all")
+    @ApiOperation(value = "银行账户管理-账户群组-详情-账户")
+    @NoAuthorization
+    public Map<String, List<BankCardAllVo>> getRecharge(SystemBankCardDto bankCardDto) {
+        return systemBankCardGroupService.getRecharge(bankCardDto);
+    }
+
+    //http://localhost:8088/api/pg100/1/bc100
+    @PutMapping("/pg100/{id}/bc100")
+    @ApiOperation(value = "银行账户管理-账户群组-详情-账户删除或新增")
+    public Map<String,Boolean> getMerchantByGroup(BankCardDto bankCardDto) {
+        return systemBankCardGroupService.deleteOrAddAccount(bankCardDto);
+    }
 }

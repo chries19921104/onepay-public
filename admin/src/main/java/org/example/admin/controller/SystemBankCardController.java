@@ -4,12 +4,15 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.example.admin.conf.interceptor.NoAuthorization;
 import org.example.admin.service.SystemBankCardService;
+import org.example.common.dto.BankCardDto;
+import org.example.common.vo.BankCardAllVo;
 import org.example.common.vo.BankCardVo;
 import org.example.common.vo.BrankVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -35,4 +38,10 @@ public class SystemBankCardController {
         return systemBankCardService.getBranks();
     }
 
+    //http://localhost:8088/api/bc100/all?type=1&assigned=0&currency=THB
+    @ApiOperation(value = "查找不同type，status，curreny的账户")
+    @GetMapping("/bc100/all")
+    public Map<String, List<BankCardAllVo>> getBrankByType(BankCardDto bankCardDto) {
+        return systemBankCardService.getBrankByType(bankCardDto);
+    }
 }

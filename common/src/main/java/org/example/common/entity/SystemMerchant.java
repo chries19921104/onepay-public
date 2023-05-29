@@ -212,17 +212,17 @@ public class SystemMerchant implements Serializable {
     /**
     * 是否使用 Dapay
     */
-    private Integer dapayEnabled;
+//    private Integer dapayEnabled;
 
     /**
     * 是否使用 H1Pay
     */
-    private Integer h1payEnabled;
+//    private Integer h1payEnabled;
 
     /**
     * 是否使用 YouktPay
     */
-    private Integer youktpayEnabled;
+//    private Integer youktpayEnabled;
 
     /**
     * 是否使用第三方 FO
@@ -232,12 +232,12 @@ public class SystemMerchant implements Serializable {
     /**
     * QijiPay启用时间(起)
     */
-    private String qijipayStartTime;
+//    private String qijipayStartTime;
 
     /**
     * QijiPay启用时间(讫)
     */
-    private String qijipayEndTime;
+//    private String qijipayEndTime;
 
     /**
     * 启用FO比对账户名称
@@ -271,17 +271,17 @@ public class SystemMerchant implements Serializable {
     /**
     * GCash费率
     */
-    private BigDecimal trGcashRate;
+//    private BigDecimal trGcashRate;
 
     /**
     * 最大GCash收款
     */
-    private BigDecimal fiGcashMax;
+//    private BigDecimal fiGcashMax;
 
     /**
     * 最小GCash收款
     */
-    private BigDecimal fiGcashMin;
+//    private BigDecimal fiGcashMin;
 
 
 }

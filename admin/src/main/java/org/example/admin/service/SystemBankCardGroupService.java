@@ -4,9 +4,13 @@ package org.example.admin.service;
 import com.baomidou.mybatisplus.extension.service.IService;
 import org.example.common.base.CommResp;
 import org.example.common.base.MerchantResp;
+import org.example.common.dto.BankCardDto;
 import org.example.common.dto.BankCardGroupDto;
+import org.example.common.dto.SystemBankCardDto;
 import org.example.common.entity.SystemBankCardGroup;
+import org.example.common.vo.BankCardAllVo;
 import org.example.common.vo.BankGroupVo;
+import org.example.common.vo.MerchantVo;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
@@ -43,5 +47,14 @@ public interface SystemBankCardGroupService extends IService<SystemBankCardGroup
     Map<String, BankGroupVo> getGroupOne(Long id);
 
     //银行账户管理-账户群组-详情-商户
-    Map<String, BankGroupVo> getMerchantByGroup(Long id);
+    List<Map<String, List<MerchantVo>>> getMerchantByGroup(Long id);
+
+    //银行账户管理-账户群组-详情-商户删除或新增
+    Map<String, Boolean> deleteOrAddMerchant(BankCardGroupDto bankCardGroupDto);
+
+    //银行账户管理-账户群组-详情-充值账户
+    Map<String, List<BankCardAllVo>> getRecharge(SystemBankCardDto bankCardDto);
+
+    //银行账户管理-账户群组-详情-账户删除或新增
+    Map<String, Boolean> deleteOrAddAccount(BankCardDto bankCardDto);
 }

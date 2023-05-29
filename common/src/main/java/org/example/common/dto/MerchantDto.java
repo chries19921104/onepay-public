@@ -2,6 +2,7 @@ package org.example.common.dto;
 
 
 import io.swagger.annotations.ApiModel;
+import io.swagger.models.auth.In;
 import lombok.Data;
 
 import java.util.List;
@@ -12,6 +13,7 @@ public class MerchantDto {
     private List<Integer> merchantId;
     private List<String> agentId;
     private String currency;
+    private Integer assigned;
     private String startDate;
     private String endDate;
     private List<Integer> status;

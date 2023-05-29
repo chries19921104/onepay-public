@@ -222,6 +222,13 @@ public class SystemMerchantController {
         return getMerchantByLogResp(page,request,merchantByLogDto);
     }
 
+    //http://localhost:8088/api/sh100/all?assigned=0&currency=THB
+    @ApiOperation(value = "按商户status查询")
+    @GetMapping("/sh100/all")
+    public List<Merchant1Vo> getMerchantByStatus(MerchantDto merchantDto){
+        return systemMerchantService.getMerchantByStatus(merchantDto);
+    }
+
     private MerchantResp getMerchantByLogResp(Page<SystemMerchantOperateLog> page, HttpServletRequest request, MerchantByLogDto merchantByLogDto) {
         MerchantResp merchantResp = new MerchantResp();
         //拷贝属性data

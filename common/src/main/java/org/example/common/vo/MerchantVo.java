@@ -8,6 +8,7 @@ import org.example.common.dto.BrankDto;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Data
@@ -112,7 +113,7 @@ public class MerchantVo {
     private String code;
 
     @JsonProperty("created_at")
-    private Timestamp createdAt;
+    private LocalDateTime createdAt;
 
     @JsonProperty("created_man")
     private String createdMan;
@@ -180,7 +181,7 @@ public class MerchantVo {
     private List<String> tunaDomains;//0
 
     @JsonProperty("updated_at")
-    private Timestamp updatedAt;
+    private LocalDateTime updatedAt;
 
     @JsonProperty("updated_man")
     private String updatedMan;

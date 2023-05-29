@@ -11,13 +11,13 @@ import org.example.admin.service.SystemBankCardGroupService;
 import org.example.common.base.CommResp;
 import org.example.common.base.GetNoResp;
 import org.example.common.base.MerchantResp;
+import org.example.common.dto.BankCardDto;
 import org.example.common.dto.BankCardGroupDto;
+import org.example.common.dto.SystemBankCardDto;
 import org.example.common.entity.*;
 import org.example.common.utils.BaseContext;
 import org.example.common.utils.URLUtils;
-import org.example.common.vo.BankCardVo;
-import org.example.common.vo.BankGroupVo;
-import org.example.common.vo.SystemBankCardGroupVO;
+import org.example.common.vo.*;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -189,12 +189,113 @@ public class SystemBankCardGroupServiceImpl extends ServiceImpl<SystemBankCardGr
 
     //银行账户管理-账户群组-详情-商户
     @Override
-    public Map<String, BankGroupVo> getMerchantByGroup(Long id) {
+    public List<Map<String, List<MerchantVo>>> getMerchantByGroup(Long id) {
         List<SystemMerchant> systemMerchants = systemMerchantMapper.selectList(new LambdaQueryWrapper<SystemMerchant>()
-                .eq(SystemMerchant::getCardGroupId, id));
-
-        return null;
+                .eq(SystemMerchant::getCardGroupId, id)
+                .eq(SystemMerchant::getStatus,1));
+        List<MerchantVo> merchantVos = systemMerchants.stream().map(iter -> {
+            MerchantVo merchantVo = new MerchantVo();
+            BeanUtils.copyProperties(iter, merchantVo);
+            return merchantVo;
+        }).collect(Collectors.toList());
+        List<Map<String, List<MerchantVo>>> list = new ArrayList<>();
+        Map<String,List<MerchantVo>> map = new HashMap<>();
+        map.put("data",merchantVos);
+        list.add(map);
+        return list;
     }
+
+    //银行账户管理-账户群组-详情-商户删除或新增
+    @Override
+    public Map<String, Boolean> deleteOrAddMerchant(BankCardGroupDto bankCardGroupDto) {
+        //先通过groupid查询出商户id的集合
+        List<SystemMerchant> systemMerchants = systemMerchantMapper.selectList(new LambdaQueryWrapper<SystemMerchant>()
+                .eq(SystemMerchant::getCardGroupId, bankCardGroupDto.getGroupId()));
+        //得到商户的ids
+        List<Long> merchantIds = systemMerchants.stream().map(SystemMerchant::getMerchantId).collect(Collectors.toList());
+        //判断ids的长度与传来的ids，如果比传来的ids长则为删除，反之为新增
+        if (merchantIds.size() > bankCardGroupDto.getMerchantId().size()){
+            //将查询的ids和前端传过来的ids进行比对，将删除的那个merchantid得到
+            List<Long> collect = merchantIds.stream().filter(iter -> !bankCardGroupDto.getMerchantId().contains(iter))
+                    .collect(Collectors.toList());
+            //将状态改为等待
+            SystemMerchant systemMerchant = new SystemMerchant();
+            systemMerchant.setMerchantId(collect.get(0));
+            systemMerchant.setCardGroupId(null);
+            systemMerchant.setStatus(0);
+            systemMerchantMapper.updateById(systemMerchant);
+            Map<String ,Boolean> map = new HashMap<>();
+            map.put("success",true);
+            return map;
+        }else if (merchantIds.size() < bankCardGroupDto.getMerchantId().size()){
+            //需要添加的id放在list的最后一位，直接获取即可
+            SystemMerchant systemMerchant = new SystemMerchant();
+            systemMerchant.setMerchantId(bankCardGroupDto.getMerchantId().get(bankCardGroupDto.getMerchantId().size()-1));
+            systemMerchant.setCardGroupId(bankCardGroupDto.getGroupId());
+            systemMerchant.setStatus(1);
+            systemMerchantMapper.updateById(systemMerchant);
+            Map<String ,Boolean> map = new HashMap<>();
+            map.put("success",true);
+            return map;
+        }else {
+            return null;
+        }
+    }
+
+    //银行账户管理-账户群组-详情-充值账户
+    @Override
+    public Map<String, List<BankCardAllVo>> getRecharge(SystemBankCardDto bankCardDto) {
+        //通过状态和群组id来查询brankCard表，返回信息
+        List<SystemBankCard> systemBankCards = systemBankCardMapper.selectList(new LambdaQueryWrapper<SystemBankCard>()
+                .eq(SystemBankCard::getCardGroupId, bankCardDto.getCardGroupId())
+                .eq(SystemBankCard::getType, bankCardDto.getType())
+                .eq(SystemBankCard::getStatus,1));
+        List<BankCardAllVo> bankCardAllVos = systemBankCards.stream().map(iter -> {
+            BankCardAllVo bankCardAllVo = new BankCardAllVo();
+            BeanUtils.copyProperties(iter, bankCardAllVo,"statement");
+            return bankCardAllVo;
+        }).collect(Collectors.toList());
+        Map<String ,List<BankCardAllVo>> map = new HashMap<>();
+        map.put("data",bankCardAllVos);
+        return map;
+    }
+
+    //银行账户管理-账户群组-详情-账户删除或新增
+    @Override
+    public Map<String, Boolean> deleteOrAddAccount(BankCardDto bankCardDto) {
+        //通过groupid和type来查询原有的cardid
+        List<SystemBankCard> systemBankCards = systemBankCardMapper.selectList(new LambdaQueryWrapper<SystemBankCard>()
+                .eq(SystemBankCard::getCardGroupId, bankCardDto.getCardGroupId())
+                .eq(SystemBankCard::getType, bankCardDto.getType()));
+        //获取cardids
+        List<Long> cardIds = systemBankCards.stream().map(SystemBankCard::getCardId).collect(Collectors.toList());
+        //判断ids比传来的ids如果多的话，则为删除，反之为新增
+        if (cardIds.size() > bankCardDto.getCardId().size()){
+            //将查询的ids和前端传过来的ids进行比对，将删除的那个cardid得到
+            List<Long> collect = cardIds.stream().filter(iter -> !bankCardDto.getCardId().contains(iter))
+                    .collect(Collectors.toList());
+            SystemBankCard systemBankCard = new SystemBankCard();
+            systemBankCard.setCardId(collect.get(0));
+            systemBankCard.setCardGroupId(null);
+            systemBankCard.setStatus(0);
+            systemBankCardMapper.updateById(systemBankCard);
+            Map<String ,Boolean> map = new HashMap<>();
+            map.put("success",true);
+            return map;
+        }else if (cardIds.size() < bankCardDto.getCardId().size()){
+            SystemBankCard systemBankCard = new SystemBankCard();
+            systemBankCard.setCardId(bankCardDto.getCardId().get(bankCardDto.getCardId().size()-1));
+            systemBankCard.setCardGroupId(bankCardDto.getCardGroupId());
+            systemBankCard.setType(1);
+            systemBankCardMapper.updateById(systemBankCard);
+            Map<String ,Boolean> map = new HashMap<>();
+            map.put("success",true);
+            return map;
+        }else {
+            return null;
+        }
+    }
+
 
     private MerchantResp getGroupAllRes(Page<BankGroupVo> page, HttpServletRequest request,BankCardGroupDto bankCardGroupDto) {
 

@@ -12,6 +12,7 @@ import org.example.common.entity.SystemMerchant;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 
 /**
 * <p>
@@ -82,4 +83,7 @@ public interface SystemMerchantService extends IService<SystemMerchant> {
 
     //商户资讯-商户列表-单个详情编辑
     void updateMerchant(MerchantDto1 merchantDto1);
+
+    //按商户status查询
+    List<Merchant1Vo> getMerchantByStatus(MerchantDto merchantDto);
 }
