@@ -8,6 +8,7 @@ import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 
+import com.sun.org.apache.regexp.internal.RE;
 import lombok.extern.slf4j.Slf4j;
 import org.example.admin.mapper.*;
 import org.example.admin.service.SystemMerchantService;
@@ -24,11 +25,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.awt.*;
 import java.math.BigDecimal;
+import java.nio.ByteBuffer;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.List;
+import java.util.Random;
 import java.util.stream.Collectors;
 
 /**
@@ -81,21 +85,6 @@ public class SystemMerchantServiceImpl extends ServiceImpl<SystemMerchantMapper,
     private SystemMerchantOperateLogMapper systemMerchantOperateLogMapper;
 
     /**
-     * 选择账户群组
-     * @return
-     */
-    @Override
-    public List<AgentsByCardGroupVo> getGroup() {
-        List<SystemBankCardGroup> systemBankCardGroups = systemBankCardGroupMapper.selectList(null);
-        List<AgentsByCardGroupVo> collect = systemBankCardGroups.stream().map(iter -> {
-            AgentsByCardGroupVo agentsByCardGroupVo = new AgentsByCardGroupVo();
-            BeanUtils.copyProperties(iter, agentsByCardGroupVo);
-            return agentsByCardGroupVo;
-        }).collect(Collectors.toList());
-        return collect;
-    }
-
-    /**
      * 选择商户
      * @return
      */
@@ -107,22 +96,6 @@ public class SystemMerchantServiceImpl extends ServiceImpl<SystemMerchantMapper,
             MerchantByAgentByGroupVo merchantByAgentByGroupVo = new MerchantByAgentByGroupVo();
             BeanUtils.copyProperties(iter, merchantByAgentByGroupVo);
             return merchantByAgentByGroupVo;
-        }).collect(Collectors.toList());
-        return collect;
-    }
-
-    /**
-     * 选择代理
-     * @return
-     */
-    @Override
-    public List<AgentsVo> getAgents() {
-        List<SystemAgents> systemAgents = systemAgentsMapper.selectList(new LambdaQueryWrapper<SystemAgents>()
-                .eq(SystemAgents::getStatus, 1));
-        List<AgentsVo> collect = systemAgents.stream().map(iter -> {
-            AgentsVo agentsVo = new AgentsVo();
-            BeanUtils.copyProperties(iter, agentsVo);
-            return agentsVo;
         }).collect(Collectors.toList());
         return collect;
     }
@@ -220,24 +193,6 @@ public class SystemMerchantServiceImpl extends ServiceImpl<SystemMerchantMapper,
     }
 
     /**
-     * 银行信息
-     * @param status
-     * @return
-     */
-    @Override
-    public List<BrankVo> getBranks(Integer status) {
-        List<SystemBank> systemBanks = systemBankMapper.selectList(new LambdaQueryWrapper<SystemBank>()
-                .eq(SystemBank::getStatus, status));
-        //拷贝属性
-        List<BrankVo> collect = systemBanks.stream().map(iter -> {
-            BrankVo brankVo = new BrankVo();
-            BeanUtils.copyProperties(iter, brankVo);
-            return brankVo;
-        }).collect(Collectors.toList());
-        return collect;
-    }
-
-    /**
      * 新增商户信息
      * @param merchantBodyDto
      */
@@ -269,7 +224,6 @@ public class SystemMerchantServiceImpl extends ServiceImpl<SystemMerchantMapper,
         systemMerchant.setNoQrAdj(merchantBodyDto.getNo_qr_adj());
         systemMerchant.setNoQrAdjRandom((merchantBodyDto.getNo_qr_adj_random())?1:0);
         systemMerchant.setPayFoBankFee((merchantBodyDto.getPay_fo_bank_fee())?1:0);
-        systemMerchant.setSecCode(merchantBodyDto.getSec_code());
         systemMerchant.setSettCardMax(merchantBodyDto.getSett_card_max());
         systemMerchant.setSettFee(merchantBodyDto.getSett_fee());
         systemMerchant.setSettlementTerm(merchantBodyDto.getSettlement_term());
@@ -277,6 +231,9 @@ public class SystemMerchantServiceImpl extends ServiceImpl<SystemMerchantMapper,
         systemMerchant.setTrRate(merchantBodyDto.getTr_rate());
         systemMerchant.setTrTrueRate(merchantBodyDto.getTr_true_rate());
         systemMerchant.setWdRate(merchantBodyDto.getWd_rate());
+        //安全码
+        String sceCode = getSceCode(16);
+        systemMerchant.setSecCode(sceCode);
         //更新与创建
         Long userId = BaseContext.getCurrent();
         Admins admins = adminsMapper.selectById(userId);
@@ -361,22 +318,6 @@ public class SystemMerchantServiceImpl extends ServiceImpl<SystemMerchantMapper,
             merchantBankCard.setStatus(merchant.getStatus());
             systemMerchantBankCardMapper.updateById(merchantBankCard);
         }
-    }
-
-    /**
-     * 选择商户代理
-     * @return
-     */
-    @Override
-    public List<MerchantByAgentByGroupVo> getMerchantByAgent() {
-        List<SystemMerchant> systemMerchants = systemMerchantMapper.selectList(new LambdaQueryWrapper<SystemMerchant>()
-                .eq(SystemMerchant::getStatus, 1));
-        List<MerchantByAgentByGroupVo> collect = systemMerchants.stream().map(iter -> {
-            MerchantByAgentByGroupVo merchantByAgentByGroupVo = new MerchantByAgentByGroupVo();
-            BeanUtils.copyProperties(iter, merchantByAgentByGroupVo);
-            return merchantByAgentByGroupVo;
-        }).collect(Collectors.toList());
-        return collect;
     }
 
     //商户资讯-白名单-查询接口
@@ -573,5 +514,18 @@ public class SystemMerchantServiceImpl extends ServiceImpl<SystemMerchantMapper,
             }
         }
 
+    }
+
+    //获取随机数base64
+    public static String getSceCode(int length) {
+        Random random = new Random();
+        StringBuilder sb = new StringBuilder(length);
+        for (int i = 0; i < length; i++) {
+            int digit = random.nextInt(10); // 生成 0 到 9 之间的随机数字
+            sb.append(digit);
+        }
+        byte[] bytes = ByteBuffer.allocate(4).putLong(Long.parseLong(sb.toString())).array();
+        String base64String = Base64.getEncoder().encodeToString(bytes);
+        return base64String;
     }
 }

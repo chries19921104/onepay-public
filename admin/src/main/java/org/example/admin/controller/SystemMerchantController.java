@@ -6,6 +6,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.example.admin.conf.interceptor.NoAuthorization;
 import org.example.admin.service.SystemMerchantService;
+import org.example.common.base.GetNoResp;
 import org.example.common.dto.MerchantDataDto;
 import org.example.common.base.MerchantResp;
 import org.example.common.base.Totals;
@@ -47,43 +48,11 @@ public class SystemMerchantController {
     //http://localhost:8088/api/sh100/simple?with=currency,agent_id
     @ApiOperation(value = "有关商户的一些选项列表查询接口，注意不同的请求需要判断with的内容。")
     @GetMapping("/sh100/simple")
+    @NoAuthorization
     public List<MerchantByAgentByGroupVo> getMerchant(@RequestParam("with") List<String> with) {
-        if (with.size() == 1 && "currency,agent_id".equals(with.get(0))){
-            //走的第二个请求
-            return systemMerchantService.getMerchantByAgent();
-        }
         //查询出所有商户资料，相关表为system_merchant
         return systemMerchantService.getMerchant();
     }
-
-    //http://localhost:8088/api/agent/simple(选择代理)
-    @ApiOperation(value = "有关代理的一些选项列表查询接口")
-    @GetMapping("/agent/simple")
-    public List<AgentsVo> getAgents() {
-        //查询出所有代理信息，相关表为system_agents
-        //返回数据[{id: 1, display_id: "System", username: "System", full_name: "System??\哈嚕", belong_id: null,…},…]
-        return systemMerchantService.getAgents();
-    }
-
-    //http://localhost:8088/api/pg100/simple?with=currency,model(选择账户群组)
-    @GetMapping("/pg100/simple")
-    @ApiOperation(value = "有关群组的一些选项列表查询接口")
-    public List<AgentsByCardGroupVo> getGroup(String with) {
-        //返回的数据类型：{PG100_ID: 1, PG100_name: "DEV-THB", currency: "THB"}
-        //里面牵涉表，system_bank_card_group
-        if ("currency,model".equals(with)){
-            return systemMerchantService.getGroup();
-        }
-        return null;
-    }
-
-    //http://localhost:8088/api/bk100/simple?status=1
-    @ApiOperation(value = "有关银行的一些选项列表查询接口")
-    @GetMapping("/bk100/simple")
-    public List<BrankVo> getBrank(@RequestParam("status") Integer status) {
-        return systemMerchantService.getBranks(status);
-    }
-
 
     //http://localhost:8088/api/sh100?
     // SH100_ID[]=151&SH100_ID[]=150&
@@ -108,7 +77,7 @@ public class SystemMerchantController {
             //其他信息MerchantResp
             return getMerchantResp(merchantData,totals,request,merchantDto);
         }
-        return getNoMerchantResp(request,merchantDto);
+        return GetNoResp.getNoMerchantResp(request,merchantDto.getRp());
 
     }
 
@@ -447,30 +416,6 @@ public class SystemMerchantController {
         totals.setTodayTrFee(todayTrFee);
         totals.setDepositOutstandingBalance(depositOutstandingBalance);
         return totals;
-    }
-
-    private MerchantResp getNoMerchantResp(HttpServletRequest request, MerchantDto merchantDto) {
-        MerchantResp merchantResp = new MerchantResp();
-        merchantResp.setCurrent_page(1);
-        merchantResp.setLast_page(1);
-        merchantResp.setPer_page(merchantDto.getRp()+"");
-        merchantResp.setTotal(0);
-        Totals totals = new Totals();
-        totals.setCurrentBalance(BigDecimal.valueOf(0));
-        totals.setTodayTrFee(BigDecimal.valueOf(0));
-        totals.setHoldBalance(BigDecimal.valueOf(0));
-        totals.setDepositOutstandingBalance(BigDecimal.valueOf(0));
-        totals.setFrozenBalance(BigDecimal.valueOf(0));
-        totals.setAvailableBalance(BigDecimal.valueOf(0));
-        merchantResp.setTotals(totals);
-
-        //获取当前接口的url
-        String url = URLUtils.getCurrentURL(request);
-        merchantResp.setFirst_page_url(url + "?page=1");
-        merchantResp.setLast_page_url(url + "?page=1");
-        merchantResp.setPath(url);
-
-        return merchantResp;
     }
 
 }

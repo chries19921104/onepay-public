@@ -25,22 +25,10 @@ import java.util.List;
 public interface SystemMerchantService extends IService<SystemMerchant> {
 
     /**
-     * 选择账户群组
-     * @return
-     */
-    List<AgentsByCardGroupVo> getGroup();
-
-    /**
      * 选择商户
      * @return
      */
     List<MerchantByAgentByGroupVo> getMerchant();
-
-    /**
-     * 选择代理
-     * @return
-     */
-    List<AgentsVo> getAgents();
 
     /**
      * 商户条件查询返回data信息
@@ -48,13 +36,6 @@ public interface SystemMerchantService extends IService<SystemMerchant> {
      * @return
      */
     Page<MerchantDataDto> selectData(MerchantDto merchantDto);
-
-    /**
-     * 银行信息
-     * @param status
-     * @return
-     */
-    List<BrankVo> getBranks(Integer status);
 
     /**
      * 新增商户信息
@@ -74,12 +55,6 @@ public interface SystemMerchantService extends IService<SystemMerchant> {
      * @param merchant
      */
     void updateStatus(MerchantByBrandVo merchant);
-
-    /**
-     * 选择商户代理
-     * @return
-     */
-    List<MerchantByAgentByGroupVo> getMerchantByAgent();
 
     //商户资讯-白名单-查询接口
     Page<SystemMerchantWhiteList> getMerchantByWhite(MerchantByWhiteDto merchantByWhiteDto);
