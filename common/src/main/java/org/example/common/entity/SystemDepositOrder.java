@@ -1,4 +1,5 @@
 package org.example.common.entity;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.annotations.ApiModel;
@@ -60,12 +61,12 @@ public class SystemDepositOrder implements Serializable {
     /**
     * 银行卡ID (to)
     */
-    private Integer toCardNumber;
+    private Long bankCardId;
 
     /**
     * 第三方串接ID
     */
-    private Integer tpi100Id;
+    private Long tpi100Id;
 
     /**
     * 交易模式 1.Bank网银 2.QR Code二维码 3.Crypto加密
@@ -225,6 +226,7 @@ public class SystemDepositOrder implements Serializable {
     /**
     * OTP发起时间
     */
+    @TableField("receivedOTPtime")
     private LocalDateTime receivedOTPtime;
 
     /**
@@ -263,7 +265,7 @@ public class SystemDepositOrder implements Serializable {
     private String updater;
 
     /**
-    * 更新时间
+    * 创建时间
     */
     private LocalDateTime createdAt;
 

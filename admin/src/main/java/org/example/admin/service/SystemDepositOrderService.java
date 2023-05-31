@@ -3,10 +3,14 @@ package org.example.admin.service;
 import com.baomidou.mybatisplus.extension.service.IService;
 import org.apache.ibatis.annotations.Param;
 import org.example.common.base.CommResp;
+import org.example.common.base.MerchantResp;
 import org.example.common.dto.DashboardDto;
+import org.example.common.dto.SystemDepositOrderDto;
 import org.example.common.entity.SystemDepositOrder;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.Map;
 
@@ -22,7 +26,12 @@ import java.util.Map;
 public interface SystemDepositOrderService extends IService<SystemDepositOrder> {
     CommResp selectTxnModeByRegion(DashboardDto dashboardDto);
 
-   CommResp infoText();
+    CommResp infoText();
 
-
+    /**
+     * 通过条件搜索交易记录
+     * @param systemDepositOrderDto
+     * @return
+     */
+    MerchantResp searchByCondition(SystemDepositOrderDto systemDepositOrderDto, HttpServletRequest request);
 }

@@ -17,3 +17,6 @@ knife4j:
   enable: true
 token:
   key: 8848
+mybatis-plus:
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
