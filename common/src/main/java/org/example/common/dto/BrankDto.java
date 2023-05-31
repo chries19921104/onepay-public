@@ -17,4 +17,10 @@ public class BrankDto {
 
     @JsonProperty("txn_type")
     private Integer txnType;
+
+    private String currency;
+
+    private Integer rp;
+
+    private Integer page;
 }

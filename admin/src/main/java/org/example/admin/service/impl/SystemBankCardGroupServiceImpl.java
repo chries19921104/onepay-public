@@ -210,7 +210,8 @@ public class SystemBankCardGroupServiceImpl extends ServiceImpl<SystemBankCardGr
     public Map<String, Boolean> deleteOrAddMerchant(BankCardGroupDto bankCardGroupDto) {
         //先通过groupid查询出商户id的集合
         List<SystemMerchant> systemMerchants = systemMerchantMapper.selectList(new LambdaQueryWrapper<SystemMerchant>()
-                .eq(SystemMerchant::getCardGroupId, bankCardGroupDto.getGroupId()));
+                .eq(SystemMerchant::getCardGroupId, bankCardGroupDto.getGroupId())
+                .eq(SystemMerchant::getStatus,1));
         //得到商户的ids
         List<Long> merchantIds = systemMerchants.stream().map(SystemMerchant::getMerchantId).collect(Collectors.toList());
         //判断ids的长度与传来的ids，如果比传来的ids长则为删除，反之为新增
@@ -242,7 +243,7 @@ public class SystemBankCardGroupServiceImpl extends ServiceImpl<SystemBankCardGr
         }
     }
 
-    //银行账户管理-账户群组-详情-充值账户
+    //银行账户管理-账户群组-详情-账户
     @Override
     public Map<String, List<BankCardAllVo>> getRecharge(SystemBankCardDto bankCardDto) {
         //通过状态和群组id来查询brankCard表，返回信息
@@ -266,7 +267,8 @@ public class SystemBankCardGroupServiceImpl extends ServiceImpl<SystemBankCardGr
         //通过groupid和type来查询原有的cardid
         List<SystemBankCard> systemBankCards = systemBankCardMapper.selectList(new LambdaQueryWrapper<SystemBankCard>()
                 .eq(SystemBankCard::getCardGroupId, bankCardDto.getCardGroupId())
-                .eq(SystemBankCard::getType, bankCardDto.getType()));
+                .eq(SystemBankCard::getType, bankCardDto.getType())
+                .eq(SystemBankCard::getStatus,1));
         //获取cardids
         List<Long> cardIds = systemBankCards.stream().map(SystemBankCard::getCardId).collect(Collectors.toList());
         //判断ids比传来的ids如果多的话，则为删除，反之为新增
@@ -276,7 +278,6 @@ public class SystemBankCardGroupServiceImpl extends ServiceImpl<SystemBankCardGr
                     .collect(Collectors.toList());
             SystemBankCard systemBankCard = new SystemBankCard();
             systemBankCard.setCardId(collect.get(0));
-            systemBankCard.setCardGroupId(null);
             systemBankCard.setStatus(0);
             systemBankCardMapper.updateById(systemBankCard);
             Map<String ,Boolean> map = new HashMap<>();
@@ -286,7 +287,7 @@ public class SystemBankCardGroupServiceImpl extends ServiceImpl<SystemBankCardGr
             SystemBankCard systemBankCard = new SystemBankCard();
             systemBankCard.setCardId(bankCardDto.getCardId().get(bankCardDto.getCardId().size()-1));
             systemBankCard.setCardGroupId(bankCardDto.getCardGroupId());
-            systemBankCard.setType(1);
+            systemBankCard.setStatus(1);
             systemBankCardMapper.updateById(systemBankCard);
             Map<String ,Boolean> map = new HashMap<>();
             map.put("success",true);

@@ -1,15 +1,19 @@
 package org.example.admin.controller;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.example.admin.conf.interceptor.NoAuthorization;
 import org.example.admin.service.AdminsService;
 import org.example.common.base.CommResp;
 import org.example.common.dto.AdminsDTO;
 import org.example.common.entity.Admins;
+import org.example.common.vo.AdminsVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 
 
 /**
@@ -33,17 +37,19 @@ public class AdminsController {
 
     @ApiOperation(value ="登录")
     @PostMapping("/login")
-    public CommResp loginAuth(@RequestParam("username") String username,@RequestParam("password") String password) {
+    public CommResp loginAuth(@RequestBody AdminsDTO adminsDTO) {
         Admins admins=new Admins();
-        admins.setUsername(username);
-        admins.setPassword(password);
+        admins.setUsername(adminsDTO.getUsername());
+        admins.setPassword(adminsDTO.getPassword());
         return adminsService.login(admins);
     }
+
     @ApiOperation(value ="注册")
     @PostMapping("/api/admin")
     public CommResp register(@RequestBody AdminsDTO adminsDTO) {
         return adminsService.register(adminsDTO);
     }
+
     @ApiOperation(value ="修改")
     @PostMapping("/api/adminupdate")
     public CommResp update(@RequestBody AdminsDTO adminsDTO) {
@@ -64,6 +70,14 @@ public class AdminsController {
     public CommResp logout(){
         boolean status = adminsService.update().eq("status", 0).update();
         return CommResp.data(status);
+    }
+
+    //http://localhost:8088/api/admin/simple
+    @ApiOperation(value ="查询出所有管理员姓名")
+    @GetMapping("/api/admin/simple")
+    @NoAuthorization
+    public List<AdminsVO> getAdminByName(){
+        return adminsService.getAdminByName();
     }
 
 }

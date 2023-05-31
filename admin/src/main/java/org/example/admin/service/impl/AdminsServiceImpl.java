@@ -6,6 +6,7 @@ import cn.hutool.core.lang.UUID;
 import cn.hutool.crypto.SecureUtil;
 import cn.hutool.jwt.JWTPayload;
 import cn.hutool.jwt.JWTUtil;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.extern.slf4j.Slf4j;
 import org.example.admin.mapper.AdminsMapper;
@@ -22,6 +23,8 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.HashMap;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
 * <p>
@@ -167,6 +170,17 @@ public class AdminsServiceImpl extends ServiceImpl<AdminsMapper, Admins> impleme
             return CommResp.data("删除成功");
         }
         return CommResp.FAIL("权限不够删除");
+    }
+
+    //查询出所有管理员姓名
+    @Override
+    public List<AdminsVO> getAdminByName() {
+        List<Admins> admins = adminsMapper.selectList(null);
+        return admins.stream().map(iter -> {
+            AdminsVO adminsVO = new AdminsVO();
+            BeanUtils.copyProperties(iter,adminsVO);
+            return adminsVO;
+        }).collect(Collectors.toList());
     }
 
     //获取

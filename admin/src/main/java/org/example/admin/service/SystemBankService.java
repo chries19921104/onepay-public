@@ -1,10 +1,14 @@
 package org.example.admin.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
+import org.example.common.base.MerchantResp;
+import org.example.common.dto.BrankDto;
 import org.example.common.entity.SystemBank;
 import org.example.common.vo.BrankVo;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
+import java.util.Map;
 
 /**
 * <p>
@@ -23,4 +27,12 @@ public interface SystemBankService extends IService<SystemBank> {
      */
     List<BrankVo> getBranks(Integer status);
 
+    //银行账户管理-银行-查询
+    MerchantResp getBrankByCurrency(BrankDto brankDto, HttpServletRequest request);
+
+    //银行账户管理-银行-新增
+    Map<String, BrankVo> createBank(BrankVo brankVo);
+
+    //银行账户管理-银行-编辑
+    Map<String, Boolean> updateBank(BrankVo brankVo);
 }

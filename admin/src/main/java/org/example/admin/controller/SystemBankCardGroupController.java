@@ -101,7 +101,6 @@ public class SystemBankCardGroupController {
     //http://localhost:8088/api/pg100/5/bc100/all?PG100_ID=5&type=1
     @GetMapping("/pg100/{id}/bc100/all")
     @ApiOperation(value = "银行账户管理-账户群组-详情-账户")
-    @NoAuthorization
     public Map<String, List<BankCardAllVo>> getRecharge(SystemBankCardDto bankCardDto) {
         return systemBankCardGroupService.getRecharge(bankCardDto);
     }
