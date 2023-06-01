@@ -20,6 +20,9 @@ public class MerchantResp {
      * 第一页网址
      */
     private String first_page_url;
+    /**
+     * 从哪页开始
+     */
     private Integer from;
     /**
      * 最后一页

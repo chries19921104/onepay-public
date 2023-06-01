@@ -1,5 +1,6 @@
 package org.example.admin.service;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 import org.apache.ibatis.annotations.Param;
 import org.example.common.base.CommResp;
@@ -7,6 +8,7 @@ import org.example.common.base.MerchantResp;
 import org.example.common.dto.DashboardDto;
 import org.example.common.dto.SystemDepositOrderDto;
 import org.example.common.entity.SystemDepositOrder;
+import org.example.common.vo.SystemDepositOrderVo;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServlet;
@@ -33,5 +35,5 @@ public interface SystemDepositOrderService extends IService<SystemDepositOrder> 
      * @param systemDepositOrderDto
      * @return
      */
-    MerchantResp searchByCondition(SystemDepositOrderDto systemDepositOrderDto, HttpServletRequest request);
+    Page<SystemDepositOrderVo> searchByCondition(SystemDepositOrderDto systemDepositOrderDto);
 }
