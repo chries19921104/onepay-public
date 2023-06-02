@@ -59,7 +59,7 @@ public class SystemDepositOrderVo {
      * 充值QRpay费率% 系统商户表
      */
     @JsonProperty("SH100_tr_qr_rate")
-    private BigDecimal trQrRate;
+    private BigDecimal  trQrRate;
 
     /**
      * 充值费率% 系统商户表
@@ -137,7 +137,7 @@ public class SystemDepositOrderVo {
     private String fromCardNumber;
 
     /**
-     * TODO isCallbackable 先暂时为空
+     * isCallbackable 手动的时候才会有回调方法为true 即status为4
      */
     @JsonProperty("is_callbackable")
     private boolean isCallbackable;
@@ -299,6 +299,12 @@ public class SystemDepositOrderVo {
     private LocalDateTime updatedAt;
 
     /**
+     * 更新人员
+     */
+    @JsonProperty("updater")
+    private String updater;
+
+    /**
      * vndOtp BC100里的
      */
     @JsonProperty("vnd_otp")
@@ -309,6 +315,9 @@ public class SystemDepositOrderVo {
     private Integer successCount;
     private Integer failCount;
 
+    /**
+     * 交易费
+     */
     private BigDecimal bankFee;
 
 }

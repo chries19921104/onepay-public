@@ -6,6 +6,10 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.poi.xssf.usermodel.XSSFCell;
+import org.apache.poi.xssf.usermodel.XSSFRow;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.example.admin.mapper.SystemDepositOrderMapper;
 import org.example.admin.service.*;
 import org.example.common.base.CommResp;
@@ -15,23 +19,25 @@ import org.example.common.dto.DashboardDto;
 import org.example.common.dto.MerchantDataDto;
 import org.example.common.dto.SystemDepositOrderDto;
 import org.example.common.entity.*;
+import org.example.common.exception.MsgException;
 import org.example.common.utils.URLUtils;
 import org.example.common.vo.*;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.constraints.NotNull;
+import java.io.*;
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
+import java.time.Duration;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -63,7 +69,7 @@ public class SystemDepositOrderServiceImpl extends ServiceImpl<SystemDepositOrde
     private SystemNoticeRecordService systemNoticeRecordService;
 
     @Autowired
-    private SystemBankService systemBankService;
+    private SystemVirtualBankStatementService systemVirtualBankStatementService;
 
     String today = DateUtil.today();
     String tomorrow = DateUtil.formatDate(DateUtil.tomorrow());
@@ -256,6 +262,13 @@ public class SystemDepositOrderServiceImpl extends ServiceImpl<SystemDepositOrde
             String format = localDate.format(formatter);
             String altId = "D-" + format + id;
             vo.setAltId(altId);
+            // 判断是否有回调方法
+            Integer status = item.getStatus();
+            if (status == 4) {
+                vo.setCallbackable(true);
+            } else {
+                vo.setCallbackable(false);
+            }
             // 银行卡id
             Long bankCardId = item.getBankCardId();
             if(bankCardId != null){
@@ -309,6 +322,246 @@ public class SystemDepositOrderServiceImpl extends ServiceImpl<SystemDepositOrde
         return orderVoPage;
     }
 
+    @Override
+    public String download(SystemDepositOrderDto systemDepositOrderDto) throws MsgException {
+        // 获取分页数据
+        Page<SystemDepositOrderVo> orderVoPage = searchByCondition(systemDepositOrderDto);
+        // 查看数据总量是否超过8000
+        if (orderVoPage.getTotal() > 8000){
+            throw new MsgException("数据量大于8000无法下载");
+        }
+        // 创建表格
+        XSSFWorkbook workbook = new XSSFWorkbook();
+        // 创建sheet表
+        XSSFSheet sheet = workbook.createSheet();
+        // 创建表头数据
+        ArrayList<String> headList1 = new ArrayList<>();
+        headList1.add("Id");
+        headList1.add("From");
+        headList1.add("To");
+        headList1.add("Order Amount");
+        headList1.add("Requested Amount");
+        headList1.add("Received Amount");
+        headList1.add("Loss Amount");
+        headList1.add("Fee");
+        headList1.add("Collect Type\n" +
+                "OTP Method");
+        headList1.add("Info");
+        headList1.add("Status");
+        headList1.add("Step");
+        headList1.add("Created");
+        headList1.add("VBS");
+        headList1.add("SMS");
+        headList1.add("Updated");
+        headList1.add("Nt Status");
+        headList1.add("Message");
+        headList1.add("Account code");
+        headList1.add("Mode");
+        headList1.add("FI Create");
+        headList1.add("FI Complete");
+        headList1.add("Update Man");
+        headList1.add("Auto/Manual");
+        headList1.add("VBS Create");
+        headList1.add("FI create and VBS Create comparison(s)");
+        headList1.add("FI create and FI Complete comparison(s) ");
+
+        //创建表头，第一行
+        createSheetRow(sheet, headList1, 0);
+
+        // 创建表头数据
+        ArrayList<String> headList2 = new ArrayList<>();
+        headList2.add("id");
+        headList2.add("From");
+        headList2.add("To");
+        headList2.add("订单金额");
+        headList2.add("请求金额");
+        headList2.add("到账金额");
+        headList2.add("QR充值损失");
+        headList2.add("交易费");
+        headList2.add("收款方式\n" +
+                "OTP Method");
+        headList2.add("资讯");
+        headList2.add("状态");
+        headList2.add("步骤");
+        headList2.add("创建时间");
+        headList2.add("VBS");
+        headList2.add("SMS");
+        headList2.add("更新时间");
+        headList2.add("通知状态");
+        headList2.add("信息");
+        headList2.add("银行代号");
+        headList2.add("交易模式");
+        headList2.add("FI 创建时间");
+        headList2.add("FI 上分时间");
+        headList2.add("更新人员");
+        headList2.add("自动/人工");
+        headList2.add("VBS 创建时间");
+        headList2.add("交易单和VBS时间差(秒)");
+        headList2.add("交易单和上分时间差(秒)");
+
+        //创建表头，第二行
+        createSheetRow(sheet, headList2, 1);
+
+        // 获取查询到的数据
+        List<SystemDepositOrderVo> records = orderVoPage.getRecords();
+        // 遍历添加数据到表格中
+        int rowNum = 2;
+        for (SystemDepositOrderVo item : records){
+            ArrayList<String> list = new ArrayList<>();
+            list.add(item.getAltId() == null ? "" : item.getAltId());
+            list.add(item.getFromBank() == null ? "" : item.getFromBank());
+            list.add(item.getAccountCode() == null ? "" : item.getAccountCode());
+            list.add(item.getOrderAmount() == null ? "" : item.getOrderAmount().toString());
+            list.add(item.getRequestAmount() == null ? "" : item.getRequestAmount().toString());
+            list.add(item.getLossAmount() == null ? "" : item.getLossAmount().toString());
+            list.add(item.getTrQrRate() == null ? "" : item.getTrQrRate().toString());
+            list.add(item.getBankFee() == null ? "" : item.getBankFee().toString());
+            switch (item.getTxnMode()){
+                case 1:
+                    list.add("银行");
+                    break;
+                case 2:
+                    list.add("QR");
+                    break;
+                case 3:
+                    list.add("Crypto");
+                    break;
+                default:
+                    list.add("");
+            }
+            list.add(item.getCode() + "\n" + (item.getNote() == null ? "" : item.getNote()) + "\n" + item.getReference());
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM-dd-yyyy\nhh:mm:ss ");
+            if (item.getVbId() == null && item.getSmId() == null){
+                list.add("等待中");
+            }else if (item.getVbId() != null){
+                list.add("成功" + "\n" + "VBS" + (item.getVbPairingTime().format(formatter)));
+            }else if (item.getSmId() != null) {
+                list.add("成功" + "\n" + "SMS" + (item.getSmPairingTime().format(formatter)));
+            }else {
+                list.add("");
+            }
+            list.add(item.getStep() == null ? "" : item.getStep());
+            list.add(item.getCreatedAt() == null ? "" : item.getCreatedAt().format(formatter));
+            list.add(item.getVbPairingTime() == null ? "" : item.getVbPairingTime().format(formatter) + "\n" + item.getVbId());
+            list.add(item.getSmPairingTime() == null ? "" : item.getSmPairingTime().format(formatter) + "\n" + item.getSmId());
+            list.add(item.getUpdatedAt() == null ? "" : item.getUpdatedAt().format(formatter));
+            // 通知状态 存的数字 如何判断是否成功
+            /**
+             *  const STATUS_MN_PENDING = 31;           //等待中
+             *  const STATUS_MN_SUCCESS = 33;           //成功
+             *  const STATUS_MN_NOTRECEIVE_VERIFY = 34; //未到账审核
+             *  const STATUS_MN_FAILED = 35;            //失败
+             *  const STATUS_MN_NOT_RECEIVED = 36;      //未到账
+             */
+            int action = item.getAction();
+            switch (action){
+                case 31:
+                    list.add("等待中");
+                    break;
+                case 33:
+                    list.add("成功" + "\n" + item.getCompletedAt().format(formatter));
+                    break;
+                case 34:
+                    list.add("未到账审核");
+                    break;
+                case 35:
+                    list.add("失败");
+                    break;
+                case 36:
+                    list.add("未到账");
+                    break;
+                default:
+                    list.add("");
+            }
+            list.add(item.getMessage() == null ? "" : item.getMessage());
+            list.add(item.getAccountCode() == null ? "" : item.getAccountCode());
+            // 交易模式
+            switch (item.getTxnMode()){
+                case 1:
+                    list.add("银行");
+                    break;
+                case 2:
+                    list.add("QR");
+                    break;
+                case 3:
+                    list.add("Crypto");
+                    break;
+                default:
+                    list.add("");
+            }
+            // FI 创建时间
+            list.add(item.getCreatedAt() == null ? "" : item.getCreatedAt().format(formatter));
+            // FI 完成时间
+            list.add(item.getCompletedAt() == null ? "" : item.getCompletedAt().format(formatter));
+            // 更新人员
+            list.add(item.getUpdater() == null ? "" : item.getUpdater());
+            // 自动/人工 Status
+            int status = item.getStatus();
+            if (status == 4){
+                list.add("手动");
+            }else {
+                list.add("自动");
+            }
+            // 获取vbsid
+            Long vbId = item.getVbId();
+            if (vbId != null){
+                // 查询vbs创建时间
+                SystemVirtualBankStatement bankStatement = systemVirtualBankStatementService.getById(vbId);
+                if (bankStatement != null){
+                    list.add(bankStatement.getCreatedAt() == null ? "" : bankStatement.getCreatedAt().format(formatter));
+                    // 交易单和VBS时间差(秒) 使用VBS时间 - 交易单时间
+                    Long createSeconds = Duration.between(item.getCreatedAt(), bankStatement.getCreatedAt()).getSeconds();
+                    list.add(createSeconds.toString());
+                }else {
+                    list.add("");
+                    list.add("");
+                }
+            }else {
+                list.add("");
+            }
+            // 交易单和上分时间差(秒) 使用交易单完成时间 - 交易单创建时间
+            if (item.getCreatedAt() != null && item.getCompletedAt() != null){
+                Long completeSeconds = Duration.between(item.getCreatedAt(), item.getCompletedAt()).getSeconds();
+                list.add(completeSeconds.toString());
+            }else {
+                list.add("");
+            }
+            createSheetRow(sheet, list, rowNum);
+            rowNum++;
+        }
+        File file = null;
+        try {
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM-dd-yyyy");
+            String format = LocalDate.now().format(formatter);
+            file = File.createTempFile(format +"-FI-", ".xlsx");
+        } catch (IOException e) {
+            log.error("创建临时文件失败，错误信息{}", e.getMessage());
+            throw new MsgException("创建临时文件失败");
+        }
+        try(FileOutputStream fos = new FileOutputStream(file)) {
+            workbook.write(fos);
+        } catch (Exception e) {
+            log.error("保存文件到本地失败，错误信息{}", e.getMessage());
+            throw new MsgException("保存文件到本地失败");
+        }
+        // 文件名
+        String fileName = file.getName();
+        return fileName;
+    }
+
+    /**
+     * 创建sheet表的一行数据
+     * @param sheet sheet表
+     * @param list 数据
+     * @param rowNum 创建的行数
+     */
+    private void createSheetRow(XSSFSheet sheet, ArrayList<String> list, int rowNum) {
+        XSSFRow row = sheet.createRow(rowNum);
+        for (int i = 0; i < list.size(); i++) {
+            XSSFCell cell = row.createCell(i);
+            cell.setCellValue(list.get(i));
+        }
+    }
 
     //今日,昨日成功数据
     public void todaySuccess(String currency, String cardId, String merchantId) {

@@ -8,6 +8,7 @@ import org.example.common.base.MerchantResp;
 import org.example.common.dto.DashboardDto;
 import org.example.common.dto.SystemDepositOrderDto;
 import org.example.common.entity.SystemDepositOrder;
+import org.example.common.exception.MsgException;
 import org.example.common.vo.SystemDepositOrderVo;
 import org.springframework.stereotype.Service;
 
@@ -36,4 +37,13 @@ public interface SystemDepositOrderService extends IService<SystemDepositOrder> 
      * @return
      */
     Page<SystemDepositOrderVo> searchByCondition(SystemDepositOrderDto systemDepositOrderDto);
+
+    /**
+     * 保存数据为xls格式到服务器上
+     * @param systemDepositOrderDto
+     * @return
+     * @throws MsgException
+     */
+    String download(SystemDepositOrderDto systemDepositOrderDto) throws MsgException;
+
 }
