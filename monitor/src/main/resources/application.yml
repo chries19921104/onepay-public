@@ -1,0 +1,13 @@
+server:
+  port: 9000
+
+
+spring:
+  application:
+    ## 注册服务名
+    name: monitor
+
+management:
+  endpoint:
+    health:
+      show-details: always
