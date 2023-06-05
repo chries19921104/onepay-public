@@ -25,7 +25,6 @@ public class WebErrorController implements ErrorController {
     public CommResp handleError(HttpServletRequest request, HttpServletResponse response) {
         int code = response.getStatus();
         String contextPath = request.getRequestURI();
-        log.info(contextPath);
         return CommResp.FAIL("error > " + code);
     }
 
