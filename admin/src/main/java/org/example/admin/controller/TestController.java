@@ -4,6 +4,7 @@ import cn.hutool.json.JSONUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 
+import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.AuthenticationToken;
 import org.apache.shiro.authc.UsernamePasswordToken;
@@ -14,6 +15,7 @@ import org.example.common.base.CommResp;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+@Slf4j
 @RestController
 @Api("测试")
 public class TestController {
@@ -37,6 +39,7 @@ public class TestController {
     @ApiOperation("Test3请求")
     public String  test3(){
 //        int i = 1 / 0;
+        log.info("test3");
         return "test3";
     }
 

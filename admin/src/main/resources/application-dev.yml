@@ -13,10 +13,36 @@ spring:
     database: 1
   mvc:
     throw-exception-if-no-handler-found=true:
+
+  boot:
+    admin:
+      client:
+        url: http://localhost:9000
+        instance:
+          prefer-ip: true
+  application:
+    name: admin
+
 knife4j:
   enable: true
 token:
   key: 8848
+
+
+
+
+#  endpoints config
+management:
+  endpoint:
+    health:
+      show-details: always
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+logging:
+  file:
+    name: client.log
 mybatis-plus:
   configuration:
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
