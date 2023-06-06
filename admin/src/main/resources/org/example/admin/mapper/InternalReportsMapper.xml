@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.example.admin.mapper.InternalReportsMapper">
+
+    <select id="getBankAccountList" resultType="org.example.common.vo.BankAccountListVo">
+        select A.command_id as command_id, A.BC100_ID, A.PG100_ID, A.status, A.account_code, A.name, A.mobile_name, A.sim, A.sim_opt, A.sim_credit_expired, A.currency, A.updated_at, A.VPN100_ID, A.mode, A.vnd_otp, A.vnd_payment_method, A.message, A.withdraw_pin, A.type as BC100_type, C.code as BC100_bank_code, B.total_day_credit as today_DP, B.total_day_debit as today_Payout, A.max_balance, B.current_balance as balance, B.current_balance_xy as balance_xy, D.PG100_name as PG100_name, A.account_code as From_Account, CONCAT_WS('_', C.name, RIGHT(A.number,5)) as Account_Remark, A.daily_limit as Daily_Transfer_Limit, A.daily_limit-B.day_flow_out as Daily_Remaining_From_Limit, A.daily_limit-B.day_flow_in as Daily_Remaining_To_Limit, A.month_limit as Monthly_Transfer_Limit, A.month_limit-B.month_current_success_out as Monthly_Remaining_From_Limit, A.month_limit-B.month_current_success_in as Monthly_Remaining_To_Limit, C.day_treshold as Transfer_Number_of_Times, (A.month_treshold-B.month_current_success_out-B.month_hold_success_out-B.month_current_success_in-B.month_hold_success_in) as Remaining_Number_of_Times, C.day_treshold as D_Transfer_Number_of_Times, C.TR_max as Internal_Max, C.TR_min as Internal_Min, E.name as vpn_name, A.step_history as step, cast((B.current_balance/A.max_balance)*100 as UNSIGNED) as max_balance_ratio from
+            BC100 as A left join BC110 as B on A.BC100_ID = B.BC110_ID left join BK100 as C on A.BK100_ID = C.BK100_ID left join PG100 as D on A.BC100_ID = D.PG100_ID left join VPN100 E on A.VPN100_ID = E.VPN100_ID;
+    </select>
+
+</mapper>
