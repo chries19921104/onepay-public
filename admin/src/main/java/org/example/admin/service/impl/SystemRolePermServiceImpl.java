@@ -9,7 +9,7 @@ import org.example.admin.mapper.SystemRolesDao;
 import org.example.admin.service.SystemRolePermService;
 import org.example.admin.vo.RolePermVo;
 import org.example.common.base.CommResp;
-import org.example.common.dto.RolePermDto;
+import org.example.admin.dto.RolePermDto;
 import org.example.common.entity.SystemAdminRolePerms;
 import org.example.common.entity.SystemAdminRoles;
 import org.springframework.beans.BeanUtils;

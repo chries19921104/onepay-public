@@ -3,7 +3,7 @@ package org.example.merchant.dto;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
-import org.example.common.dto.PageDTO;
+import org.example.admin.dto.PageDTO;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.util.Date;

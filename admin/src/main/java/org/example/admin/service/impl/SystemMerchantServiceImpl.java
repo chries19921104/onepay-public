@@ -1,22 +1,19 @@
 package org.example.admin.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 
 import lombok.extern.slf4j.Slf4j;
 import org.example.admin.mapper.*;
 import org.example.admin.service.SystemMerchantService;
-import org.example.common.dto.MerchantDataDto;
-import org.example.common.dto.*;
+import org.example.admin.vo.MerchantDataVo;
+import org.example.admin.dto.*;
 import org.example.common.entity.*;
 import org.example.common.utils.BaseContext;
 import org.example.common.utils.RandomStringGenerator;
-import org.example.common.vo.*;
+import org.example.admin.vo.*;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -58,7 +55,7 @@ public class SystemMerchantServiceImpl extends ServiceImpl<SystemMerchantMapper,
     private SystemMerchantSupportBankMapper systemMerchantSupportBankMapper;
 
     @Autowired
-    private BaseMapper<MerchantDataDto> MerchantDataMapper;
+    private BaseMapper<MerchantDataVo> MerchantDataMapper;
 
     @Autowired
     private SystemBankMapper systemBankMapper;
@@ -100,7 +97,7 @@ public class SystemMerchantServiceImpl extends ServiceImpl<SystemMerchantMapper,
      * @return
      */
     @Override
-    public Page<MerchantDataDto> selectData(MerchantDto merchantDto) {
+    public Page<MerchantDataVo> selectData(MerchantDto merchantDto) {
         //通过条件查询商户表
         LambdaQueryWrapper<SystemMerchant> lqw = new LambdaQueryWrapper<>();
         if (merchantDto.getMerchantId()!= null && !merchantDto.getMerchantId().isEmpty()){
@@ -122,8 +119,8 @@ public class SystemMerchantServiceImpl extends ServiceImpl<SystemMerchantMapper,
             return null;
         }
         //将结果的部分字段信息拷贝到data结果类中
-        List<MerchantDataDto> collect = systemMerchants.stream().map(iter -> {
-            MerchantDataDto merchantData = new MerchantDataDto();
+        List<MerchantDataVo> collect = systemMerchants.stream().map(iter -> {
+            MerchantDataVo merchantData = new MerchantDataVo();
             BeanUtils.copyProperties(iter, merchantData);
             merchantData.setAgentDisplayId(iter.getAgentId());
             return merchantData;
@@ -131,7 +128,7 @@ public class SystemMerchantServiceImpl extends ServiceImpl<SystemMerchantMapper,
 
         //银行条件筛选
         if (merchantDto.getNotAllowedTypes() != null && !merchantDto.getNotAllowedTypes().isEmpty()){
-            for (MerchantDataDto merchantData : collect) {
+            for (MerchantDataVo merchantData : collect) {
                 LambdaQueryWrapper<SystemMerchantSupportBank> branklqw = new LambdaQueryWrapper<>();
                 branklqw.eq(SystemMerchantSupportBank::getMerchantId,merchantData.getMerchantId())
                         .in(SystemMerchantSupportBank::getTxnType,merchantDto.getNotAllowedTypes());
@@ -146,7 +143,7 @@ public class SystemMerchantServiceImpl extends ServiceImpl<SystemMerchantMapper,
         }
 
         //遍历data结果集合
-        for (MerchantDataDto merchantData : collect) {
+        for (MerchantDataVo merchantData : collect) {
             //通过data类中的商户id查询对应的商户钱包信息
             SystemMerchantWallet systemMerchantWallet = systemMerchantWalletMapper.selectOne(
                     new LambdaQueryWrapper<SystemMerchantWallet>()
@@ -181,7 +178,7 @@ public class SystemMerchantServiceImpl extends ServiceImpl<SystemMerchantMapper,
             }
         }
         //分页处理
-        Page<MerchantDataDto> page = new Page<>(merchantDto.getPage(),merchantDto.getRp(),collect.size());
+        Page<MerchantDataVo> page = new Page<>(merchantDto.getPage(),merchantDto.getRp(),collect.size());
         page.setRecords(collect);
         return page;
     }

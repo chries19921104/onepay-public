@@ -4,6 +4,7 @@ import cn.hutool.json.JSONUtil;
 import lombok.Data;
 
 import java.util.HashMap;
+import java.util.Map;
 
 @Data
 public class CommResp {
@@ -61,7 +62,10 @@ public class CommResp {
         return commResp;
     }
 
-
-
+    public static Map<String, Boolean> success(){
+        Map<String , Boolean> map = new HashMap<>();
+        map.put("success",true);
+        return map;
+    }
 
 }

@@ -2,12 +2,11 @@ package org.example.admin.controller;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import org.example.admin.conf.interceptor.NoAuthorization;
 import org.example.admin.service.SystemBankService;
 import org.example.common.base.MerchantResp;
-import org.example.common.dto.BankCardDto;
-import org.example.common.dto.BrankDto;
-import org.example.common.vo.BrankVo;
+import org.example.admin.dto.BrankDto;
+import org.example.admin.dto.ParamDto;
+import org.example.admin.vo.BrankVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -32,10 +31,17 @@ public class SystemBankController {
     private SystemBankService systemBankService;
 
     //http://localhost:8088/api/bk100/simple?status=1
+    //http://localhost:8088/api/bk100/simple?with=currency,status
     @ApiOperation(value = "有关银行的一些选项列表查询接口")
     @GetMapping("/bk100/simple")
-    public List<BrankVo> getBrank(@RequestParam("status") Integer status) {
-        return systemBankService.getBranks(status);
+    public List<BrankVo> getBrank(ParamDto paramDto) {
+        if (paramDto.getStatus() != null && paramDto.getWith().size() == 0){
+            return systemBankService.getBranksByStatus(paramDto.getStatus());
+        }else if (paramDto.getStatus() == null && paramDto.getWith().size() == 2){
+            return systemBankService.getBranksAll();
+        }else {
+            return null;
+        }
     }
 
     //http://localhost:8088/api/bk100?currency=THB&rp=100&page=1
@@ -58,5 +64,8 @@ public class SystemBankController {
     public Map<String , Boolean> updateBank(@RequestBody BrankVo brankVo) {
         return systemBankService.updateBank(brankVo);
     }
+
+
+
 
 }

@@ -1,28 +1,25 @@
 package org.example.admin.controller;
 
-import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.example.admin.conf.interceptor.NoAuthorization;
 import org.example.admin.service.SystemMerchantService;
+import org.example.common.base.CommResp;
 import org.example.common.base.GetNoResp;
-import org.example.common.dto.MerchantDataDto;
+import org.example.admin.vo.MerchantDataVo;
 import org.example.common.base.MerchantResp;
 import org.example.common.base.Totals;
-import org.example.common.dto.*;
+import org.example.admin.dto.*;
 import org.example.common.entity.*;
-import org.example.common.utils.BaseContext;
 import org.example.common.utils.URLUtils;
-import org.example.common.vo.*;
+import org.example.admin.vo.*;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.math.BigDecimal;
-import java.sql.Timestamp;
-import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -70,7 +67,7 @@ public class SystemMerchantController {
     @NoAuthorization
     public MerchantResp selectMerchant(MerchantDto merchantDto, HttpServletRequest request) {
         //data
-        Page<MerchantDataDto> merchantData = systemMerchantService.selectData(merchantDto);
+        Page<MerchantDataVo> merchantData = systemMerchantService.selectData(merchantDto);
         //totals
         if (merchantData != null){
             Totals totals = getTotals(merchantData.getRecords());
@@ -110,11 +107,9 @@ public class SystemMerchantController {
     @PutMapping("sh120/{id}")
     @ApiOperation(value = "商户资讯-银行账户-更新接口")
     public Map<String,Boolean> updateBankCount(@RequestBody MerchantByBrandVo merchant){
-        Map<String,Boolean> map = new HashMap<>();
         //更新状态
         systemMerchantService.updateStatus(merchant);
-        map.put("success",true);
-        return map;
+        return CommResp.success();
     }
 
     //http://localhost:8088/api/sh130?
@@ -151,11 +146,9 @@ public class SystemMerchantController {
     @PutMapping("sh130/{id}")
     @ApiOperation(value = "商户资讯-白名单-更新接口")
     public Map<String,Boolean> updateWhite(@RequestBody MerchantByWhiteVo merchantByWhiteVo){
-        Map<String,Boolean> map = new HashMap<>();
         //更新状态
         systemMerchantService.updateWhite(merchantByWhiteVo);
-        map.put("success",true);
-        return map;
+        return CommResp.success();
     }
 
 
@@ -204,9 +197,7 @@ public class SystemMerchantController {
     @ApiOperation(value = "商户列表-详情-商户资讯-重置2FA接口")
     public Map<String,Boolean> recharge2FA(@PathVariable("id") Long id) {
         systemMerchantService.recharge2FA(id);
-        Map<String,Boolean> map = new HashMap<>();
-        map.put("data",true);
-        return map;
+        return CommResp.success();
     }
 
     //http://localhost:8088/api/sh100log?
@@ -360,7 +351,7 @@ public class SystemMerchantController {
         return map;
     }
 
-    private MerchantResp getMerchantResp(Page<MerchantDataDto> merchantData, Totals totals, HttpServletRequest request, MerchantDto merchantDto) {
+    private MerchantResp getMerchantResp(Page<MerchantDataVo> merchantData, Totals totals, HttpServletRequest request, MerchantDto merchantDto) {
         MerchantResp merchantResp = new MerchantResp();
         //
         //获取当前接口的url
@@ -390,7 +381,7 @@ public class SystemMerchantController {
         return merchantResp;
     }
 
-    private Totals getTotals(List<MerchantDataDto> merchantData) {
+    private Totals getTotals(List<MerchantDataVo> merchantData) {
         Totals totals = new Totals();
         BigDecimal availableBalance = BigDecimal.ZERO;
         BigDecimal depositOutstandingBalance= BigDecimal.ZERO;
@@ -399,7 +390,7 @@ public class SystemMerchantController {
         BigDecimal frozenBalance= BigDecimal.ZERO;
         BigDecimal todayTrFee= BigDecimal.ZERO;
         //遍历merchant
-        for (MerchantDataDto merchantDatum : merchantData) {
+        for (MerchantDataVo merchantDatum : merchantData) {
             //将每个商户的余额相加
             if (merchantDatum.getAvailableBalance() != null){
                 availableBalance = availableBalance.add(merchantDatum.getAvailableBalance());

@@ -1,14 +1,10 @@
 package org.example.admin.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
-import org.apache.ibatis.annotations.Param;
 import org.example.common.base.CommResp;
-import org.example.common.dto.DashboardDto;
+import org.example.admin.dto.DashboardDto;
 import org.example.common.entity.SystemDepositOrder;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
-import java.util.Map;
 
 /**
 * <p>

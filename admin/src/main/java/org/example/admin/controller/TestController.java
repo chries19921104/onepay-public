@@ -9,7 +9,7 @@ import org.apache.shiro.authc.AuthenticationToken;
 import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.authz.annotation.RequiresRoles;
 import org.apache.shiro.subject.Subject;
-import org.example.common.vo.TestVo;
+import org.example.admin.vo.TestVo;
 import org.example.common.base.CommResp;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;

@@ -1,7 +1,7 @@
 package com.admin;
 
 import org.example.admin.mapper.SystemDepositOrderMapper;
-import org.example.common.vo.DepositQRLossCommissionVo;
+import org.example.admin.vo.DepositQRLossCommissionVo;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;

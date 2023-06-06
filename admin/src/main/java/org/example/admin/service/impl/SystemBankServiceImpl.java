@@ -9,12 +9,12 @@ import org.example.admin.mapper.AdminsMapper;
 import org.example.admin.mapper.SystemBankMapper;
 import org.example.admin.service.SystemBankService;
 import org.example.common.base.MerchantResp;
-import org.example.common.dto.BrankDto;
+import org.example.admin.dto.BrankDto;
 import org.example.common.entity.Admins;
 import org.example.common.entity.SystemBank;
 import org.example.common.utils.BaseContext;
 import org.example.common.utils.URLUtils;
-import org.example.common.vo.BrankVo;
+import org.example.admin.vo.BrankVo;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -53,7 +53,7 @@ public class SystemBankServiceImpl extends ServiceImpl<SystemBankMapper, SystemB
      * @return
      */
     @Override
-    public List<BrankVo> getBranks(Integer status) {
+    public List<BrankVo> getBranksByStatus(Integer status) {
         List<SystemBank> systemBanks = systemBankMapper.selectList(new LambdaQueryWrapper<SystemBank>()
                 .eq(SystemBank::getStatus, status));
         //拷贝属性
@@ -133,6 +133,18 @@ public class SystemBankServiceImpl extends ServiceImpl<SystemBankMapper, SystemB
         Map<String,Boolean> map = new HashMap<>();
         map.put("success",true);
         return map;
+    }
+
+    @Override
+    public List<BrankVo> getBranksAll() {
+        List<SystemBank> systemBanks = systemBankMapper.selectList(null);
+        //拷贝属性
+        List<BrankVo> collect = systemBanks.stream().map(iter -> {
+            BrankVo brankVo = new BrankVo();
+            BeanUtils.copyProperties(iter, brankVo);
+            return brankVo;
+        }).collect(Collectors.toList());
+        return collect;
     }
 
 }

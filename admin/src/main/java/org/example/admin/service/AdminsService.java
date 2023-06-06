@@ -1,12 +1,11 @@
 package org.example.admin.service;
 
 
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
-import org.example.common.dto.AdminsDTO;
+import org.example.admin.dto.AdminsDTO;
 import org.example.common.base.CommResp;
 import org.example.common.entity.Admins;
-import org.example.common.vo.AdminsVO;
+import org.example.admin.vo.AdminsVO;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

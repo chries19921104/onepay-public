@@ -2,9 +2,9 @@ package org.example.admin.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import org.example.common.base.MerchantResp;
-import org.example.common.dto.BrankDto;
+import org.example.admin.dto.BrankDto;
 import org.example.common.entity.SystemBank;
-import org.example.common.vo.BrankVo;
+import org.example.admin.vo.BrankVo;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
@@ -25,7 +25,7 @@ public interface SystemBankService extends IService<SystemBank> {
      * @param status
      * @return
      */
-    List<BrankVo> getBranks(Integer status);
+    List<BrankVo> getBranksByStatus(Integer status);
 
     //银行账户管理-银行-查询
     MerchantResp getBrankByCurrency(BrankDto brankDto, HttpServletRequest request);
@@ -35,4 +35,6 @@ public interface SystemBankService extends IService<SystemBank> {
 
     //银行账户管理-银行-编辑
     Map<String, Boolean> updateBank(BrankVo brankVo);
+
+    List<BrankVo> getBranksAll();
 }

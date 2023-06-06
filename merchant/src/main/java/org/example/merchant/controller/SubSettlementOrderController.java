@@ -3,7 +3,7 @@ package org.example.merchant.controller;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.example.common.exception.MsgException;
-import org.example.common.vo.R;
+import org.example.admin.vo.R;
 import org.example.merchant.dto.SubSettlementOrderSearchDTO;
 import org.example.merchant.service.SystemSubSettlementOrderService;
 import org.example.merchant.vo.SubSettlementOrderVO;

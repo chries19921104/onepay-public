@@ -2,7 +2,7 @@ package org.example.admin.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import org.example.common.entity.SystemAgents;
-import org.example.common.vo.AgentsVo;
+import org.example.admin.vo.AgentsVo;
 
 import java.util.List;
 

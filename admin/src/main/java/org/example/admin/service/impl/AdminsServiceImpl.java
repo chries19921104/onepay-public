@@ -6,16 +6,15 @@ import cn.hutool.core.lang.UUID;
 import cn.hutool.crypto.SecureUtil;
 import cn.hutool.jwt.JWTPayload;
 import cn.hutool.jwt.JWTUtil;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.extern.slf4j.Slf4j;
 import org.example.admin.mapper.AdminsMapper;
 import org.example.admin.service.AdminsService;
 import org.example.common.base.CommResp;
-import org.example.common.dto.AdminsDTO;
+import org.example.admin.dto.AdminsDTO;
 import org.example.common.entity.Admins;
 import org.example.common.utils.BaseContext;
-import org.example.common.vo.AdminsVO;
+import org.example.admin.vo.AdminsVO;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -80,6 +79,7 @@ public class AdminsServiceImpl extends ServiceImpl<AdminsMapper, Admins> impleme
         AdminsVO adminsVO=new AdminsVO();
         BeanUtils.copyProperties(one,adminsVO);
         adminsVO.setToken(token);
+
         return CommResp.data(adminsVO);
     }
 

@@ -4,10 +4,9 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.example.common.entity.SystemDepositOrder;
-import org.example.common.vo.*;
+import org.example.admin.vo.*;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  * <p>

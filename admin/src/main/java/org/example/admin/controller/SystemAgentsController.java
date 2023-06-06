@@ -3,7 +3,7 @@ package org.example.admin.controller;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.example.admin.service.SystemAgentsService;
-import org.example.common.vo.AgentsVo;
+import org.example.admin.vo.AgentsVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 

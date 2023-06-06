@@ -5,13 +5,11 @@ import io.swagger.annotations.ApiOperation;
 import org.example.admin.conf.interceptor.NoAuthorization;
 import org.example.admin.service.SystemBankLogService;
 import org.example.common.base.MerchantResp;
-import org.example.common.dto.BankLogDto;
-import org.example.common.vo.BrankVo;
+import org.example.admin.dto.BankLogDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.Map;
 
 
 /**
