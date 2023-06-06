@@ -2,9 +2,9 @@ package org.example.admin.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import org.example.common.base.MerchantResp;
-import org.example.common.dto.BrankDto;
+import org.example.admin.dto.BrankDto;
 import org.example.common.entity.SystemBank;
-import org.example.common.vo.BrankVo;
+import org.example.admin.vo.BrankVo;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;

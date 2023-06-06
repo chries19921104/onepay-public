@@ -4,7 +4,6 @@ import cn.hutool.core.date.DateUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFRow;
@@ -12,30 +11,23 @@ import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.example.admin.mapper.SystemDepositOrderMapper;
 import org.example.admin.service.*;
+import org.example.admin.vo.*;
 import org.example.common.base.CommResp;
-import org.example.common.base.MerchantResp;
-import org.example.common.base.Totals;
-import org.example.common.dto.DashboardDto;
-import org.example.common.dto.MerchantDataDto;
-import org.example.common.dto.SystemDepositOrderDto;
+import org.example.admin.dto.DashboardDto;
+import org.example.admin.dto.SystemDepositOrderDto;
 import org.example.common.entity.*;
 import org.example.common.exception.MsgException;
-import org.example.common.utils.URLUtils;
-import org.example.common.vo.*;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.StringUtils;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.validation.constraints.NotNull;
 import java.io.*;
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.time.Duration;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -257,10 +249,7 @@ public class SystemDepositOrderServiceImpl extends ServiceImpl<SystemDepositOrde
             BeanUtils.copyProperties(item, vo);
             // 主键处理
             Long id = item.getFiId();
-            LocalDate localDate = LocalDate.now();
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("ddMMyy");
-            String format = localDate.format(formatter);
-            String altId = "D-" + format + id;
+            String altId = getAltId(id);
             vo.setAltId(altId);
             // 判断是否有回调方法
             Integer status = item.getStatus();
@@ -320,6 +309,19 @@ public class SystemDepositOrderServiceImpl extends ServiceImpl<SystemDepositOrde
 
 
         return orderVoPage;
+    }
+
+    /**
+     * 拼接主键id的方法
+     * @param id
+     * @return
+     */
+    private String getAltId(Long id) {
+        LocalDate localDate = LocalDate.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("ddMMyy");
+        String format = localDate.format(formatter);
+        String altId = "D-" + format + id;
+        return altId;
     }
 
     @Override

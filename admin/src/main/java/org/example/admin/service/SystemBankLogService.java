@@ -2,7 +2,7 @@ package org.example.admin.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import org.example.common.base.MerchantResp;
-import org.example.common.dto.BankLogDto;
+import org.example.admin.dto.BankLogDto;
 import org.example.common.entity.SystemBankLog;
 
 import javax.servlet.http.HttpServletRequest;

@@ -2,12 +2,10 @@ package org.example.admin.controller;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import org.example.admin.conf.interceptor.NoAuthorization;
 import org.example.admin.service.SystemBankService;
 import org.example.common.base.MerchantResp;
-import org.example.common.dto.BankCardDto;
-import org.example.common.dto.BrankDto;
-import org.example.common.vo.BrankVo;
+import org.example.admin.dto.BrankDto;
+import org.example.admin.vo.BrankVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 

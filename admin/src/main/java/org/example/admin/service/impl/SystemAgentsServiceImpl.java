@@ -7,7 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.example.admin.mapper.SystemAgentsMapper;
 import org.example.admin.service.SystemAgentsService;
 import org.example.common.entity.SystemAgents;
-import org.example.common.vo.AgentsVo;
+import org.example.admin.vo.AgentsVo;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

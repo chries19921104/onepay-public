@@ -3,11 +3,13 @@ package org.example.admin.mapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
+import org.example.admin.vo.DepositQRLossCommissionVo;
+import org.example.admin.vo.SystemDepositOrderCommissionVo;
+import org.example.admin.vo.SystemDepositOrderInfoVo;
+import org.example.admin.vo.SystemDepositOrderVo;
 import org.example.common.entity.SystemDepositOrder;
-import org.example.common.vo.*;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  * <p>

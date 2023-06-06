@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.example.admin.mapper.SystemWithdrawalOrderMapper">
+    
+    <select id="selectWithdrawalOrderVo" resultType="org.example.admin.vo.SystemWithdrawalOrderVo">
+        SELECT
+            swo.fo_id foId,
+            snr.content noticeContent,
+            snr.result noticeResult,
+            snr.updated_at noticeRecordUpdatedAt,
+            sm.merchant_id mechantId,
+            sm.`code` mechantCode,
+            sm.wd_rate sh100WdRate,
+            swo.action action,
+            swo.bank_fee bankFee,
+            swo.checked_at checkedAt,
+            swo.checked_man checkedMan,
+            swo.completed_at completedAt,
+            swo.confirm_accname confirmAccname,
+            swo.confirmed_at confirmedAt,
+            swo.confirmed_man confirmedMan,
+            swo.created_at createdAt,
+            swo.`status` `status`,
+            swo.note note,
+            swo.notify_url notifyUrl,
+            swo.paid_amount paidAmount,
+            swo.pay_bank_fee payBankFee,
+            swo.rate rate,
+            swo.reference reference,
+            swo.request_amount requestAmount,
+            swo.status_description statusDescription,
+            swo.to_bank toBank,
+            swo.to_card_number toCardNumber,
+            swo.to_man toMan,
+            swo.updated_at updatedAt,
+            sb.`code` bankCode,
+            sbc.bank_number bankNumber
+        FROM
+            system_withdrawal_order swo
+            RIGHT JOIN system_sub_withdrawal_order sswo ON swo.fo_id = sswo.fo_id
+            JOIN system_merchant sm ON swo.mechant_id = sm.merchant_id
+            JOIN system_bank_card sbc ON sswo.bank_card_id = sbc.card_id
+            JOIN system_bank sb ON sbc.bank_id = sb.bank_id
+            JOIN system_notice_record snr ON sswo.sub_fo_id = snr.foreign_key
+            AND snr.model_class = 'FO'
+        WHERE swo.currency = #{dto.currency}
+        <if test="dto.pg100Id != null">AND sbc.card_group_id = #{dto.pg100Id}</if>
+        <if test="dto.sh100Ids != null and dto.sh100Ids.size() != 0">
+            AND sm.merchant_id in
+                <foreach collection="dto.sh100Ids" item="sh100Id" separator="," open="(" close=")">
+                    #{sh100Id}
+                </foreach>
+        </if>
+        <if test="dto.bk100Id != null">AND sb.bank_id = #{dto.bk100Id}</if>
+        <if test="dto.statuses != null and dto.statuses.size() != 0">
+            AND swo.`status` in
+            <foreach collection="dto.statuses" item="status" separator="," open="(" close=")">
+                #{status}
+            </foreach>
+        </if>
+        <if test="dto.confirmAccname != null">AND swo.confirm_accname = #{dto.confirmAccname}</if>
+        <if test="dto.on100Status != null">AND snr.result = #{dto.on100Status}</if>
+        <if test="dto.startDate != null and dto.endDate !=null">AND swo.created_at <![CDATA[>=]]> #{dto.startDate} AND swo.created_at <![CDATA[<=]]> #{dto.endDate}</if>
+        <if test="dto.completedStartTime != null and dto.completedEndTime !=null">AND swo.completed_at <![CDATA[>=]]> #{dto.completedStartTime} AND swo.completed_at <![CDATA[<=]]> #{dto.completedEndTime}</if>
+        <if test="dto.updatedStartDate != null and dto.updatedEndDate !=null">AND swo.updated_at <![CDATA[>=]]> #{dto.updatedStartDate} AND swo.updated_at <![CDATA[<=]]> #{dto.updatedEndDate}</if>
+        <if test="dto.from != null">AND sbc.account_code = #{dto.from}</if>
+        <if test="dto.to != null">AND swo.to_card_number = #{dto.to}</if>
+        <if test="altId != null">AND swo.fo_id = #{altId}</if>
+        <if test="subFoAltId != null">AND sswo.sub_fo_id = #{subFoAltId}</if>
+        <if test="dto.reference != null">AND swo.reference = #{dto.reference}</if>
+        <if test="requestAmountMin != null and requestAmountMax != null">AND swo.request_amount <![CDATA[>=]]> #{requestAmountMin} AND swo.request_amount <![CDATA[<=]]> #{requestAmountMax}</if>
+        <if test="paidAmountMin != null and paidAmountMax != null">AND swo.paid_amount <![CDATA[>=]]> #{paidAmountMin} AND swo.paid_amount <![CDATA[<=]]> #{paidAmountMax}</if>
+        LIMIT #{page}, #{dto.rp}
+    </select>
+
+    <select id="selectTotal" resultType="java.lang.Integer">
+        SELECT
+            count(*)
+        FROM
+        system_withdrawal_order swo
+        RIGHT JOIN system_sub_withdrawal_order sswo ON swo.fo_id = sswo.fo_id
+        JOIN system_merchant sm ON swo.mechant_id = sm.merchant_id
+        JOIN system_bank_card sbc ON sswo.bank_card_id = sbc.card_id
+        JOIN system_bank sb ON sbc.bank_id = sb.bank_id
+        JOIN system_notice_record snr ON sswo.sub_fo_id = snr.foreign_key
+        AND snr.model_class = 'FO'
+        WHERE swo.currency = #{dto.currency}
+        <if test="dto.pg100Id != null">AND sbc.card_group_id = #{dto.pg100Id}</if>
+        <if test="dto.sh100Ids != null and dto.sh100Ids.size() != 0">
+            AND sm.merchant_id in
+            <foreach collection="dto.sh100Ids" item="sh100Id" separator="," open="(" close=")">
+                #{sh100Id}
+            </foreach>
+        </if>
+        <if test="dto.bk100Id != null">AND sb.bank_id = #{dto.bk100Id}</if>
+        <if test="dto.statuses != null and dto.statuses.size() != 0">
+            AND swo.`status` in
+            <foreach collection="dto.statuses" item="status" separator="," open="(" close=")">
+                #{status}
+            </foreach>
+        </if>
+        <if test="dto.confirmAccname != null">AND swo.confirm_accname = #{dto.confirmAccname}</if>
+        <if test="dto.on100Status != null">AND snr.result = #{dto.on100Status}</if>
+        <if test="dto.startDate != null and dto.endDate !=null">AND swo.created_at <![CDATA[>=]]> #{dto.startDate} AND swo.created_at <![CDATA[<=]]> #{dto.endDate}</if>
+        <if test="dto.completedStartTime != null and dto.completedEndTime !=null">AND swo.completed_at <![CDATA[>=]]> #{dto.completedStartTime} AND swo.completed_at <![CDATA[<=]]> #{dto.completedEndTime}</if>
+        <if test="dto.updatedStartDate != null and dto.updatedEndDate !=null">AND swo.updated_at <![CDATA[>=]]> #{dto.updatedStartDate} AND swo.updated_at <![CDATA[<=]]> #{dto.updatedEndDate}</if>
+        <if test="dto.from != null">AND sbc.account_code = #{dto.from}</if>
+        <if test="dto.to != null">AND swo.to_card_number = #{dto.to}</if>
+        <if test="altId != null">AND swo.fo_id = #{altId}</if>
+        <if test="subFoAltId != null">AND sswo.sub_fo_id = #{subFoAltId}</if>
+        <if test="dto.reference != null">AND swo.reference = #{dto.reference}</if>
+        <if test="requestAmountMin != null and requestAmountMax != null">AND swo.request_amount <![CDATA[>=]]> #{requestAmountMin} AND swo.request_amount <![CDATA[<=]]> #{requestAmountMax}</if>
+        <if test="paidAmountMin != null and paidAmountMax != null">AND swo.paid_amount <![CDATA[>=]]> #{paidAmountMin} AND swo.paid_amount <![CDATA[<=]]> #{paidAmountMax}</if>
+        LIMIT #{page}, #{dto.rp}
+    </select>
+
+</mapper>

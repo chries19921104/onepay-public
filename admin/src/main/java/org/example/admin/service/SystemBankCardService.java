@@ -1,10 +1,10 @@
 package org.example.admin.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
-import org.example.common.dto.BankCardDto;
+import org.example.admin.dto.BankCardDto;
 import org.example.common.entity.SystemBankCard;
-import org.example.common.vo.BankCardAllVo;
-import org.example.common.vo.BankCardVo;
+import org.example.admin.vo.BankCardAllVo;
+import org.example.admin.vo.BankCardVo;
 
 import java.util.List;
 import java.util.Map;
