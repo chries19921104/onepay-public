@@ -178,7 +178,9 @@ public class SystemBankCardServiceImpl extends ServiceImpl<SystemBankCardMapper,
             bankCardAllVo.setLoss(iter.getStatus() == 5 ? systemBankCardBill.getCurrentBalance() : BigDecimal.valueOf(0.0));
 
 
-        })
+                    return null;
+                }
+        );
 
         return null;
     }

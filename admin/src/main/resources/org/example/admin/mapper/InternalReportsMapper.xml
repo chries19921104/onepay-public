@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.example.admin.mapper.InternalReportsMapper">
+    <resultMap id="internalReportsResultMap" type="org.example.common.vo.BankAccountListVo">
+        <result column="command_id" property="command_id"></result>
+        <result column="BC100_ID" property="BC100_ID"></result>
+        <result column="PG100_ID" property="PG100_ID"></result>
+        <result column="status" property="status"></result>
+        <result column="account_code" property="account_code"></result>
+        <result column="name" property="name"></result>
+        <result column="mobile_name" property="mobile_name"></result>
+        <result column="sim" property="sim"></result>
+        <result column="sim_opt" property="sim_opt"></result>
+        <result column="sim_credit_expired" property="sim_credit_expired"></result>
+        <result column="currency" property="currency"></result>
+        <result column="updated_at" property="updated_at"></result>
+        <result column="VPN100_ID" property="VPN100_ID"></result>
+        <result column="mode" property="mode"></result>
+        <result column="vnd_otp" property="vnd_otp"></result>
+        <result column="vnd_payment_method" property="vnd_payment_method"></result>
+        <result column="message" property="message"></result>
+        <result column="withdraw_pin" property="withdraw_pin"></result>
+        <result column="BC100_type" property="BC100_type"></result>
+        <result column="BC100_bank_code" property="BC100_bank_code"></result>
+        <result column="today_DP" property="today_DP"></result>
+        <result column="today_Payout" property="today_Payout"></result>
+        <result column="max_balance" property="max_balance"></result>
+        <result column="balance" property="balance"></result>
+        <result column="balance_xy" property="balance_xy"></result>
+        <result column="PG100_name" property="PG100_name"></result>
+        <result column="From_Account" property="from_Account"></result>
+        <result column="Account_Remark" property="account_Remark"></result>
+        <result column="Daily_Transfer_Limit" property="daily_Transfer_Limit"></result>
+        <result column="Daily_Remaining_From_Limit" property="daily_Remaining_From_Limit"></result>
+        <result column="Daily_Remaining_To_Limit" property="daily_Remaining_To_Limit"></result>
+        <result column="Monthly_Transfer_Limit" property="monthly_Transfer_Limit"></result>
+        <result column="Monthly_Remaining_From_Limit" property="monthly_Remaining_From_Limit"></result>
+        <result column="Monthly_Remaining_To_Limit" property="monthly_Remaining_To_Limit"></result>
+        <result column="Transfer_Number_of_Times" property="transfer_Number_of_Times"></result>
+        <result column="Remaining_Number_of_Times" property="remaining_Number_of_Times"></result>
+        <result column="D_Transfer_Number_of_Times" property="d_Transfer_Number_of_Times"></result>
+        <result column="Internal_Max" property="internal_Max"></result>
+        <result column="Internal_Min" property="internal_Min"></result>
+        <result column="vpn_name" property="vpn_name"></result>
+        <result column="step" property="step"></result>
+        <result column="max_balance_ratio" property="max_balance_ratio"></result>
+        <result column="statement" property="statement"></result>
+    </resultMap>
+
+    <select id="getBankAccountList" resultMap="internalReportsResultMap">
+        select A.command_id as command_id, A.card_id as BC100_ID, A.card_group_id as PG100_ID, A.status, A.account_code, A.account as name, A.mobile_name,
+               A.phone_number as sim, A.sim_opt, A.sim_credit_expired, A.currency, A.updated_at, A.pre_server_id as VPN100_ID, A.payment_mode as mode,
+               A.vnd_otp, A.vnd_payment_method, A.message, A.withdraw_pin, A.type as BC100_type, C.code as BC100_bank_code, B.total_day_credit as today_DP,
+               B.total_day_debit as today_Payout, A.daily_collection_limit as max_balance, B.current_balance as balance, B.current_balance_xy as balance_xy,
+               D.group_name as PG100_name, A.account_code as From_Account, CONCAT_WS('_', C.name, RIGHT(A.bank_number,5)) as Account_Remark,
+               A.daily_disbursement_limit as Daily_Transfer_Limit, A.daily_disbursement_limit-B.day_flow_out as Daily_Remaining_From_Limit,
+               A.daily_disbursement_limit-B.day_flow_in as Daily_Remaining_To_Limit, A.month_disbursement_limit as Monthly_Transfer_Limit,
+               A.month_disbursement_limit-B.month_current_success_out as Monthly_Remaining_From_Limit, A.month_disbursement_limit-B.month_current_success_in as Monthly_Remaining_To_Limit,
+               C.day_treshold as Transfer_Number_of_Times, (A.month_treshold-B.month_current_success_out-B.month_hold_success_out-B.month_current_success_in-B.month_hold_success_in) as Remaining_Number_of_Times,
+               C.day_treshold as D_Transfer_Number_of_Times, C.tr_max as Internal_Max, C.tr_min as Internal_Min, E.name as vpn_name, A.step_history as step, cast((B.current_balance/A.daily_collection_limit)*100 as UNSIGNED) as max_balance_ratio,
+               A.statement from
+            system_bank_card as A left join system_bank_card_bill as B on A.card_id = B.bank_card_id left join system_bank as C on A.bank_id = C.bank_id left join system_bank_card_group as D on A.card_group_id = D.group_id left join system_server_list E on A.server_id = E.server_id
+            where A.currency = #{currency}
+        <if test="PG100_ID != null">
+            and A.card_group_id in
+            <foreach collection="PG100_ID" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="BK100_ID != null">
+            and A.bank_id = #{BK100_ID}
+        </if>
+        <if test="type != null">
+            and A.type in
+            <foreach collection="type" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="status != null">
+            and A.status in
+            <foreach collection="status" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="mode != null">
+            and A.payment_mode in
+            <foreach collection="mode" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="account_code != null">
+            and A.account_code = #{account_code}
+        </if>
+        <if test="BC100_name != null">
+            and A.account = #{BC100_name}
+        </if>;
+    </select>
+
+</mapper>
