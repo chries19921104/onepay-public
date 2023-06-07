@@ -31,7 +31,7 @@ public class agentController {
 
     @GetMapping("/plans/summary")
     public CommResp planSummary(SummaryDto summaryDto) {
-
+            System.out.println("111");
         LambdaQueryWrapper<SystemMerchant> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(!StringUtils.isEmpty(summaryDto.getCurrency()), SystemMerchant::getCurrency, summaryDto.getCurrency());
         wrapper.in(SystemMerchant::getMerchantId, summaryDto.getSH100ID());
