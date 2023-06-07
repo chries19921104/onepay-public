@@ -7,6 +7,8 @@ import org.example.common.entity.SystemBankCard;
 import org.example.admin.vo.BankCardAllVo;
 import org.example.admin.vo.BankCardVo;
 
+import javax.servlet.http.HttpServletRequest;
+import java.net.HttpCookie;
 import java.util.List;
 import java.util.Map;
 
@@ -27,5 +29,5 @@ public interface SystemBankCardService extends IService<SystemBankCard> {
     Map<String, List<BankCardAllVo>> getBrankByType(BankCardDto bankCardDto);
 
     //银行账户管理-银行账户-搜索
-    MerchantResp getBrankAccount(BankCardDto bankCardDto);
+    MerchantResp getBrankAccount(BankCardDto bankCardDto, HttpServletRequest request);
 }

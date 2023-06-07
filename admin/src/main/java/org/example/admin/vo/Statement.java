@@ -29,4 +29,10 @@ public class Statement {
 
     @JsonProperty("manual_play")
     private Integer manualPlay;
+
+    @JsonProperty("msg_opencard")
+    private Integer msgOpencard;
+
+    @JsonProperty("is_errurl_opencard")
+    private Integer isErrurlOpencard;
 }

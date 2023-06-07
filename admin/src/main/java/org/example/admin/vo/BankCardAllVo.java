@@ -1,6 +1,7 @@
 package org.example.admin.vo;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import io.swagger.models.auth.In;
 import lombok.Data;
 
 import java.math.BigDecimal;
@@ -85,10 +86,10 @@ public class BankCardAllVo {
     private String accountCode;
 
     @JsonProperty("balance_lower_warning")
-    private Boolean balanceLowerWarning;  //找不到
+    private Boolean balanceLowerWarning;  //1
 
     @JsonProperty("balance_upper_warning")
-    private Boolean balanceUpperWarning;  //找不到
+    private Boolean balanceUpperWarning;  //1
 
     @JsonProperty("beginning_balance")
     private BigDecimal beginningBalance;
@@ -100,7 +101,7 @@ public class BankCardAllVo {
     private String branch;
 
     @JsonProperty("check_account")
-    private Boolean checkAccount;  //找不到
+    private Boolean checkAccount;  //1
 
     @JsonProperty("command_id")
     private String commandId;
@@ -151,7 +152,7 @@ public class BankCardAllVo {
     private BigDecimal maxBalance;  //1
 
     @JsonProperty("max_balance_ratio")
-    private BigDecimal maxBalanceRatio;  //1
+    private Integer maxBalanceRatio;  //1
 
     @JsonProperty("message")
     private String message;
@@ -178,7 +179,7 @@ public class BankCardAllVo {
     private Long monthTreshold;
 
     @JsonProperty("msg_opencard")
-    private String msgOpencard;  //找不到
+    private Integer msgOpencard;  //找不到
 
     @JsonProperty("name")
     private String userName;
@@ -211,7 +212,7 @@ public class BankCardAllVo {
     private String qrPayCode;
 
     @JsonProperty("remaining_balance")
-    private Integer remainingBalance;  //总余额
+    private BigDecimal remainingBalance;  //总余额
 
     @JsonProperty("secure_answer")
     private String secureAnswer;
