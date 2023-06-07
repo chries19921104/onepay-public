@@ -35,6 +35,7 @@ public class InternalReportsController {
     @ApiOperation(value = "银行账户监控列表查询接口")
     @GetMapping("/bankAccountList")
     public CommResp getBankAccountList(HttpServletRequest request) {
+        System.out.println("111");
         //获取 currency
         String currency = request.getParameter("currency");
 
