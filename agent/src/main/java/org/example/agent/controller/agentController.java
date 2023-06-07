@@ -1,0 +1,54 @@
+package org.example.agent.controller;
+
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import org.example.common.base.CommResp;
+import org.example.common.entity.SystemAgents;
+import org.example.common.entity.SystemMerchant;
+import org.example.topagent.dto.SummaryDto;
+import org.example.topagent.mapper.SystemAgentsMapper;
+import org.example.topagent.service.SystemAgentsService;
+import org.example.topagent.service.SystemMerchantService;
+import org.example.topagent.utils.BeanCopyUtils;
+import org.example.topagent.vo.PlanSummaryVo;
+import org.example.topagent.vo.SummaryVo;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.StringUtils;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
+
+@RestController
+@RequestMapping("/api")
+public class agentController {
+    @Autowired
+    private SystemAgentsService agentsService;
+    @Autowired
+    private SystemMerchantService merchantService;
+    @Autowired
+    private SystemAgentsMapper systemAgentsMapper;
+
+    @GetMapping("/plans/summary")
+    public CommResp planSummary(SummaryDto summaryDto) {
+
+        LambdaQueryWrapper<SystemMerchant> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(!StringUtils.isEmpty(summaryDto.getCurrency()), SystemMerchant::getCurrency, summaryDto.getCurrency());
+        wrapper.in(SystemMerchant::getMerchantId, summaryDto.getSH100ID());
+        wrapper.eq(SystemMerchant::getAgentId, summaryDto.getAgentId());
+
+        List<SystemMerchant> merchants = merchantService.list(wrapper);
+        LambdaQueryWrapper<SystemAgents> lambdaQueryWrapper = new LambdaQueryWrapper<>();
+        lambdaQueryWrapper.eq(SystemAgents::getStatus,1);
+        lambdaQueryWrapper.eq(SystemAgents::getAgentId,summaryDto.getAgentId());
+        SystemAgents agents = systemAgentsMapper.selectOne(lambdaQueryWrapper);
+        PlanSummaryVo planSummaryVo = BeanCopyUtils.copyBean(agents, PlanSummaryVo.class);
+
+        PlanSummaryVo planSummary = BeanCopyUtils.copyBean(planSummaryVo, PlanSummaryVo.class);
+        List<SummaryVo> summaryVos = BeanCopyUtils.copyBeanList(merchants, SummaryVo.class);
+        List<SummaryVo> summary = BeanCopyUtils.copyBeanList(summaryVos, SummaryVo.class);
+        planSummary.setPlanSummary(summary);
+        return CommResp.data(planSummary);
+
+    }
+}
