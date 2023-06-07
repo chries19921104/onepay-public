@@ -314,6 +314,8 @@ public class SystemBankCardServiceImpl extends ServiceImpl<SystemBankCardMapper,
             merchantResp.setTo(bankCardAllVo.size());
         }
         merchantResp.setTotal(bankCardAllVo.size());
+        merchantResp.setTotals(totals);
+        merchantResp.setSubtotals(subtotals);
         return merchantResp;
     }
 
