@@ -1,6 +1,9 @@
 package org.example.admin.service;
 
 import org.example.common.base.CommResp;
+import org.example.common.dto.BankAccountListDto;
+
+import java.util.List;
 
 /**
  * @author Txd
@@ -9,5 +12,5 @@ import org.example.common.base.CommResp;
 public interface InternalReportsService {
 
 
-    CommResp getBankAccountList();
+    CommResp getBankAccountList(String currency,List<String> PG100_ID,String BK100_ID,List<String> type,List<String> status,List<String> mode,String account_code,String BC100_name);
 }
