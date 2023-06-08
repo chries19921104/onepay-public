@@ -152,7 +152,7 @@ public class SystemAgentsServiceImpl extends ServiceImpl<SystemAgentsMapper, Sys
 //        if(systemAgentsList1!=null&&!systemAgentsList1.isEmpty()&&systemAgentsList2!=null&&!systemAgentsList2.isEmpty()){
 //            return false;
 //        }
-
+        System.out.println(123);
         systemAgents.setDisplayId(agentDto.getDisplayId());
         systemAgents.setFullName(agentDto.getFullName());
         systemAgents.setIdentity(agentDto.getIdentity());
