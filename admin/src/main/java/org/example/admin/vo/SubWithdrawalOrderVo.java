@@ -11,33 +11,54 @@ import java.time.LocalDateTime;
  */
 @Data
 public class SubWithdrawalOrderVo {
+    /**
+     * TODO 银行卡表id
+     */
     @JsonProperty("BC100_ID")
-    private int bc100Id;
+    private int bankCardId;
 
+    /**
+     * TODO 银行卡表
+     */
     @JsonProperty("BC100_mobile_name")
-    private String bc100MobileName;
+    private String bankCardMobileName;
 
+    /**
+     * TODO 代付表id
+     */
     @JsonProperty("FO100_ID")
-    private int fo100Id;
+    private int foId;
 
     @JsonProperty("FO110_ID")
-    private int fo110Id;
+    private int subFoId;
 
     @JsonProperty("FO110_PREID")
-    private String fo110Preid;
+    private String foPreId;
 
+    /**
+     * TODO 商户表id
+     */
     @JsonProperty("SH100_ID")
-    private int sh100Id;
+    private int mechantId;
 
+    /**
+     * TODO 商户表
+     */
     @JsonProperty("SH100_wd_rate")
-    private int sh100WdRate;
+    private int mechantWdRate;
 
+    /**
+     * TODO 虚拟银行对账单id
+     */
     @JsonProperty("VB100_ID")
-    private String vb100Id;
+    private String vb1Id;
 
     @JsonProperty("action")
     private String action;
 
+    /**
+     * 拼接主键id
+     */
     @JsonProperty("alt_id")
     private String altId;
 
@@ -47,12 +68,18 @@ public class SubWithdrawalOrderVo {
     @JsonProperty("bank_fee_tpi")
     private String bankFeeTpi;
 
+    /**
+     * TODO 未知
+     */
     @JsonProperty("check_btn")
     private int checkBtn;
 
     @JsonProperty("command_id")
     private String commandId;
 
+    /**
+     * TODO 未知
+     */
     @JsonProperty("confirm_accname")
     private int confirmAccname;
 
@@ -65,18 +92,30 @@ public class SubWithdrawalOrderVo {
     @JsonProperty("currency")
     private String currency;
 
+    /**
+     * TODO 银行卡表
+     */
     @JsonProperty("from_account_code")
     private String fromAccountCode;
 
     @JsonProperty("is_entry")
     private int isEntry;
 
+    /**
+     * TODO 未知
+     */
     @JsonProperty("is_errurl")
     private boolean isErrurl;
 
+    /**
+     * TODO 未知
+     */
     @JsonProperty("is_press_button")
     private boolean isPressButton;
 
+    /**
+     * TODO 未知
+     */
     @JsonProperty("is_runMon")
     private boolean isRunMon;
 
@@ -95,18 +134,27 @@ public class SubWithdrawalOrderVo {
     @JsonProperty("postscript")
     private String postscript;
 
+    /**
+     * TODO 未知
+     */
     @JsonProperty("prev_alt_id")
     private String prevAltId;
 
     @JsonProperty("rate")
     private String rate;
 
+    /**
+     * TODO 未知
+     */
     @JsonProperty("reference")
     private String reference;
 
     @JsonProperty("request_amount")
     private int requestAmount;
 
+    /**
+     * TODO 未知
+     */
     @JsonProperty("retry_btn")
     private boolean retryBtn;
 
