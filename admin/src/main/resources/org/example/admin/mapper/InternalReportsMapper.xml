@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="org.example.admin.mapper.InternalReportsMapper">
-    <resultMap id="internalReportsResultMap" type="org.example.common.vo.BankAccountListVo">
+    <resultMap id="internalReportsResultMap" type="org.example.admin.vo.BankAccountListVo">
         <result column="command_id" property="command_id"></result>
         <result column="BC100_ID" property="BC100_ID"></result>
         <result column="PG100_ID" property="PG100_ID"></result>
@@ -47,7 +47,11 @@
         <result column="statement" property="statement"></result>
     </resultMap>
 
-    <select id="getBankAccountList" resultMap="internalReportsResultMap">
+    <resultMap id="count" type="java.lang.Integer">
+        <result column="total"/>
+    </resultMap>
+
+    <select id="getBankAccountList" resultMap="internalReportsResultMap, count">
         select A.command_id as command_id, A.card_id as BC100_ID, A.card_group_id as PG100_ID, A.status, A.account_code, A.account as name, A.mobile_name,
                A.phone_number as sim, A.sim_opt, A.sim_credit_expired, A.currency, A.updated_at, A.pre_server_id as VPN100_ID, A.payment_mode as mode,
                A.vnd_otp, A.vnd_payment_method, A.message, A.withdraw_pin, A.type as BC100_type, C.code as BC100_bank_code, B.total_day_credit as today_DP,
@@ -93,7 +97,8 @@
         </if>
         <if test="BC100_name != null">
             and A.account = #{BC100_name}
-        </if>;
+        </if> limit #{page},#{rp};
+        select FOUND_ROWS() as total;
     </select>
 
 </mapper>

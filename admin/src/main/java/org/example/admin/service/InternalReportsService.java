@@ -1,8 +1,10 @@
 package org.example.admin.service;
 
+import org.example.admin.dto.BankAccountListDto;
 import org.example.common.base.CommResp;
-import org.example.common.dto.BankAccountListDto;
+import org.example.common.base.MerchantResp;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 /**
@@ -11,6 +13,7 @@ import java.util.List;
  */
 public interface InternalReportsService {
 
+    MerchantResp getBankAccountList(HttpServletRequest request, BankAccountListDto bankAccountListDto);
 
-    CommResp getBankAccountList(String currency,List<String> PG100_ID,String BK100_ID,List<String> type,List<String> status,List<String> mode,String account_code,String BC100_name);
+    CommResp getTransactionScreenRecords(String altId, Integer rp, Integer page);
 }

@@ -29,8 +29,6 @@ public class CommResp {
         CommResp commResp = new CommResp();
         commResp.code = 1;
         commResp.msg = msg;
-
-
         return commResp;
     }
 

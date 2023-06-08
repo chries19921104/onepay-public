@@ -1,5 +1,6 @@
 package org.example.common.base;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModel;
 import lombok.Data;
@@ -8,6 +9,7 @@ import java.math.BigDecimal;
 
 @Data
 @ApiModel(description = "用于常用返回数据中的totals数据")
+@JsonInclude(value= JsonInclude.Include.NON_NULL)
 public class Totals {
     private BigDecimal availableBalance;
     private BigDecimal currentBalance;
@@ -39,4 +41,16 @@ public class Totals {
 
     @JsonProperty("remaining_balance")
     private BigDecimal remainingBalance;
+
+    @JsonProperty("today_DP")
+    private BigDecimal today_DP;
+
+    @JsonProperty("today_Payout")
+    private BigDecimal today_Payout;
+
+    @JsonProperty("balance")
+    private BigDecimal balance;
+
+    @JsonProperty("balance_xy")
+    private BigDecimal balance_xy;
 }
