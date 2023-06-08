@@ -6,14 +6,14 @@ import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.util.IOUtils;
 import org.example.admin.conf.interceptor.NoAuthorization;
+import org.example.admin.dto.DashboardDto;
 import org.example.common.base.CommResp;
 import org.example.common.base.MerchantResp;
 import org.example.common.base.Totals;
-import org.example.admin.dto.DashboardDto;
-import org.example.admin.dto.SystemDepositOrderDto;
+import org.example.admin.dto.DepositOrderDto;
 import org.example.common.exception.MsgException;
 import org.example.common.utils.URLUtils;
-import org.example.admin.vo.SystemDepositOrderVo;
+import org.example.admin.vo.DepositOrderVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -57,9 +57,9 @@ public class SystemDepositOrderController {
     @GetMapping
     @ApiOperation(value = "搜索接口")
     @NoAuthorization
-    public MerchantResp search(SystemDepositOrderDto systemDepositOrderDto, HttpServletRequest request){
+    public MerchantResp search(DepositOrderDto depositOrderDto, HttpServletRequest request){
         // 获取分页数据
-        Page<SystemDepositOrderVo> orderVoPage = systemDepositOrderService.searchByCondition(systemDepositOrderDto);
+        Page<DepositOrderVo> orderVoPage = systemDepositOrderService.searchByCondition(depositOrderDto);
 
         // 封装数据
         MerchantResp merchantResp = MerchantResp.getMerchantResp(request, orderVoPage);
@@ -73,9 +73,9 @@ public class SystemDepositOrderController {
     @GetMapping("/download")
     @ApiOperation(value = "汇出报表接口")
     @NoAuthorization
-    public String download(SystemDepositOrderDto systemDepositOrderDto, HttpServletRequest request) throws MsgException {
+    public String download(DepositOrderDto depositOrderDto, HttpServletRequest request) throws MsgException {
         // 获取文件名
-        String fileName = systemDepositOrderService.download(systemDepositOrderDto);
+        String fileName = systemDepositOrderService.download(depositOrderDto);
         //获取当前接口的url
         String url = URLUtils.getCurrentURL(request);
         url = url.substring(0, url.indexOf("download"));
@@ -125,7 +125,7 @@ public class SystemDepositOrderController {
      * @param depositOrderVos
      * @return
      */
-    private Totals getTotals(List<SystemDepositOrderVo> depositOrderVos) {
+    private Totals getTotals(List<DepositOrderVo> depositOrderVos) {
         Totals totals = new Totals();
         BigDecimal lossAmount = BigDecimal.ZERO;
         BigDecimal orderAmount = BigDecimal.ZERO;
@@ -133,7 +133,7 @@ public class SystemDepositOrderController {
         BigDecimal rate = BigDecimal.ZERO;
         BigDecimal requestAmount = BigDecimal.ZERO;
         //遍历depositOrderVos
-        for (SystemDepositOrderVo orderVo : depositOrderVos) {
+        for (DepositOrderVo orderVo : depositOrderVos) {
             // 相加
             lossAmount = lossAmount.add(orderVo.getLossAmount());
             orderAmount = orderAmount.add(orderVo.getOrderAmount());

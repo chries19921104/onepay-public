@@ -44,4 +44,28 @@ public class  Totals {
 
     @JsonProperty("bank_fee")
     private BigDecimal bankFee;
+
+    @JsonProperty("ET_hold_balance")
+    private BigDecimal etHoldBalance;
+
+    @JsonProperty("FI_hold_balance")
+    private BigDecimal fiHoldBalance;
+
+    @JsonProperty("FO_hold_balance")
+    private BigDecimal foHoldBalance;
+
+    @JsonProperty("FX_hold_balance")
+    private BigDecimal fxHoldBalance;
+
+    @JsonProperty("TR_in_hold_balance")
+    private BigDecimal trInHoldBalance;
+
+    @JsonProperty("TR_out_hold_balance")
+    private BigDecimal trOutHoldBalance;
+
+    @JsonProperty("loss")
+    private BigDecimal loss;
+
+    @JsonProperty("remaining_balance")
+    private BigDecimal remainingBalance;
 }

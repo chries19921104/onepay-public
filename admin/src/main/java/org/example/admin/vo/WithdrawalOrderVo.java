@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Data
-public class SystemWithdrawalOrderVo {
+public class WithdrawalOrderVo {
 
     /**
      * 本表id
@@ -104,7 +104,7 @@ public class SystemWithdrawalOrderVo {
      * 审核账户名称
      */
     @JsonProperty("confirm_accname")
-    private int confirmAccname;
+    private Integer confirmAccname;
 
     /**
      * 审核时间
@@ -223,4 +223,49 @@ public class SystemWithdrawalOrderVo {
      * 账号
      */
     private String bankNumber;
+
+    @JsonProperty("MN100_ID")
+    private Long mn100Id;
+
+    /**
+     * TODO php中没发现该字段被使用 为null
+     */
+    @JsonProperty("SH110_balance")
+    private BigDecimal subBalance;
+
+    @JsonProperty("add_display")
+    private Integer addDisplay;
+
+    @JsonProperty("balance")
+    private BigDecimal balance;
+
+    @JsonProperty("balance_xy")
+    private BigDecimal balanceXy;
+
+    /**
+     * TODO php中没发现该字段被使用 为0
+     */
+    @JsonProperty("bank_fee_merchant")
+    private Integer bankFeeMerchant;
+
+    private Integer forceSubManual;
+
+    @JsonProperty("force_sub_manual")
+    private Boolean force;
+
+    @JsonProperty("local_created_at")
+    private LocalDateTime localCreatedAt;
+
+    @JsonProperty("local_updated_at")
+    private LocalDateTime localUpdatedAt;
+
+    @JsonProperty("pre_balance")
+    private BigDecimal preBalance;
+
+    @JsonProperty("pre_balance_xy")
+    private BigDecimal preBalanceXy;
+
+    @JsonProperty("updated_man")
+    private String updatedMan;
+
 }

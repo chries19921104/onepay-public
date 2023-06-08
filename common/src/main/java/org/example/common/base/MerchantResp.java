@@ -48,6 +48,9 @@ public class MerchantResp {
      */
     private String per_page;
     private String prev_page_url;
+    /**
+     * 小计
+     */
     private Totals subtotals;
     /**
      * 总条数
@@ -57,6 +60,9 @@ public class MerchantResp {
      * 总条数
      */
     private Integer total;
+    /**
+     * 总计
+     */
     private Totals totals;
 
     /**

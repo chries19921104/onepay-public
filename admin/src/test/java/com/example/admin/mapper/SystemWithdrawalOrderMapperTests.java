@@ -1,8 +1,8 @@
 package com.example.admin.mapper;
 
 import org.example.admin.mapper.SystemWithdrawalOrderMapper;
-import org.example.admin.dto.SystemWithdrawalOrderDto;
-import org.example.admin.vo.SystemWithdrawalOrderVo;
+import org.example.admin.dto.WithdrawalOrderDto;
+import org.example.admin.vo.WithdrawalOrderVo;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -19,7 +19,7 @@ public class SystemWithdrawalOrderMapperTests {
 
     @Test
     void testSelectDepositOrderVo() {
-        SystemWithdrawalOrderDto order = new SystemWithdrawalOrderDto();
+        WithdrawalOrderDto order = new WithdrawalOrderDto();
         order.setCurrency("THB");
         order.setRp(10);
         order.setPg100Id(1L);
@@ -45,8 +45,7 @@ public class SystemWithdrawalOrderMapperTests {
         Long subFoAltId = Long.parseLong("W-25082010002".substring(8));
         order.setReference("REF001");
 
-        List<SystemWithdrawalOrderVo> systemWithdrawalOrderVo = systemWithdrawalOrderMapper.selectWithdrawalOrderVo(order,
-                0,
+        List<WithdrawalOrderVo> withdrawalOrderVo = systemWithdrawalOrderMapper.selectWithdrawalOrderVo(order,
                 altId,
                 subFoAltId,
                 new BigDecimal(1),
@@ -54,7 +53,6 @@ public class SystemWithdrawalOrderMapperTests {
                 new BigDecimal(1),
                 new BigDecimal(1000));
         Integer total = systemWithdrawalOrderMapper.selectTotal(order,
-                0,
                 altId,
                 subFoAltId,
                 new BigDecimal(1),

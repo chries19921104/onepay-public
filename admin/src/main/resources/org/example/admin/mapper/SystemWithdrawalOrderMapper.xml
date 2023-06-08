@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="org.example.admin.mapper.SystemWithdrawalOrderMapper">
     
-    <select id="selectWithdrawalOrderVo" resultType="org.example.admin.vo.SystemWithdrawalOrderVo">
+    <select id="selectWithdrawalOrderVo" resultType="org.example.admin.vo.WithdrawalOrderVo">
         SELECT
             swo.fo_id foId,
             snr.content noticeContent,
@@ -34,7 +34,15 @@
             swo.to_man toMan,
             swo.updated_at updatedAt,
             sb.`code` bankCode,
-            sbc.bank_number bankNumber
+            sbc.bank_number bankNumber,
+            swo.MN100_ID mn100Id,
+            swo.balance balance,
+            swo.balance_xy balanceXy,
+            swo.local_created_at localCreatedAt,
+            swo.local_updated_at localUpdatedAt,
+            swo.pre_balance preBalance,
+            swo.pre_balance_xy preBalanceXy,
+            swo.updater updatedMan
         FROM
             system_withdrawal_order swo
             RIGHT JOIN system_sub_withdrawal_order sswo ON swo.fo_id = sswo.fo_id
@@ -65,12 +73,11 @@
         <if test="dto.updatedStartDate != null and dto.updatedEndDate !=null">AND swo.updated_at <![CDATA[>=]]> #{dto.updatedStartDate} AND swo.updated_at <![CDATA[<=]]> #{dto.updatedEndDate}</if>
         <if test="dto.from != null">AND sbc.account_code = #{dto.from}</if>
         <if test="dto.to != null">AND swo.to_card_number = #{dto.to}</if>
-        <if test="altId != null">AND swo.fo_id = #{altId}</if>
+        <if test="foId != null">AND swo.fo_id = #{foId}</if>
         <if test="subFoAltId != null">AND sswo.sub_fo_id = #{subFoAltId}</if>
         <if test="dto.reference != null">AND swo.reference = #{dto.reference}</if>
         <if test="requestAmountMin != null and requestAmountMax != null">AND swo.request_amount <![CDATA[>=]]> #{requestAmountMin} AND swo.request_amount <![CDATA[<=]]> #{requestAmountMax}</if>
         <if test="paidAmountMin != null and paidAmountMax != null">AND swo.paid_amount <![CDATA[>=]]> #{paidAmountMin} AND swo.paid_amount <![CDATA[<=]]> #{paidAmountMax}</if>
-        LIMIT #{page}, #{dto.rp}
     </select>
 
     <select id="selectTotal" resultType="java.lang.Integer">
@@ -111,7 +118,6 @@
         <if test="dto.reference != null">AND swo.reference = #{dto.reference}</if>
         <if test="requestAmountMin != null and requestAmountMax != null">AND swo.request_amount <![CDATA[>=]]> #{requestAmountMin} AND swo.request_amount <![CDATA[<=]]> #{requestAmountMax}</if>
         <if test="paidAmountMin != null and paidAmountMax != null">AND swo.paid_amount <![CDATA[>=]]> #{paidAmountMin} AND swo.paid_amount <![CDATA[<=]]> #{paidAmountMax}</if>
-        LIMIT #{page}, #{dto.rp}
     </select>
 
 </mapper>

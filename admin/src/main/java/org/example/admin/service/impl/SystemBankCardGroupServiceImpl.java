@@ -8,25 +8,24 @@ import org.example.admin.mapper.SystemBankCardGroupMapper;
 import org.example.admin.mapper.SystemBankCardMapper;
 import org.example.admin.mapper.SystemMerchantMapper;
 import org.example.admin.service.SystemBankCardGroupService;
-import org.example.admin.vo.BankCardAllVo;
-import org.example.admin.vo.BankGroupVo;
-import org.example.admin.vo.MerchantVo;
-import org.example.admin.vo.SystemBankCardGroupVO;
 import org.example.common.base.CommResp;
 import org.example.common.base.GetNoResp;
 import org.example.common.base.MerchantResp;
 import org.example.admin.dto.BankCardDto;
 import org.example.admin.dto.BankCardGroupDto;
 import org.example.admin.dto.SystemBankCardDto;
+import org.example.common.base.Totals;
 import org.example.common.entity.*;
 import org.example.common.utils.BaseContext;
 import org.example.common.utils.URLUtils;
+import org.example.admin.vo.*;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.servlet.http.HttpServletRequest;
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -109,7 +108,9 @@ public class SystemBankCardGroupServiceImpl extends ServiceImpl<SystemBankCardGr
             List<SystemBankCard> systemBankCards = systemBankCardMapper.selectList(lqw);
             //通过查出来数据中的卡群id去查询商户表查出来对应的商户id来匹配传过来的商户id
             if (systemBankCards.size() == 0){
-                return GetNoResp.getNoMerchantResp(request,bankCardGroupDto.getRp());
+                Totals totals = new Totals();
+                getTotal(totals);
+                return GetNoResp.getNoMerchantResp(request,bankCardGroupDto.getRp(),totals);
             }
             List<Long> groupIds = systemBankCards.stream()
                     .map(SystemBankCard::getCardGroupId)
@@ -144,7 +145,9 @@ public class SystemBankCardGroupServiceImpl extends ServiceImpl<SystemBankCardGr
                 return getGroupAllRes(page,request,bankCardGroupDto);
             }
         }
-        return GetNoResp.getNoMerchantResp(request,bankCardGroupDto.getRp());
+        Totals totals = new Totals();
+        getTotal(totals);
+        return GetNoResp.getNoMerchantResp(request,bankCardGroupDto.getRp(),totals);
     }
 
     //银行账户管理-账户群组-新增
@@ -336,6 +339,17 @@ public class SystemBankCardGroupServiceImpl extends ServiceImpl<SystemBankCardGr
             BeanUtils.copyProperties(iter, bankGroupVo);
             return bankGroupVo;
         }).collect(Collectors.toList());
+    }
+
+    private void getTotal(Totals t) {
+        t.setEtHoldBalance(BigDecimal.valueOf(0));
+        t.setFiHoldBalance(BigDecimal.valueOf(0));
+        t.setFoHoldBalance(BigDecimal.valueOf(0));
+        t.setFxHoldBalance(BigDecimal.valueOf(0));
+        t.setTrOutHoldBalance(BigDecimal.valueOf(0));
+        t.setTrInHoldBalance(BigDecimal.valueOf(0));
+        t.setLoss(BigDecimal.valueOf(0));
+        t.setRemainingBalance(BigDecimal.valueOf(0));
     }
 
 }

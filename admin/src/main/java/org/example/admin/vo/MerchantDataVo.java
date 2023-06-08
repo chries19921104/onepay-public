@@ -1,4 +1,4 @@
-package org.example.admin.dto;
+package org.example.admin.vo;
 
 import io.swagger.annotations.ApiModel;
 import lombok.Data;
@@ -7,7 +7,7 @@ import java.math.BigDecimal;
 
 @Data
 @ApiModel(description = "用于常用返回数据中的data数据")
-public class MerchantDataDto {
+public class MerchantDataVo {
     private Long merchantId;
     private Long cardGroupId;
     private Long agentDisplayId;

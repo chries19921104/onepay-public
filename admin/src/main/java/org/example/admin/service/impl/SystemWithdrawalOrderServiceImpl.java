@@ -1,7 +1,6 @@
 package org.example.admin.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFRow;
@@ -10,10 +9,10 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.example.admin.mapper.SystemWithdrawalOrderMapper;
 import org.example.admin.service.SystemSubWithdrawalOrderService;
 import org.example.admin.service.SystemWithdrawalOrderService;
-import org.example.admin.dto.SystemWithdrawalOrderDto;
+import org.example.admin.dto.WithdrawalOrderDto;
 import org.example.common.entity.SystemSubWithdrawalOrder;
 import org.example.common.entity.SystemWithdrawalOrder;
-import org.example.admin.vo.SystemWithdrawalOrderVo;
+import org.example.admin.vo.WithdrawalOrderVo;
 import org.example.common.exception.MsgException;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +22,6 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.math.BigDecimal;
-import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -43,42 +41,42 @@ public class SystemWithdrawalOrderServiceImpl extends ServiceImpl<SystemWithdraw
     private SystemSubWithdrawalOrderService systemSubWithdrawalOrderService;
 
     @Override
-    public Page<SystemWithdrawalOrderVo> searchByCondition(SystemWithdrawalOrderDto systemWithdrawalOrderDto) {
+    public List<WithdrawalOrderVo> searchByCondition(WithdrawalOrderDto withdrawalOrderDto) {
         // 获取当前页数
-        int page = systemWithdrawalOrderDto.getPage() - 1;
+        int page = withdrawalOrderDto.getPage() - 1;
         // 获取altId并返回成id
         Long altId = null;
-        if (systemWithdrawalOrderDto.getAltId() != null){
-            altId = Long.parseLong(systemWithdrawalOrderDto.getAltId().substring(8));
+        if (withdrawalOrderDto.getAltId() != null){
+            altId = Long.parseLong(withdrawalOrderDto.getAltId().substring(8));
         }
         // 获取子代付altId
         Long subFoAltId = null;
-        if (systemWithdrawalOrderDto.getFo110AltId() != null){
-            subFoAltId = Long.parseLong(systemWithdrawalOrderDto.getFo110AltId().substring(8));
+        if (withdrawalOrderDto.getFo110AltId() != null){
+            subFoAltId = Long.parseLong(withdrawalOrderDto.getFo110AltId().substring(8));
         }
         // 请求金额最小值
         BigDecimal requestAmountMin = null;
         // 请求金额最大值
         BigDecimal requestAmountMax = null;
-        if (systemWithdrawalOrderDto.getRequestAmounts() != null && systemWithdrawalOrderDto.getRequestAmounts().size() > 0){
-            requestAmountMin = systemWithdrawalOrderDto.getRequestAmounts().get(0);
-            requestAmountMax = systemWithdrawalOrderDto.getRequestAmounts().get(1);
+        if (withdrawalOrderDto.getRequestAmounts() != null && withdrawalOrderDto.getRequestAmounts().size() > 0){
+            requestAmountMin = withdrawalOrderDto.getRequestAmounts().get(0);
+            requestAmountMax = withdrawalOrderDto.getRequestAmounts().get(1);
         }
 
         // 已付金额最小值
         BigDecimal paidAmountMin = null;
         // 已付金额最大值
         BigDecimal paidAmountMax = null;
-        if (systemWithdrawalOrderDto.getPaidAmounts() != null && systemWithdrawalOrderDto.getPaidAmounts().size() > 0){
-            paidAmountMin = systemWithdrawalOrderDto.getPaidAmounts().get(0);
-            paidAmountMax = systemWithdrawalOrderDto.getPaidAmounts().get(1);
+        if (withdrawalOrderDto.getPaidAmounts() != null && withdrawalOrderDto.getPaidAmounts().size() > 0){
+            paidAmountMin = withdrawalOrderDto.getPaidAmounts().get(0);
+            paidAmountMax = withdrawalOrderDto.getPaidAmounts().get(1);
         }
         // 查询数据
-        List<SystemWithdrawalOrderVo> systemWithdrawalOrderVoList = systemWithdrawalOrderMapper.selectWithdrawalOrderVo(systemWithdrawalOrderDto,
-                page, altId, subFoAltId, requestAmountMin, requestAmountMax, paidAmountMin, paidAmountMax);
+        List<WithdrawalOrderVo> withdrawalOrderVoList = systemWithdrawalOrderMapper.selectWithdrawalOrderVo(withdrawalOrderDto,
+                altId, subFoAltId, requestAmountMin, requestAmountMax, paidAmountMin, paidAmountMax);
 
-        systemWithdrawalOrderVoList = systemWithdrawalOrderVoList.stream().map(item -> {
-            SystemWithdrawalOrderVo vo = new SystemWithdrawalOrderVo();
+        withdrawalOrderVoList = withdrawalOrderVoList.stream().map(item -> {
+            WithdrawalOrderVo vo = new WithdrawalOrderVo();
             // 拷贝
             BeanUtils.copyProperties(item, vo);
             // 主键处理
@@ -140,26 +138,16 @@ public class SystemWithdrawalOrderServiceImpl extends ServiceImpl<SystemWithdraw
             }
             return vo;
         }).collect(Collectors.toList());
-        // 查询总条数
-        Integer total = systemWithdrawalOrderMapper.selectTotal(systemWithdrawalOrderDto,
-                page, altId, subFoAltId, requestAmountMin, requestAmountMax, paidAmountMin, paidAmountMax);
-        // 封装返回
-        Page<SystemWithdrawalOrderVo> orderpage = new Page<SystemWithdrawalOrderVo>(page, systemWithdrawalOrderDto.getRp());
-        orderpage.setRecords(systemWithdrawalOrderVoList);
-        if (total == null){
-            orderpage.setTotal(0);
-        }else {
-            orderpage.setTotal(total);
-        }
-        return orderpage;
+
+        return withdrawalOrderVoList;
     }
 
     @Override
-    public String download(SystemWithdrawalOrderDto systemWithdrawalOrderDto) {
+    public String download(WithdrawalOrderDto withdrawalOrderDto) {
         // 获取分页数据
-        Page<SystemWithdrawalOrderVo> orderVoPage = searchByCondition(systemWithdrawalOrderDto);
+        List<WithdrawalOrderVo> orderVoList = searchByCondition(withdrawalOrderDto);
         // 查看数据总量是否超过8000
-        if (orderVoPage.getTotal() > 8000){
+        if (orderVoList.size() > 8000){
             throw new MsgException("数据量大于8000无法汇出");
         }
         // 创建表格
@@ -210,11 +198,9 @@ public class SystemWithdrawalOrderServiceImpl extends ServiceImpl<SystemWithdraw
         //创建表头，第二行
         createSheetRow(sheet, headList2, 1);
 
-        // 获取查询到的数据
-        List<SystemWithdrawalOrderVo> records = orderVoPage.getRecords();
         // 遍历添加数据到表格中
         int rowNum = 2;
-        for (SystemWithdrawalOrderVo item : records){
+        for (WithdrawalOrderVo item : orderVoList){
             ArrayList<String> list = new ArrayList<>();
             list.add(item.getAltId() == null ? "" : item.getAltId());
             list.add(item.getMechantCode() == null ? "" : item.getMechantCode());
@@ -306,6 +292,71 @@ public class SystemWithdrawalOrderServiceImpl extends ServiceImpl<SystemWithdraw
         // 文件名
         String fileName = file.getName();
         return fileName;
+    }
+
+    @Override
+    public Integer getTotal(WithdrawalOrderDto withdrawalOrderDto) {
+        // 获取altId并返回成id
+        Long altId = null;
+        if (withdrawalOrderDto.getAltId() != null){
+            altId = Long.parseLong(withdrawalOrderDto.getAltId().substring(8));
+        }
+        // 获取子代付altId
+        Long subFoAltId = null;
+        if (withdrawalOrderDto.getFo110AltId() != null){
+            subFoAltId = Long.parseLong(withdrawalOrderDto.getFo110AltId().substring(8));
+        }
+        // 请求金额最小值
+        BigDecimal requestAmountMin = null;
+        // 请求金额最大值
+        BigDecimal requestAmountMax = null;
+        if (withdrawalOrderDto.getRequestAmounts() != null && withdrawalOrderDto.getRequestAmounts().size() > 0){
+            requestAmountMin = withdrawalOrderDto.getRequestAmounts().get(0);
+            requestAmountMax = withdrawalOrderDto.getRequestAmounts().get(1);
+        }
+
+        // 已付金额最小值
+        BigDecimal paidAmountMin = null;
+        // 已付金额最大值
+        BigDecimal paidAmountMax = null;
+        if (withdrawalOrderDto.getPaidAmounts() != null && withdrawalOrderDto.getPaidAmounts().size() > 0){
+            paidAmountMin = withdrawalOrderDto.getPaidAmounts().get(0);
+            paidAmountMax = withdrawalOrderDto.getPaidAmounts().get(1);
+        }
+        Integer total = systemWithdrawalOrderMapper.selectTotal(withdrawalOrderDto,
+                altId, subFoAltId, requestAmountMin, requestAmountMax, paidAmountMin, paidAmountMax);
+        return total;
+    }
+
+    @Override
+    public List<WithdrawalOrderVo> getWithdrawalOrderVoByFoId(Long foId) {
+        // 获取数据
+        List<WithdrawalOrderVo> orderVoList = systemWithdrawalOrderMapper.selectWithdrawalOrderVo(new WithdrawalOrderDto(),
+                foId, null, null, null, null, null);
+        orderVoList = orderVoList.stream().map(item -> {
+            WithdrawalOrderVo vo = new WithdrawalOrderVo();
+            BeanUtils.copyProperties(item, vo);
+            vo.setSubBalance(null);
+            vo.setBankFeeMerchant(0);
+            // 获取forceSubManual
+            Integer forceSubManual = item.getForceSubManual();
+            Boolean force = forceSubManual == 0 ? false : true;
+            vo.setForce(force);
+            // 状态
+            // 查询子代付表
+            List<SystemSubWithdrawalOrder> list = systemSubWithdrawalOrderService.list(
+                    new LambdaQueryWrapper<SystemSubWithdrawalOrder>()
+                            .eq(SystemSubWithdrawalOrder::getFoId, foId)
+                            .eq(SystemSubWithdrawalOrder::getStatus, STATUS_FAILED));
+            int status = item.getStatus();
+            if (status == STATUS_COMPLETED || status == STATUS_FAILED){
+                vo.setAddDisplay(0);
+            }else if (force || list != null || list.size() > 0){
+                vo.setAddDisplay(1);
+            }
+            return vo;
+        }).collect(Collectors.toList());
+        return orderVoList;
     }
 
     /**

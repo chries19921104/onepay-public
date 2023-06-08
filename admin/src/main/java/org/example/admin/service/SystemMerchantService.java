@@ -34,7 +34,7 @@ public interface SystemMerchantService extends IService<SystemMerchant> {
      * @param merchantDto
      * @return
      */
-    Page<MerchantDataDto> selectData(MerchantDto merchantDto);
+    Page<MerchantDataVo> selectData(MerchantDto merchantDto);
 
     /**
      * 新增商户信息

@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Data
-public class SystemWithdrawalOrderDto {
+public class WithdrawalOrderDto {
 
     /**
      * 银行id
@@ -60,10 +60,6 @@ public class SystemWithdrawalOrderDto {
      */
     @JsonProperty("currency")
     private String currency;
-
-    public String getCurrency() {
-        return currency;
-    }
 
     /**
      * 状态

@@ -2,6 +2,7 @@ package org.example.admin.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.example.common.entity.SystemSubWithdrawalOrder;
+import org.springframework.stereotype.Repository;
 
 
 /**
@@ -12,6 +13,7 @@ import org.example.common.entity.SystemSubWithdrawalOrder;
  * @author rj
  * @since 2023-06-06
  */
+@Repository
 public interface SystemSubWithdrawalOrderMapper extends BaseMapper<SystemSubWithdrawalOrder> {
 
 }

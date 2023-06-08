@@ -6,7 +6,7 @@ import lombok.Data;
 import java.util.List;
 
 @Data
-public class SystemDepositOrderDto {
+public class DepositOrderDto {
 
     @JsonProperty("from_bank")
     private String fromBank;

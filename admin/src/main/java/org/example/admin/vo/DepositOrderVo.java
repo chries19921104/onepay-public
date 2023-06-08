@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Data
-public class SystemDepositOrderVo {
+public class DepositOrderVo {
 
     /**
      * 银行备注 BC100里的

@@ -4,14 +4,16 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.example.admin.conf.interceptor.NoAuthorization;
-import org.example.admin.dto.*;
 import org.example.admin.service.SystemMerchantService;
-import org.example.admin.vo.*;
+import org.example.common.base.CommResp;
 import org.example.common.base.GetNoResp;
+
 import org.example.common.base.MerchantResp;
 import org.example.common.base.Totals;
+import org.example.admin.dto.*;
 import org.example.common.entity.*;
 import org.example.common.utils.URLUtils;
+import org.example.admin.vo.*;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -65,21 +67,23 @@ public class SystemMerchantController {
     @NoAuthorization
     public MerchantResp selectMerchant(MerchantDto merchantDto, HttpServletRequest request) {
         //data
-        Page<MerchantDataDto> merchantData = systemMerchantService.selectData(merchantDto);
+        Page<MerchantDataVo> merchantData = systemMerchantService.selectData(merchantDto);
         //totals
         if (merchantData != null){
             Totals totals = getTotals(merchantData.getRecords());
             //其他信息MerchantResp
             return getMerchantResp(merchantData,totals,request,merchantDto);
         }
-        return GetNoResp.getNoMerchantResp(request,merchantDto.getRp());
+        Totals totals = new Totals();
+        getTotal(totals);
+        return GetNoResp.getNoMerchantResp(request,merchantDto.getRp(),totals);
 
     }
 
     //http://localhost:8088/api/sh100
     @ApiOperation(value = "商户资讯-商户列表-新增接口")
     @PostMapping("/sh100")
-    public Map<String, MerchantByCreateVo> merchantCreate(@RequestBody MerchantBodyDto merchantBodyDto){
+    public Map<String,MerchantByCreateVo> merchantCreate(@RequestBody MerchantBodyDto merchantBodyDto){
         //将接收的部分信息存贮在merchant表中
         SystemMerchant merchantId = systemMerchantService.saveMerchant(merchantBodyDto);
         //返回数据
@@ -105,11 +109,9 @@ public class SystemMerchantController {
     @PutMapping("sh120/{id}")
     @ApiOperation(value = "商户资讯-银行账户-更新接口")
     public Map<String,Boolean> updateBankCount(@RequestBody MerchantByBrandVo merchant){
-        Map<String,Boolean> map = new HashMap<>();
         //更新状态
         systemMerchantService.updateStatus(merchant);
-        map.put("success",true);
-        return map;
+        return CommResp.success();
     }
 
     //http://localhost:8088/api/sh130?
@@ -131,7 +133,7 @@ public class SystemMerchantController {
     //http://localhost:8088/api/sh130
     @PostMapping("/sh130")
     @ApiOperation(value = "商户资讯-白名单-新增接口")
-    public Map<String, WhiteCreateVo> createWhite(@RequestBody WhiteBodyDto whiteBodyDto){
+    public Map<String,WhiteCreateVo> createWhite(@RequestBody WhiteBodyDto whiteBodyDto){
         //新增数据
         SystemMerchantWhiteList merchantWhiteList = systemMerchantService.saveWhite(whiteBodyDto);
         //返回数据
@@ -146,18 +148,16 @@ public class SystemMerchantController {
     @PutMapping("sh130/{id}")
     @ApiOperation(value = "商户资讯-白名单-更新接口")
     public Map<String,Boolean> updateWhite(@RequestBody MerchantByWhiteVo merchantByWhiteVo){
-        Map<String,Boolean> map = new HashMap<>();
         //更新状态
         systemMerchantService.updateWhite(merchantByWhiteVo);
-        map.put("success",true);
-        return map;
+        return CommResp.success();
     }
 
 
     //http://localhost:8088/api/sh100/153
     @ApiOperation(value = "商户资讯-商户列表-单个详情")
     @GetMapping("/sh100/{id}")
-    public Map<String, MerchantVo> selectMerchantById(@PathVariable("id") Long id){
+    public Map<String,MerchantVo> selectMerchantById(@PathVariable("id") Long id){
         //通过id查询数据,返回的数据集包含
         // system_merchant，system_agents，system_merchant_wallet，system_merchant_admin,system_merchant_support_bank五张表的数据
         MerchantVo merchantVo = systemMerchantService.selectMerchantById(id);
@@ -199,9 +199,7 @@ public class SystemMerchantController {
     @ApiOperation(value = "商户列表-详情-商户资讯-重置2FA接口")
     public Map<String,Boolean> recharge2FA(@PathVariable("id") Long id) {
         systemMerchantService.recharge2FA(id);
-        Map<String,Boolean> map = new HashMap<>();
-        map.put("data",true);
-        return map;
+        return CommResp.success();
     }
 
     //http://localhost:8088/api/sh100log?
@@ -355,7 +353,7 @@ public class SystemMerchantController {
         return map;
     }
 
-    private MerchantResp getMerchantResp(Page<MerchantDataDto> merchantData, Totals totals, HttpServletRequest request, MerchantDto merchantDto) {
+    private MerchantResp getMerchantResp(Page<MerchantDataVo> merchantData, Totals totals, HttpServletRequest request, MerchantDto merchantDto) {
         MerchantResp merchantResp = new MerchantResp();
         //
         //获取当前接口的url
@@ -385,7 +383,7 @@ public class SystemMerchantController {
         return merchantResp;
     }
 
-    private Totals getTotals(List<MerchantDataDto> merchantData) {
+    private Totals getTotals(List<MerchantDataVo> merchantData) {
         Totals totals = new Totals();
         BigDecimal availableBalance = BigDecimal.ZERO;
         BigDecimal depositOutstandingBalance= BigDecimal.ZERO;
@@ -394,7 +392,7 @@ public class SystemMerchantController {
         BigDecimal frozenBalance= BigDecimal.ZERO;
         BigDecimal todayTrFee= BigDecimal.ZERO;
         //遍历merchant
-        for (MerchantDataDto merchantDatum : merchantData) {
+        for (MerchantDataVo merchantDatum : merchantData) {
             //将每个商户的余额相加
             if (merchantDatum.getAvailableBalance() != null){
                 availableBalance = availableBalance.add(merchantDatum.getAvailableBalance());
@@ -418,6 +416,17 @@ public class SystemMerchantController {
         totals.setTodayTrFee(todayTrFee);
         totals.setDepositOutstandingBalance(depositOutstandingBalance);
         return totals;
+    }
+
+    private void getTotal(Totals t) {
+        t.setEtHoldBalance(BigDecimal.valueOf(0));
+        t.setFiHoldBalance(BigDecimal.valueOf(0));
+        t.setFoHoldBalance(BigDecimal.valueOf(0));
+        t.setFxHoldBalance(BigDecimal.valueOf(0));
+        t.setTrOutHoldBalance(BigDecimal.valueOf(0));
+        t.setTrInHoldBalance(BigDecimal.valueOf(0));
+        t.setLoss(BigDecimal.valueOf(0));
+        t.setRemainingBalance(BigDecimal.valueOf(0));
     }
 
 }
