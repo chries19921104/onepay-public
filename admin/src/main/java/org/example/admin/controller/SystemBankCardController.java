@@ -2,6 +2,7 @@ package org.example.admin.controller;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.example.admin.dto.BankCardCreateDto;
 import org.example.admin.service.SystemBankCardService;
 import org.example.common.base.MerchantResp;
 import org.example.admin.dto.BankCardDto;
@@ -49,6 +50,12 @@ public class SystemBankCardController {
     @GetMapping("/bc100")
     public MerchantResp getBrankAccount(BankCardDto bankCardDto ,HttpServletRequest request) {
         return systemBankCardService.getBrankAccount(bankCardDto,request);
+    }
 
+    //http://localhost:8088/api/bc100
+    @ApiOperation(value = "银行账户管理-银行账户-新增")
+    @PostMapping("/bc100")
+    public Map<String,BankCardAllVo> createBrankAccount(BankCardCreateDto bankCardDto) {
+        return systemBankCardService.createBrankAccount(bankCardDto);
     }
 }

@@ -182,6 +182,9 @@ public class BankCardAllVo {
     private Integer msgOpencard;  //找不到
 
     @JsonProperty("name")
+    private String account;
+
+    @JsonProperty("user_name")
     private String userName;
 
     @JsonProperty("note")

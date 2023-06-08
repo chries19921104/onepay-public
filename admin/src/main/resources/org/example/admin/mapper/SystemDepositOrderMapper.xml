@@ -80,7 +80,7 @@
 
     </select>
 <!--    前四个-->
-    <select id="selectMoneyAndCount" resultType="org.example.admin.vo.SystemDepositOrderVo">
+    <select id="selectMoneyAndCount" resultType="org.example.admin.vo.DepositOrderVo">
         SELECT `txn_mode` as txnMode,
         max(bank_fee) as bankFee,
         SUM(paid_amount) as successMoney,
@@ -101,7 +101,7 @@
         GROUP BY txn_mode;
     </select>
 <!--    下发-->
-    <select id="selectSettlement" resultType="org.example.admin.vo.SystemDepositOrderVo">
+    <select id="selectSettlement" resultType="org.example.admin.vo.DepositOrderVo">
         SELECT
                bank_fee as bankFee,
                SUM(paid_amount) as successMoney,
@@ -115,7 +115,7 @@
           AND status in(#{status})
     </select>
 <!--代付-->
-    <select id="selectWithdrawal" resultType="org.example.admin.vo.SystemDepositOrderVo">
+    <select id="selectWithdrawal" resultType="org.example.admin.vo.DepositOrderVo">
         SELECT
                bank_fee as bankFee,
                SUM(paid_amount) as successMoney,
@@ -129,7 +129,7 @@
           AND status in(#{status})
     </select>
 <!--    虚拟币-->
-    <select id="selectCrypto" resultType="org.example.admin.vo.SystemDepositOrderVo">
+    <select id="selectCrypto" resultType="org.example.admin.vo.DepositOrderVo">
         SELECT SUM(paid_amount)                       as successMoney,
                SUM(request_amount)                    as failMoney,
                COUNT(IF(paid_amount > 0, 1, null))    as successCount,
@@ -141,7 +141,7 @@
           AND status in (#{status})
     </select>
 
-    <select id="selectWithdrawalrCommission" resultType="org.example.admin.vo.SystemDepositOrderCommissionVo">
+    <select id="selectWithdrawalrCommission" resultType="org.example.admin.vo.DepositOrderCommissionVo">
         SELECT SUM(request_amount) as money,
         bank_fee_merchant as merchantFee,
         bank_fee as bankFee
@@ -158,7 +158,7 @@
         </if>
         GROUP BY pay_bank_fee;
     </select>
-    <select id="selectSettlementCommission" resultType="org.example.admin.vo.SystemDepositOrderCommissionVo">
+    <select id="selectSettlementCommission" resultType="org.example.admin.vo.DepositOrderCommissionVo">
         SELECT SUM(request_amount) as money,
         bank_fee as bankFee
         FROM system_settlement_order
@@ -173,7 +173,7 @@
             AND merchant_id in(#{merchantId})
         </if>
     </select>
-    <select id="selectExternalTradeCommission" resultType="org.example.admin.vo.SystemDepositOrderCommissionVo">
+    <select id="selectExternalTradeCommission" resultType="org.example.admin.vo.DepositOrderCommissionVo">
         SELECT SUM(request_amount) as money,
         bank_fee as bankFee
         FROM system_external_trade_order
@@ -189,7 +189,7 @@
         </if>
 
     </select>
-    <select id="selectIntroversionCommission" resultType="org.example.admin.vo.SystemDepositOrderCommissionVo">
+    <select id="selectIntroversionCommission" resultType="org.example.admin.vo.DepositOrderCommissionVo">
         SELECT SUM(request_amount) as money,
         bank_fee as bankFee
         FROM system_introversion_order
@@ -270,7 +270,7 @@
             AND card_group_id in(#{cardGroupId})
         </if>
     </select>
-    <select id="selectBankCardFreeze" resultType="org.example.admin.vo.SystemDepositOrderInfoVo">
+    <select id="selectBankCardFreeze" resultType="org.example.admin.vo.DepositOrderInfoVo">
         SELECT
         COUNT(*) as count,
         sum(if(system_bank_card_bill.current_balance!=null,1,null)) as amount

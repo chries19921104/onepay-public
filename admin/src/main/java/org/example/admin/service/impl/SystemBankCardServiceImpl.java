@@ -5,6 +5,7 @@ import cn.hutool.json.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.extern.slf4j.Slf4j;
+import org.example.admin.dto.BankCardCreateDto;
 import org.example.admin.mapper.*;
 import org.example.admin.service.SystemBankCardService;
 import org.example.admin.vo.Statement;
@@ -16,6 +17,7 @@ import org.example.common.constant.BankCardConstant;
 import org.example.common.entity.*;
 import org.example.admin.vo.BankCardAllVo;
 import org.example.admin.vo.BankCardVo;
+import org.example.common.utils.BaseContext;
 import org.example.common.utils.PageUtils;
 import org.example.common.utils.URLUtils;
 import org.springframework.beans.BeanUtils;
@@ -26,6 +28,8 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.servlet.http.HttpServletRequest;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -60,7 +64,8 @@ public class SystemBankCardServiceImpl extends ServiceImpl<SystemBankCardMapper,
     @Autowired
     private SystemBankCardBillMapper systemBankCardBillMapper;
 
-
+    @Autowired
+    private AdminsMapper adminsMapper;
 
     @Override
     public List<BankCardVo> getBranks() {
@@ -282,6 +287,33 @@ public class SystemBankCardServiceImpl extends ServiceImpl<SystemBankCardMapper,
         }
         //返回结果集
         return getResp(request,bankCardDto,bankCardAllVos,totals,subtotals,systemBankCards);
+    }
+
+    //银行账户管理-银行账户-新增
+    @Override
+    public Map<String, BankCardAllVo> createBrankAccount(BankCardCreateDto bankCardDto) {
+        //复制属性
+        SystemBankCard systemBankCard = new SystemBankCard();
+        BeanUtils.copyProperties(bankCardDto,systemBankCard);
+        //创建与更新
+        Long userId = BaseContext.getCurrent();
+        Admins admins = adminsMapper.selectById(userId);
+        systemBankCard.setCreatedAt(Timestamp.valueOf(LocalDateTime.now()));
+        systemBankCard.setCreator(admins.getUsername());
+        systemBankCard.setUpdatedAt(Timestamp.valueOf(LocalDateTime.now()));
+        systemBankCard.setUpdater(admins.getUsername());
+        systemBankCardMapper.insert(systemBankCard);
+
+        //新建账户流水表
+        SystemBankCardBill systemBankCardBill = new SystemBankCardBill();
+        systemBankCardBill.setCreatedAt(LocalDateTime.now());
+        systemBankCardBill.setCreator(admins.getUsername());
+        systemBankCardBill.setUpdatedAt(LocalDateTime.now());
+        systemBankCardBill.setUpdater(admins.getUsername());
+        systemBankCardBill.setBankCardId(systemBankCard.getCardId());
+        systemBankCardBillMapper.insert(systemBankCardBill);
+
+        return null;
     }
 
     private MerchantResp getResp(HttpServletRequest request,
