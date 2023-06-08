@@ -27,6 +27,7 @@ public class SystemAgents implements Serializable {
     @TableId
     private Long agentId;
 
+
     /**
     * 1 总代, 2 代理
     */
