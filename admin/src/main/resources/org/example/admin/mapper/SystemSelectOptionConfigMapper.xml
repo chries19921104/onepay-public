@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.example.admin.mapper.SystemSelectOptionConfigMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="org.example.common.entity.SystemSelectOptionConfig">
+        <id column="type" property="type" />
+        <result column="num" property="num" />
+        <result column="content" property="content" />
+        <result column="spot" property="spot" />
+        <result column="creator" property="creator" />
+        <result column="updater" property="updater" />
+        <result column="created_at" property="createdAt" />
+        <result column="updated_at" property="updatedAt" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        type, num, content, spot, creator, updater, created_at, updated_at
+    </sql>
+
+</mapper>

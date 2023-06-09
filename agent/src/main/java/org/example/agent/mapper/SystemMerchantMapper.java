@@ -14,3 +14,4 @@ public interface SystemMerchantMapper extends BaseMapper<SystemMerchant> {
 
     public List<AgentZoneMerchantVo> getAgentZoneMerchantList(String currency,Long agent_id);
 }
+

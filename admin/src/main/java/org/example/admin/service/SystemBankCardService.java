@@ -1,12 +1,15 @@
 package org.example.admin.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
+import org.example.admin.dto.BankCardCreateDto;
 import org.example.common.base.MerchantResp;
 import org.example.admin.dto.BankCardDto;
 import org.example.common.entity.SystemBankCard;
 import org.example.admin.vo.BankCardAllVo;
 import org.example.admin.vo.BankCardVo;
 
+import javax.servlet.http.HttpServletRequest;
+import java.net.HttpCookie;
 import java.util.List;
 import java.util.Map;
 
@@ -27,5 +30,8 @@ public interface SystemBankCardService extends IService<SystemBankCard> {
     Map<String, List<BankCardAllVo>> getBrankByType(BankCardDto bankCardDto);
 
     //银行账户管理-银行账户-搜索
-    MerchantResp getBrankAccount(BankCardDto bankCardDto);
+    MerchantResp getBrankAccount(BankCardDto bankCardDto, HttpServletRequest request);
+
+    //银行账户管理-银行账户-新增
+    Map<String,BankCardAllVo> createBrankAccount(BankCardCreateDto bankCardDto);
 }

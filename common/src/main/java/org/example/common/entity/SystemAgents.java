@@ -1,8 +1,10 @@
 package org.example.common.entity;
 
+import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.annotations.ApiModel;
+import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -19,13 +21,19 @@ import java.time.LocalDateTime;
 */
 @Getter
 @Setter
+@Data
 @TableName("system_agents")
 @ApiModel(description = "代理实体类")
 public class SystemAgents implements Serializable {
     private static final long serialVersionUID = 1L;
 
-    @TableId
+    @TableId(value = "agent_id", type= IdType.AUTO)
     private Long agentId;
+
+    /**
+     * 代理ID
+     */
+    private String displayId;
 
     /**
     * 1 总代, 2 代理
@@ -86,6 +94,5 @@ public class SystemAgents implements Serializable {
     * 更新时间
     */
     private LocalDateTime updatedAt;
-
 
 }

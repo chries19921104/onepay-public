@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.example.admin.mapper.SystemSubWithdrawalOrderMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="org.example.common.entity.SystemSubWithdrawalOrder">
+        <id column="sub_fo_id" property="subFoId" />
+        <result column="fo_id" property="foId" />
+        <result column="fo_pre_id" property="foPreId" />
+        <result column="bank_card_id" property="bankCardId" />
+        <result column="tpi100_id" property="tpi100Id" />
+        <result column="txn_mode" property="txnMode" />
+        <result column="request_amount" property="requestAmount" />
+        <result column="paid_amount" property="paidAmount" />
+        <result column="rate" property="rate" />
+        <result column="bank_fee" property="bankFee" />
+        <result column="tpi_bank_fee" property="tpiBankFee" />
+        <result column="balance" property="balance" />
+        <result column="pre_balance" property="preBalance" />
+        <result column="balance_xy" property="balanceXy" />
+        <result column="pre_balance_xy" property="preBalanceXy" />
+        <result column="wallet_balance" property="walletBalance" />
+        <result column="currency" property="currency" />
+        <result column="step" property="step" />
+        <result column="retry_times" property="retryTimes" />
+        <result column="is_press_button" property="pressButton" />
+        <result column="status" property="status" />
+        <result column="action" property="action" />
+        <result column="message" property="message" />
+        <result column="command_id" property="commandId" />
+        <result column="virtual_bank_id" property="virtualBankId" />
+        <result column="receivedOTPtime" property="receivedotptime" />
+        <result column="otptimer" property="otptimer" />
+        <result column="ref_code" property="refCode" />
+        <result column="bankreferenceno" property="bankreferenceno" />
+        <result column="is_ref_code" property="isRefCode" />
+        <result column="is_entry" property="isEntry" />
+        <result column="vnd_otp" property="vndOtp" />
+        <result column="vnd_payment_method" property="vndPaymentMethod" />
+        <result column="postscript" property="postscript" />
+        <result column="note" property="note" />
+        <result column="token_input" property="tokenInput" />
+        <result column="xy_to_man" property="xyToMan" />
+        <result column="description" property="description" />
+        <result column="created_man" property="createdMan" />
+        <result column="updated_man" property="updatedMan" />
+        <result column="created_at" property="createdAt" />
+        <result column="updated_at" property="updatedAt" />
+        <result column="local_created_at" property="localCreatedAt" />
+        <result column="local_updated_at" property="localUpdatedAt" />
+        <result column="server_id" property="serverId" />
+        <result column="alt_vpn_id" property="altVpnId" />
+        <result column="is_late_times" property="isLateTimes" />
+        <result column="is_weird" property="isWeird" />
+        <result column="external_description" property="externalDescription" />
+        <result column="is_urgent" property="isUrgent" />
+        <result column="receipt" property="receipt" />
+        <result column="keep_point" property="keepPoint" />
+        <result column="superior_keep_point" property="superiorKeepPoint" />
+        <result column="frozen_guarantee_balance" property="frozenGuaranteeBalance" />
+        <result column="runmon_number" property="runmonNumber" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        sub_fo_id, fo_id, fo_pre_id, bank_card_id, tpi100_id, txn_mode, request_amount, paid_amount, rate, bank_fee, tpi_bank_fee, balance, pre_balance, balance_xy, pre_balance_xy, wallet_balance, currency, step, retry_times, is_press_button, status, action, message, command_id, virtual_bank_id, receivedOTPtime, otptimer, ref_code, bankreferenceno, is_ref_code, is_entry, vnd_otp, vnd_payment_method, postscript, note, token_input, xy_to_man, description, created_man, updated_man, created_at, updated_at, local_created_at, local_updated_at, server_id, alt_vpn_id, is_late_times, is_weird, external_description, is_urgent, receipt, keep_point, superior_keep_point, frozen_guarantee_balance, runmon_number
+    </sql>
+
+</mapper>

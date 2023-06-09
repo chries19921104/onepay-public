@@ -2,6 +2,7 @@ package org.example.admin.controller;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.example.admin.dto.BankCardCreateDto;
 import org.example.admin.service.SystemBankCardService;
 import org.example.common.base.MerchantResp;
 import org.example.admin.dto.BankCardDto;
@@ -10,6 +11,7 @@ import org.example.admin.vo.BankCardVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.Map;
 
@@ -46,7 +48,14 @@ public class SystemBankCardController {
 
     @ApiOperation(value = "银行账户管理-银行账户-搜索")
     @GetMapping("/bc100")
-    public MerchantResp getBrankAccount(BankCardDto bankCardDto) {
-        return systemBankCardService.getBrankAccount(bankCardDto);
+    public MerchantResp getBrankAccount(BankCardDto bankCardDto ,HttpServletRequest request) {
+        return systemBankCardService.getBrankAccount(bankCardDto,request);
+    }
+
+    //http://localhost:8088/api/bc100
+    @ApiOperation(value = "银行账户管理-银行账户-新增")
+    @PostMapping("/bc100")
+    public Map<String,BankCardAllVo> createBrankAccount(BankCardCreateDto bankCardDto) {
+        return systemBankCardService.createBrankAccount(bankCardDto);
     }
 }
