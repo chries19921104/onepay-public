@@ -3,6 +3,7 @@ package org.example.admin.vo;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.models.auth.In;
 import lombok.Data;
+import org.example.common.entity.SystemBankCardBill;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
@@ -36,6 +37,9 @@ public class BankCardAllVo {
 
     @JsonProperty("D_Remaining_Limit_O")
     private BigDecimal DRemainingLimitO;   //1
+
+    @JsonProperty("D_Remaining_Number_of_Times")//详情里面多的字段  1
+    private Integer DRemainingNumberOfTimes;
 
     @JsonProperty("ET_hold_balance")
     private BigDecimal etHoldBalance;    //system_bank_card_bill
@@ -85,6 +89,9 @@ public class BankCardAllVo {
     @JsonProperty("account_code")
     private String accountCode;
 
+    @JsonProperty("balance_warning")
+    private Boolean balanceWarning;//详情里面多的字段  1
+
     @JsonProperty("balance_lower_warning")
     private Boolean balanceLowerWarning;  //1
 
@@ -133,8 +140,20 @@ public class BankCardAllVo {
     @JsonProperty("hold_at")
     private LocalDateTime holdAt;
 
+    @JsonProperty("hold_time")
+    private String holdTime;//详情里面多的字段  1
+
+    @JsonProperty("identity")
+    private String identity;//详情里面多的字段   1
+
+    @JsonProperty("is_dab_token_card")
+    private Boolean isDabTokenCard;//详情里面多的字段  1
+
+    @JsonProperty("last_BC120")
+    private String lastBC120;//详情里面多的字段
+
     @JsonProperty("is_errurl_opencard")
-    private Integer isErrurlOpencard;  //找不到
+    private Integer isErrurlOpencard;  //1
 
     @JsonProperty("is_promptpay_code")
     private Integer isPromptpayCode;  //1
@@ -179,7 +198,7 @@ public class BankCardAllVo {
     private Long monthTreshold;
 
     @JsonProperty("msg_opencard")
-    private Integer msgOpencard;  //找不到
+    private Integer msgOpencard;//1
 
     @JsonProperty("name")
     private String account;
@@ -213,6 +232,9 @@ public class BankCardAllVo {
 
     @JsonProperty("qr_pay_code")
     private String qrPayCode;
+
+    @JsonProperty("real_balance")
+    private BigDecimal realBalance;//详详情里面多的字段   1
 
     @JsonProperty("remaining_balance")
     private BigDecimal remainingBalance;  //总余额
@@ -270,4 +292,10 @@ public class BankCardAllVo {
 
     @JsonProperty("withdraw_pin")
     private String withdrawPin;
+
+    @JsonProperty("youtap_pin")
+    private String youtapPin;//详情里面多的字段   1
+
+    @JsonProperty("b_c110")
+    private SystemBankCardBill bankCardBill;
 }

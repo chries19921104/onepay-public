@@ -9,6 +9,7 @@ import org.example.admin.dto.BankCardCreateDto;
 import org.example.admin.mapper.*;
 import org.example.admin.service.SystemBankCardService;
 import org.example.admin.vo.Statement;
+import org.example.common.base.CommResp;
 import org.example.common.base.GetNoResp;
 import org.example.common.base.MerchantResp;
 import org.example.admin.dto.BankCardDto;
@@ -22,14 +23,21 @@ import org.example.common.utils.PageUtils;
 import org.example.common.utils.URLUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.yaml.snakeyaml.Yaml;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.sql.Timestamp;
+import java.time.Duration;
 import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -67,6 +75,10 @@ public class SystemBankCardServiceImpl extends ServiceImpl<SystemBankCardMapper,
     @Autowired
     private AdminsMapper adminsMapper;
 
+    @Autowired
+    private SystemDabTokenCardMapper systemDabTokenCardMapper;
+
+    //有关银行卡账户号码选项列表查询接口
     @Override
     public List<BankCardVo> getBranks() {
         //先查询出所有的银行卡信息
@@ -85,6 +97,7 @@ public class SystemBankCardServiceImpl extends ServiceImpl<SystemBankCardMapper,
         return collect;
     }
 
+    //查找不同type，status，curreny的账户
     @Override
     public Map<String, List<BankCardAllVo>> getBrankByType(BankCardDto bankCardDto) {
         //通过typr，assigned，currency查询BankCard表
@@ -102,8 +115,9 @@ public class SystemBankCardServiceImpl extends ServiceImpl<SystemBankCardMapper,
         return map;
     }
 
+    //银行账户管理-银行账户-查询
     @Override
-    public MerchantResp getBrankAccount(BankCardDto bankCardDto , HttpServletRequest request) {
+    public MerchantResp getBrankAccountList(BankCardDto bankCardDto , HttpServletRequest request) {
         //data
         LambdaQueryWrapper<SystemBankCard> lqw = new LambdaQueryWrapper<>();
         if (bankCardDto.getCurrency()!= null && !bankCardDto.getCurrency().isEmpty()){
@@ -159,8 +173,10 @@ public class SystemBankCardServiceImpl extends ServiceImpl<SystemBankCardMapper,
 
             //2.通过iter中的server_id去查询system_server_list表中数据
             SystemServerList systemServerList = systemServerListMapper.selectById(iter.getServerId());
-            bankCardAllVo.setPreVPN100ID(null);
-            bankCardAllVo.setVpnName(systemServerList.getName());
+            if (systemServerList != null){
+                bankCardAllVo.setPreVPN100ID(null);
+                bankCardAllVo.setVpnName(systemServerList.getName());
+            }
 
             //3.通过iter中的cardGroupId去查询system_bank_card_group表中数据
             SystemBankCardGroup systemBankCardGroup = systemBankCardGroupMapper.selectById(iter.getCardGroupId());
@@ -293,6 +309,7 @@ public class SystemBankCardServiceImpl extends ServiceImpl<SystemBankCardMapper,
     @Override
     public Map<String, BankCardAllVo> createBrankAccount(BankCardCreateDto bankCardDto) {
         //复制属性
+        BankCardAllVo bankCardAllVo = new BankCardAllVo();
         SystemBankCard systemBankCard = new SystemBankCard();
         BeanUtils.copyProperties(bankCardDto,systemBankCard);
         //创建与更新
@@ -303,6 +320,8 @@ public class SystemBankCardServiceImpl extends ServiceImpl<SystemBankCardMapper,
         systemBankCard.setUpdatedAt(Timestamp.valueOf(LocalDateTime.now()));
         systemBankCard.setUpdater(admins.getUsername());
         systemBankCardMapper.insert(systemBankCard);
+        BeanUtils.copyProperties(bankCardDto,bankCardAllVo);
+        bankCardAllVo.setCardId(systemBankCard.getCardId());
 
         //新建账户流水表
         SystemBankCardBill systemBankCardBill = new SystemBankCardBill();
@@ -313,8 +332,124 @@ public class SystemBankCardServiceImpl extends ServiceImpl<SystemBankCardMapper,
         systemBankCardBill.setBankCardId(systemBankCard.getCardId());
         systemBankCardBillMapper.insert(systemBankCardBill);
 
-        return null;
+        bankCardAllVo.setBankCardBill(systemBankCardBillMapper.selectById(systemBankCardBill.getWalletId()));
+        return CommResp.respData(bankCardAllVo);
     }
+
+    //银行账户管理-银行账户-详情
+    @Override
+    public Map<String, BankCardAllVo> getBrankAccount(Long id) {
+        //1、根据id查出bankcard表
+        SystemBankCard systemBankCard = systemBankCardMapper.selectById(id);
+
+        //2.拷贝属性
+        BankCardAllVo bankCardAllVo = new BankCardAllVo();
+        bankCardAllVo.setMaxBalance(systemBankCard.getDailyCollectionLimit());
+        bankCardAllVo.setIdentity(systemBankCard.getWithdrawPin());
+        bankCardAllVo.setYoutapPin(systemBankCard.getWithdrawPin());
+        BeanUtils.copyProperties(systemBankCard,bankCardAllVo);
+
+        //4.通过iter中的bankid去查询system_bank表中数据
+        SystemBank systemBank = systemBankMapper.selectById(systemBankCard.getBankId());
+
+        //3.通过iter中的bankcardid去查询system_bank_card_bill表中数据
+        SystemBankCardBill systemBankCardBill = systemBankCardBillMapper.selectOne(new LambdaQueryWrapper<SystemBankCardBill>()
+                .eq(SystemBankCardBill::getBankCardId, id));
+        bankCardAllVo.setEtHoldBalance(systemBankCardBill.getEtHoldBalance());
+        bankCardAllVo.setFiHoldBalance(systemBankCardBill.getFiHoldBalance());
+        bankCardAllVo.setFoHoldBalance(systemBankCardBill.getFoHoldBalance());
+        bankCardAllVo.setFxHoldBalance(systemBankCardBill.getFxHoldBalance());
+        bankCardAllVo.setTrInHoldBalance(systemBankCardBill.getTrInHoldBalance());
+        bankCardAllVo.setTrOutHoldBalance(systemBankCardBill.getTrOutHoldBalance());
+
+        //4.通过iter中的server_id去查询system_server_list表中数据
+        SystemServerList systemServerList = systemServerListMapper.selectById(systemBankCard.getServerId());
+        if (systemServerList != null){
+            bankCardAllVo.setPreVPN100ID(null);
+            bankCardAllVo.setVpnName(systemServerList.getName());
+        }
+
+        //5.需要计算的数据
+        BigDecimal d_i = systemBankCard.getDailyDisbursementLimit().subtract(systemBankCardBill.getDayFlowIn());
+        BigDecimal d_o = systemBankCard.getDailyDisbursementLimit().subtract(systemBankCardBill.getDayFlowOut());
+        BigDecimal m_i = systemBankCard.getMonthDisbursementLimit().subtract(systemBankCardBill.getMonthFlowIn());
+        BigDecimal m_o = systemBankCard.getDailyDisbursementLimit().subtract(systemBankCardBill.getMonthFlowOut());
+        bankCardAllVo.setDRemainingLimitI(d_i);
+        bankCardAllVo.setDRemainingLimitO(d_o);
+        bankCardAllVo.setMRemainingLimitI(m_i);
+        bankCardAllVo.setDRemainingLimitO(m_o);
+
+        bankCardAllVo.setDIWarning(systemBankCard.getDailyDisbursementLimit().multiply(BigDecimal.valueOf(0.05)).compareTo(d_i) >= 0);
+        bankCardAllVo.setDOWarning(systemBankCard.getDailyDisbursementLimit().multiply(BigDecimal.valueOf(0.05)).compareTo(d_o) >= 0);
+        bankCardAllVo.setMIWarning(systemBankCard.getMonthDisbursementLimit().multiply(BigDecimal.valueOf(0.05)).compareTo(m_i) >= 0);
+        bankCardAllVo.setMOWarning(systemBankCard.getMonthDisbursementLimit().multiply(BigDecimal.valueOf(0.05)).compareTo(m_o) >= 0);
+
+        long remainingNumberofTimes = systemBankCard.getMonthTreshold()
+                - systemBankCardBill.getMonthCurrentSuccessIn()
+                - systemBankCardBill.getMonthHoldSuccessIn()
+                - systemBankCardBill.getMonthCurrentSuccessOut()
+                - systemBankCardBill.getMonthHoldSuccessOut();
+        bankCardAllVo.setRemainingNumberOfTimes(remainingNumberofTimes);
+
+        bankCardAllVo.setTimesWarning(remainingNumberofTimes <= 5);
+
+        BigDecimal remainingBalance = systemBankCard.getStatus() == 5 ? BigDecimal.valueOf(0.0) : systemBankCardBill.getCurrentBalance();
+        bankCardAllVo.setRemainingBalance(remainingBalance);
+
+        Statement statement = new Statement();
+        if (systemBankCard.getStatement() != null && !systemBankCard.getStatement().isEmpty()) {
+            JSONObject jsonObject = new JSONObject(systemBankCard.getStatement());
+            statement.setStatus(jsonObject.getInt("status", null));
+            statement.setCount(jsonObject.getInt("count", null));
+            statement.setHistoryStatus(jsonObject.getInt("historStatus", null));
+            statement.setIsErrurl(jsonObject.getInt("isErrurl", null));
+            statement.setLCount(jsonObject.getInt("lCount", null));
+            statement.setManualPlay(jsonObject.getInt("manualPlay", null));
+            statement.setPCount(jsonObject.getInt("pCount", null));
+            bankCardAllVo.setStatement(statement);
+        } else {
+            bankCardAllVo.setStatement(statement);
+        }
+
+        bankCardAllVo.setDRemainingNumberOfTimes(systemBank.getDayTreshold() > 0 ? (int) (systemBank.getDayTreshold()
+            - systemBankCardBill.getDayCurrentSuccessIn()
+            - systemBankCardBill.getDayHoldSuccessIn() - systemBankCardBill.getDayCurrentSuccessOut()
+            - systemBankCardBill.getDayHoldSuccessOut() - systemBankCardBill.getDayUnknownVbs()) : 0);
+
+        List<Integer> list = new ArrayList<>();
+        list.add(BankCardConstant.TYPE_FO);
+        list.add(BankCardConstant.TYPE_FX);
+        bankCardAllVo.setBalanceWarning(list.contains(systemBankCard.getType())
+                && remainingBalance.compareTo(systemBankCard.getDailyCollectionLimit().multiply(BigDecimal.valueOf(0.05))) <= 0);
+        bankCardAllVo.setBalanceUpperWarning(systemBankCard.getType() == BankCardConstant.TYPE_FI
+                && remainingBalance.compareTo(systemBankCard.getDailyCollectionLimit().multiply(BigDecimal.valueOf(0.95))) >= 0);
+
+        bankCardAllVo.setHoldTime(getHoldTime(systemBank.getCode(),systemBankCard.getHoldAt()));
+
+        List<SystemDabTokenCard> systemDabTokenCards = systemDabTokenCardMapper.selectList(new LambdaQueryWrapper<SystemDabTokenCard>()
+                .eq(SystemDabTokenCard::getBankCardId, systemBankCard.getCardId()));
+        bankCardAllVo.setIsDabTokenCard(systemDabTokenCards.size() > 0);
+
+        BigDecimal reservedBalance = systemBankCardBill.getFoHoldBalance().add(systemBankCardBill.getFxHoldBalance())
+                .add(systemBankCardBill.getEtHoldBalance()).add(systemBankCardBill.getTrOutHoldBalance());
+        bankCardAllVo.setRealBalance(systemBankCardBill.getCurrentBalance().subtract(reservedBalance));
+
+        return CommResp.respData(bankCardAllVo);
+    }
+
+    //银行账户管理-银行账户-修改
+    @Override
+    public Map<String, Boolean> updateBrankAccount(BankCardAllVo bankCardAllVo) {
+        //修改的数据包含两张表的数据，将不同的数据拷贝各自的表中
+        SystemBankCard systemBankCard = new SystemBankCard();
+        SystemBankCardBill systemBankCardBill = new SystemBankCardBill();
+        BeanUtils.copyProperties(bankCardAllVo,systemBankCard);
+        BeanUtils.copyProperties(bankCardAllVo,systemBankCardBill);
+        systemBankCardMapper.updateById(systemBankCard);
+        systemBankCardBillMapper.updateById(systemBankCardBill);
+        return CommResp.success();
+    }
+
 
     private MerchantResp getResp(HttpServletRequest request,
                                  BankCardDto bankCardDto,
@@ -360,5 +495,46 @@ public class SystemBankCardServiceImpl extends ServiceImpl<SystemBankCardMapper,
         t.setTrInHoldBalance(BigDecimal.valueOf(0));
         t.setLoss(BigDecimal.valueOf(0));
         t.setRemainingBalance(BigDecimal.valueOf(0));
+    }
+
+    private String getHoldTime(String code,LocalDateTime holdAt) {
+        Yaml yaml = new Yaml();
+        try {
+            InputStream inputStream = new FileInputStream("src/main/resources/application.yml");
+            Map<String, Object> config = yaml.load(inputStream);
+
+            //1.得到hold_time_limit
+            String s = "hold_time_limit";
+            Integer holdTimeLimit = null;
+            Integer i = (Integer) config.get(s + code);
+            if (i != null){
+                holdTimeLimit = i;
+            }else {
+                holdTimeLimit = 0;
+            }
+
+            //2.得到hold_time
+            Long holdTime = null;
+            LocalDateTime localDateTime = holdAt.plusMinutes(holdTimeLimit);
+            LocalDateTime now = LocalDateTime.now();
+            Duration duration = Duration.between(localDateTime, now);
+            holdTime = duration.getSeconds();
+
+            //3.将hold_time经过计算得到分钟和秒数
+            long minute = (holdTime % 86400 % 3600) / 60;
+            long second = (holdTime % 86400 % 3600) % 60;
+
+            //返回hold_time的数据
+            if (minute < 1) {
+                return "01:00";
+            } else {
+                return String.format("%02d:%02d", minute, second);
+            }
+
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+            log.error("getHoldTime方法错误",e);
+        }
+        return null;
     }
 }
