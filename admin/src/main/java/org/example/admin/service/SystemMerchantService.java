@@ -14,13 +14,13 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 /**
-* <p>
-* system_merchant Service 接口
-* </p>
-*
-* @author Administrator
-* @since 2023-05-16 14:57:07
-*/
+ * <p>
+ * system_merchant Service 接口
+ * </p>
+ *
+ * @author Administrator
+ * @since 2023-05-16 14:57:07
+ */
 @Service
 public interface SystemMerchantService extends IService<SystemMerchant> {
 

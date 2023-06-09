@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.example.admin.mapper.SystemMerchantMapper">
+
+    <resultMap id="BaseResultMap" type="org.example.common.entity.SystemMerchant">
+            <id property="merchantId" column="merchant_id" jdbcType="BIGINT"/>
+            <result property="cardGroupId" column="card_group_id" jdbcType="BIGINT"/>
+            <result property="agentId" column="agent_id" jdbcType="BIGINT"/>
+            <result property="name" column="name" jdbcType="VARCHAR"/>
+            <result property="code" column="code" jdbcType="VARCHAR"/>
+            <result property="secCode" column="sec_code" jdbcType="VARCHAR"/>
+            <result property="name4qr" column="name4qr" jdbcType="VARCHAR"/>
+            <result property="currency" column="currency" jdbcType="VARCHAR"/>
+            <result property="website" column="website" jdbcType="VARCHAR"/>
+            <result property="trRate" column="tr_rate" jdbcType="DECIMAL"/>
+            <result property="trQrRate" column="tr_qr_rate" jdbcType="DECIMAL"/>
+            <result property="trTrueRate" column="tr_true_rate" jdbcType="DECIMAL"/>
+            <result property="trLocalbankRate" column="tr_localbank_rate" jdbcType="DECIMAL"/>
+            <result property="wdRate" column="wd_rate" jdbcType="DECIMAL"/>
+            <result property="wdRateAmount" column="wd_rate_amount" jdbcType="DECIMAL"/>
+            <result property="settFee" column="sett_fee" jdbcType="DECIMAL"/>
+            <result property="fiBankMax" column="fi_bank_max" jdbcType="DECIMAL"/>
+            <result property="fiBankMin" column="fi_bank_min" jdbcType="DECIMAL"/>
+            <result property="fiQrpayMax" column="fi_qrpay_max" jdbcType="DECIMAL"/>
+            <result property="fiQrpayMin" column="fi_qrpay_min" jdbcType="DECIMAL"/>
+            <result property="fiTrueMax" column="fi_true_max" jdbcType="DECIMAL"/>
+            <result property="fiTrueMin" column="fi_true_min" jdbcType="DECIMAL"/>
+            <result property="fiLocalbankMax" column="fi_localbank_max" jdbcType="DECIMAL"/>
+            <result property="fiLocalbankMin" column="fi_localbank_min" jdbcType="DECIMAL"/>
+            <result property="foMax" column="fo_max" jdbcType="DECIMAL"/>
+            <result property="foMin" column="fo_min" jdbcType="DECIMAL"/>
+            <result property="fxMax" column="fx_max" jdbcType="DECIMAL"/>
+            <result property="fxMin" column="fx_min" jdbcType="DECIMAL"/>
+            <result property="settCardMax" column="sett_card_max" jdbcType="TINYINT"/>
+            <result property="status" column="status" jdbcType="INTEGER"/>
+            <result property="noQrAdj" column="no_qr_adj" jdbcType="TINYINT"/>
+            <result property="noQrAdjRandom" column="no_qr_adj_random" jdbcType="TINYINT"/>
+            <result property="localbankAdj" column="localbank_adj" jdbcType="TINYINT"/>
+            <result property="localbankAdjRandom" column="localbank_adj_random" jdbcType="TINYINT"/>
+            <result property="useQrPairingCode" column="use_qr_pairing_code" jdbcType="TINYINT"/>
+            <result property="vnpayEnabled" column="VNPAY_enabled" jdbcType="TINYINT"/>
+            <result property="foTpiDriver" column="FO_Tpi_driver" jdbcType="VARCHAR"/>
+            <result property="checkAccname" column="check_accname" jdbcType="TINYINT"/>
+            <result property="payFoBankFee" column="pay_fo_bank_fee" jdbcType="TINYINT"/>
+            <result property="settlementTerm" column="settlement_term" jdbcType="TINYINT"/>
+            <result property="createdMan" column="created_man" jdbcType="VARCHAR"/>
+            <result property="updatedMan" column="updated_man" jdbcType="VARCHAR"/>
+            <result property="createdAt" column="created_at" jdbcType="TIMESTAMP"/>
+            <result property="updatedAt" column="updated_at" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        merchant_id,card_group_id,agent_id,
+        name,code,sec_code,
+        name4qr,currency,website,
+        tr_rate,tr_qr_rate,tr_true_rate,
+        tr_localbank_rate,wd_rate,wd_rate_amount,
+        sett_fee,fi_bank_max,fi_bank_min,
+        fi_qrpay_max,fi_qrpay_min,fi_true_max,
+        fi_true_min,fi_localbank_max,fi_localbank_min,
+        fo_max,fo_min,fx_max,
+        fx_min,sett_card_max,status,
+        no_qr_adj,no_qr_adj_random,localbank_adj,
+        localbank_adj_random,use_qr_pairing_code,VNPAY_enabled,
+        FO_Tpi_driver,check_accname,pay_fo_bank_fee,
+        settlement_term,created_man,updated_man,
+        created_at,updated_at
+    </sql>
+
+    <select id="selectListMap" resultType="java.util.Map">
+        select merchant_id,name from system_merchant where merchant_id in (#{set});
+    </select>
+</mapper>

@@ -1,19 +1,20 @@
 package org.example.admin.service.impl;
 
+import cn.hutool.json.JSONArray;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import io.netty.util.internal.StringUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.example.admin.dto.BankAccountListDto;
-import org.example.admin.dto.MerchantDto;
-import org.example.admin.mapper.InternalReportsMapper;
-import org.example.admin.mapper.SystemLogLastPageMapper;
-import org.example.admin.mapper.SystemSelectOptionConfigMapper;
+import org.example.admin.dto.TransactionScreenRecordsDto;
+import org.example.admin.mapper.*;
 import org.example.admin.service.InternalReportsService;
 import org.example.admin.vo.BankAccountListVo;
 import org.example.common.base.CommResp;
 import org.example.common.base.GetNoResp;
 import org.example.common.base.MerchantResp;
 import org.example.common.base.Totals;
+import org.example.common.entity.SystemApprovedAccountReport;
 import org.example.common.entity.SystemLogLastPage;
 import org.example.common.utils.URLUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,8 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
-import java.math.BigDecimal;
-import java.util.List;
+import java.util.*;
 
 /**
  * @author Txd
@@ -40,9 +40,17 @@ public class InternalReportsServiceImpl implements InternalReportsService {
     private SystemSelectOptionConfigMapper systemSelectOptionConfigMapper;
     @Resource
     private SystemLogLastPageMapper systemLogLastPageMapper;
+    @Resource
+    private SystemApprovedAccountReportMapper systemApprovedAccountReportMapper;
+    @Resource
+    private SystemMerchantMapper systemMerchantMapper;
+
+
+
 
     @Override
     public MerchantResp getBankAccountList(HttpServletRequest request, BankAccountListDto bankAccountListDto) {
+        //当前页
         int page = bankAccountListDto.getPage();
 
         bankAccountListDto.setPage((bankAccountListDto.getPage() - 1) * bankAccountListDto.getRp());
@@ -66,21 +74,64 @@ public class InternalReportsServiceImpl implements InternalReportsService {
 //        }
 
         if (bankAccountListVoPage.getRecords() != null && bankAccountListVoPage.getRecords().size() != 0){
-            //其他信息MerchantResp
-            return getMerchantResp(bankAccountListVoPage,null,request,bankAccountListDto);
+            //其他信息
+            return getMerchantResp(bankAccountListVoPage,null,request,bankAccountListDto.getRp());
         }
         return GetNoResp.getNoBankAccountListResp(request,bankAccountListDto.getRp());
     }
 
     @Override
-    public CommResp getTransactionScreenRecords(String altId, Integer rp, Integer page) {
+    public MerchantResp getTransactionScreenRecords(HttpServletRequest request, TransactionScreenRecordsDto transactionScreenRecordsDto) {
         SystemLogLastPage systemLogLastPage = systemLogLastPageMapper.selectOne(new LambdaQueryWrapper<SystemLogLastPage>()
-                .eq(SystemLogLastPage::getCommandId, altId));
+                .eq(SystemLogLastPage::getCommandId, transactionScreenRecordsDto.getArt_id()));
 
-        return CommResp.data(systemLogLastPage);
+        Page<SystemLogLastPage> systemLogLastPagePage = new Page<>(transactionScreenRecordsDto.getPage(),transactionScreenRecordsDto.getRp(),
+                systemLogLastPage == null ? 0 : 1);
+        systemLogLastPagePage.setRecords((List<SystemLogLastPage>) systemLogLastPage);
+
+        if (systemLogLastPage != null){
+            //其他信息
+            return getMerchantResp(systemLogLastPagePage,null,request,transactionScreenRecordsDto.getRp());
+        }
+        return GetNoResp.getTransactionScreenRecordsResp(request,transactionScreenRecordsDto.getRp());
     }
 
-    private MerchantResp getMerchantResp(Page<BankAccountListVo> bankAccountListVoPage, Totals totals, HttpServletRequest request, BankAccountListDto bankAccountListDto) {
+
+    @Override
+    public CommResp getApprovedCardReport(String number) {
+
+        String partition = number.substring(number.length()-2);
+
+        List<SystemApprovedAccountReport> systemApprovedAccountReports = systemApprovedAccountReportMapper.selectList(new LambdaQueryWrapper<SystemApprovedAccountReport>()
+                .eq(SystemApprovedAccountReport::getPartition, partition)
+                .eq(SystemApprovedAccountReport::getNumber, number));
+
+        HashSet<Integer> set = new HashSet<>();
+        for (SystemApprovedAccountReport systemApprovedAccountReport:systemApprovedAccountReports) {
+            set.add(systemApprovedAccountReport.getMerchantId());
+            if (!StringUtil.isNullOrEmpty(systemApprovedAccountReport.getMatchedNames())){
+                JSONArray objects = new JSONArray(systemApprovedAccountReport.getMatchedNames());
+                systemApprovedAccountReport.setMatchedNamesJson(objects);
+            }
+        }
+
+
+        Map<Integer,String> systemMerchants = systemMerchantMapper.selectListMap(set);
+
+        for (SystemApprovedAccountReport systemApprovedAccountReport:systemApprovedAccountReports) {
+            systemApprovedAccountReport.setMerchantName(systemMerchants.get(systemApprovedAccountReport.getMerchantId()));
+        }
+
+
+        return CommResp.data(systemApprovedAccountReports);
+    }
+
+
+
+
+
+
+    private MerchantResp getMerchantResp(Page bankAccountListVoPage, Totals totals, HttpServletRequest request, Integer rp) {
         MerchantResp merchantResp = new MerchantResp();
         //
         //获取当前接口的url
@@ -99,7 +150,7 @@ public class InternalReportsServiceImpl implements InternalReportsService {
             merchantResp.setFrom((int) bankAccountListVoPage.getCurrent());
         }
         merchantResp.setLast_page((int) bankAccountListVoPage.getPages());
-        merchantResp.setPer_page(bankAccountListDto.getRp()+ "");
+        merchantResp.setPer_page(rp+ "");
         merchantResp.setPrev_page_url(null);
         merchantResp.setSubtotals(totals);
         if (bankAccountListVoPage.getTotal() != 0){

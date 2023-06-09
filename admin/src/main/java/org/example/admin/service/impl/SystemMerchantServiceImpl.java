@@ -27,13 +27,13 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 /**
-* <p>
-* system_merchant Service 接口实现
-* </p>
-*
-* @author Administrator
-* @since 2023-05-16 14:57:24
-*/
+ * <p>
+ * system_merchant Service 接口实现
+ * </p>
+ *
+ * @author Administrator
+ * @since 2023-05-16 14:57:24
+ */
 @Service
 @Transactional
 @Slf4j
@@ -147,11 +147,11 @@ public class SystemMerchantServiceImpl extends ServiceImpl<SystemMerchantMapper,
             //通过data类中的商户id查询对应的商户钱包信息
             SystemMerchantWallet systemMerchantWallet = systemMerchantWalletMapper.selectOne(
                     new LambdaQueryWrapper<SystemMerchantWallet>()
-                    .eq(SystemMerchantWallet::getMerchantId, merchantData.getMerchantId()));
+                            .eq(SystemMerchantWallet::getMerchantId, merchantData.getMerchantId()));
             //通过data中的代理id查询代理表的相关信息
             SystemAgents systemAgent1 = systemAgentsMapper.selectOne(
                     new LambdaQueryWrapper<SystemAgents>()
-                    .eq(SystemAgents::getAgentId, merchantData.getAgentDisplayId()));
+                            .eq(SystemAgents::getAgentId, merchantData.getAgentDisplayId()));
             //如果查询出来的代理信息包含父代理，那么通过父代理id查询代理信息
             if (systemAgent1 != null && systemAgent1.getBelongId() != null){
                 SystemAgents systemAgent2 = systemAgentsMapper.selectOne(
@@ -496,7 +496,7 @@ public class SystemMerchantServiceImpl extends ServiceImpl<SystemMerchantMapper,
 
         for (BrankDto brankDto : merchantDto1.getOpenBank()) {
             lqw.eq(SystemMerchantSupportBank::getBankId,brankDto.getBankId())
-                            .eq(SystemMerchantSupportBank::getTxnType,brankDto.getTxnType());
+                    .eq(SystemMerchantSupportBank::getTxnType,brankDto.getTxnType());
             SystemMerchantSupportBank merchantSupportBank1 = systemMerchantSupportBankMapper.selectOne(lqw);
             if (!brankDto.getIsEnabled().equals(merchantSupportBank1.getIsEnabled())){
                 merchantSupportBank1.setIsEnabled(brankDto.getIsEnabled());

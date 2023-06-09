@@ -1,5 +1,6 @@
 package org.example.common.base;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import io.swagger.annotations.ApiModel;
 import lombok.Data;
 
@@ -18,8 +19,10 @@ public class MerchantResp {
     private String path;
     private String per_page;
     private String prev_page_url;
+    @JsonInclude(value= JsonInclude.Include.NON_NULL)
     private Totals subtotals;
     private Integer to;
     private Integer total;
+    @JsonInclude(value= JsonInclude.Include.NON_NULL)
     private Totals totals;
 }

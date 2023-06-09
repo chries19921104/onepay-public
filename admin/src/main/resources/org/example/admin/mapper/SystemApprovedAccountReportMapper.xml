@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.example.admin.mapper.SystemApprovedAccountReportMapper">
+
+    <resultMap id="BaseResultMap" type="org.example.common.entity.SystemApprovedAccountReport">
+            <id property="partition" column="partition" jdbcType="CHAR"/>
+            <id property="number" column="number" jdbcType="VARCHAR"/>
+            <id property="bank" column="bank" jdbcType="VARCHAR"/>
+            <result property="type" column="type" jdbcType="TINYINT"/>
+            <result property="merchantId" column="merchant_id" jdbcType="OTHER"/>
+            <result property="requestedName" column="requested_name" jdbcType="VARCHAR"/>
+            <result property="matchedNames" column="matched_names" jdbcType="VARCHAR"/>
+            <result property="lastRequestedAt" column="last_requested_at" jdbcType="TIMESTAMP"/>
+            <result property="requests" column="requests" jdbcType="OTHER"/>
+            <result property="createdAt" column="created_at" jdbcType="TIMESTAMP"/>
+            <result property="updatedAt" column="updated_at" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        partition,number,bank,
+        type,merchnat_id,requested_name,
+        matched_names,last_requested_at,requests,
+        created_at,updated_at
+    </sql>
+</mapper>

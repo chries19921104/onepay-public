@@ -3,6 +3,7 @@ package org.example.admin.controller;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.example.admin.dto.BankAccountListDto;
+import org.example.admin.dto.TransactionScreenRecordsDto;
 import org.example.admin.service.InternalReportsService;
 import org.example.common.base.CommResp;
 import org.example.common.base.MerchantResp;
@@ -41,7 +42,17 @@ public class InternalReportsController {
 
     @ApiOperation(value = "交易画面记录查询接口")
     @GetMapping("/transactionScreenRecords")
-    public CommResp getTransactionScreenRecords(@Max(255) Integer type, String alt_id, Integer rp, Integer page) {
-        return internalReportsService.getTransactionScreenRecords(alt_id,rp,page);
+    public MerchantResp getTransactionScreenRecords(HttpServletRequest request,@Validated TransactionScreenRecordsDto transactionScreenRecordsDto) {
+        return internalReportsService.getTransactionScreenRecords(request, transactionScreenRecordsDto);
+    }
+
+
+    @ApiOperation(value = "已批准卡片报表查询接口")
+    @GetMapping("/approvedCardReport")
+    public CommResp getApprovedCardReport(@Length(min = 2,max = 255) String number) {
+        if (number == null || number.trim().equals("")){
+            return CommResp.data(null);
+        }
+        return internalReportsService.getApprovedCardReport(number);
     }
 }
