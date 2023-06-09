@@ -33,6 +33,10 @@ public class AgentsVo {
      * 登录账号
      */
     private String username;
+    /**
+     * 登录密码 hash_password加密
+     */
+//    private String password;
 
     /**
      * 全称

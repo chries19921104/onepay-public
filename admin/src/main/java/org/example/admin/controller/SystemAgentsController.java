@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 /**
 * <p>
@@ -37,35 +38,59 @@ public class SystemAgentsController {
         return systemAgentsService.getAgents();
     }
 
+    //http://localhost:8088/api/agent/all
     @ApiOperation(value = "代理-代理列表-条件查询")
     @GetMapping("/agent/all")
     @NoAuthorization
     public CommResp getAgentsAll(AgentDto agentDto){
-        List<AgentsVo> agentsVoList=systemAgentsService.getAgentsAll(agentDto);
 
-        return CommResp.data(agentsVoList);
+        return systemAgentsService.getAgentsAll(agentDto);
     }
 
+    //http://localhost:8088/api/agent/noIdentity
     @ApiOperation(value = "代理-代理列表-无身份查询")
     @GetMapping("/agent/noIdentity")
     @NoAuthorization
     public CommResp getAgentsNoIdentity(AgentDto agentDto){
-        List<AgentsVo> agentsVoList=systemAgentsService.getAgentsNoIdentity(agentDto);
 
-        return CommResp.data(agentsVoList);
+        return systemAgentsService.getAgentsNoIdentity(agentDto);
     }
 
+    //http://localhost:8088/api/agent/insert
     @ApiOperation(value = "代理-代理列表-新增")
     @PostMapping("/agent/insert")
     public CommResp InsertAgent(AgentDto agentDto){
 
-        boolean b=systemAgentsService.InsertAgent(agentDto);
-        if(b){
-            return CommResp.data("添加成功");
-        }
+        return systemAgentsService.InsertAgent(agentDto);
 
-        return CommResp.FAIL("新增失败");
     }
+
+    //http://localhost:8088/api/agent/{id}
+    @ApiOperation(value = "代理-代理列表-详情")
+    @GetMapping("/agent/{id}")
+    @NoAuthorization
+    public CommResp getAgentData(@PathVariable("id")Long id){
+
+        return systemAgentsService.getAgentData(id);
+    }
+
+    //http://localhost:8088/api/agent/{id}
+    @ApiOperation(value = "代理-代理列表-详情-编辑")
+    @PutMapping("/agent/{id}/")
+    public CommResp updateAgent(@PathVariable("id")Long id,@RequestBody AgentDto agentDto){
+
+        return systemAgentsService.updateAgent(id,agentDto);
+    }
+
+    //http://localhost:8088/api/agent/{id}/password/reset
+    @ApiOperation(value = "代理-代理列表-详情-重置密码")
+    @PutMapping("/agent/{id}/password/reset")
+    @NoAuthorization
+    public CommResp updateAgentPassword(@PathVariable("id")Long id){
+
+        return systemAgentsService.updateAgentPassword(id);
+    }
+
 
 
 

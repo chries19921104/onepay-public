@@ -2,10 +2,12 @@ package org.example.admin.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import org.example.admin.dto.AgentDto;
+import org.example.common.base.CommResp;
 import org.example.common.entity.SystemAgents;
 import org.example.admin.vo.AgentsVo;
 
 import java.util.List;
+import java.util.Map;
 
 /**
 * <p>
@@ -24,11 +26,20 @@ public interface SystemAgentsService extends IService<SystemAgents> {
     List<AgentsVo> getAgents();
 
     //查询所有数据或条件查询
-    List<AgentsVo> getAgentsAll(AgentDto agentDto);
+    CommResp getAgentsAll(AgentDto agentDto);
 
     //查询无身份的数据
-    List<AgentsVo> getAgentsNoIdentity(AgentDto agentDto);
+    CommResp getAgentsNoIdentity(AgentDto agentDto);
 
     //代理-代理列表-新增
-    boolean InsertAgent(AgentDto agentDto);
+    CommResp InsertAgent(AgentDto agentDto);
+
+    //代理-代理列表-详情
+    CommResp getAgentData(Long id);
+
+    //代理-代理列表-详情-编辑
+    CommResp updateAgent(Long id,AgentDto agentDto);
+
+    //代理-代理列表-详情-重置密码
+    CommResp updateAgentPassword(Long id);
 }

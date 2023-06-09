@@ -2,6 +2,7 @@ package org.example.admin.dto;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModel;
 import lombok.Data;
 
@@ -11,12 +12,13 @@ import java.time.LocalDateTime;
 @ApiModel(value = "接受前端代理列表数据")
 public class AgentDto {
 
-    @TableId(value = "agent_id",type = IdType.AUTO)
+    @JsonProperty("agent_ID")
     private Long agentId;
 
     /**
      * 代理ID
      */
+    @JsonProperty("display_id")
     private String displayId;
     /**
      * 1 总代, 2 代理
@@ -26,6 +28,7 @@ public class AgentDto {
     /**
      * 所属总代
      */
+    @JsonProperty("belong_id")
     private Long belongId;
 
     /**
@@ -41,6 +44,7 @@ public class AgentDto {
     /**
      * 全称
      */
+    @JsonProperty("full_name")
     private String fullName;
 
     /**
