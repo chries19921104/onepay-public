@@ -1,6 +1,8 @@
 package org.example.agent.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
+import org.example.agent.base.Result;
+import org.example.agent.dto.SummaryDto;
 import org.example.common.entity.SystemMerchant;
 
 
@@ -12,5 +14,6 @@ import org.example.common.entity.SystemMerchant;
  */
 public interface SystemMerchantService extends IService<SystemMerchant> {
 
+    Result loadPlanSummaryTable(SummaryDto summaryDto);
 }
 
