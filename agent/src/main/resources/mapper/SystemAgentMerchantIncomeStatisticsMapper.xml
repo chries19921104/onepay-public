@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.example.agent.mapper.SystemAgentMerchantIncomeStatisticsMapper">
+    <select id="getDailyReportList" resultType="org.example.agent.po.DailyReportPo">
+        SELECT
+        date,
+        IFNULL(SUM(FI_bank_balance) ,0)FI_bank_balance,
+        IFNULL(SUM(FI_bank_fees),0) FI_bank_fees,
+        IFNULL(SUM(FI_qrpay_balance),0) FI_qrpay_balance,
+        IFNULL(SUM(FI_qrpay_fees),0) FI_qrpay_fees,
+        IFNULL(SUM(FI_truewallet_balance),0) FI_truewallet_balance,
+        IFNULL(SUM(FI_truewallet_fees),0) FI_truewallet_fees,
+        IFNULL(SUM(loss_amount),0) loss_amount,
+        IFNULL(SUM(FO_balance),0) FO_balance,
+        IFNULL(SUM(FO_fees),0) FO_fees,
+        IFNULL(SUM(FI_bank_markup_rate),0) FI_bank_markup_rate,
+        IFNULL(SUM(FI_qrpay_markup_rate),0) FI_qrpay_markup_rate,
+        IFNULL(SUM(FI_truewallet_markup_rate),0) FI_truewallet_markup_rate,
+        IFNULL(SUM(FO_markup_rate),0) FO_markup_rate,
+        IFNULL(SUM(FI_VNPAY_ZALO_QR_balance),0) FI_VNPAY_ZALO_QR_balance,
+        IFNULL(SUM(FI_VNPAY_ZALO_QR_fees),0) FI_VNPAY_ZALO_QR_fees,
+        IFNULL(SUM(FI_VNPAY_MOMO_QR_balance),0) FI_VNPAY_MOMO_QR_balance,
+        IFNULL(SUM(FI_VNPAY_MOMO_QR_fees),0) FI_VNPAY_MOMO_QR_fees,
+        IFNULL(SUM(FI_VNPAY_VIETTEL_QR_balance),0) FI_VNPAY_VIETTEL_QR_balance,
+        IFNULL(SUM(FI_VNPAY_VIETTEL_QR_fees),0) FI_VNPAY_VIETTEL_QR_fees,
+        IFNULL(SUM(FI_VNPAY_VIETTEL_FIX_balance),0) FI_VNPAY_VIETTEL_FIX_balance,
+        IFNULL(SUM(FI_VNPAY_VIETTEL_FIX_fees),0) FI_VNPAY_VIETTEL_FIX_fees,
+        IFNULL(SUM(FI_VNPAY_BANK_CARD_balance),0) FI_VNPAY_BANK_CARD_balance,
+        IFNULL(SUM(FI_VNPAY_BANK_CARD_fees),0) FI_VNPAY_BANK_CARD_fees,
+        IFNULL(SUM(FI_VNPAY_RCGCARD_PC_balance),0) FI_VNPAY_RCGCARD_PC_balance,
+        IFNULL(SUM(FI_VNPAY_RCGCARD_PC_fees),0) FI_VNPAY_RCGCARD_PC_fees,
+        IFNULL(SUM(FI_VNPAY_RCGCARD_ZING_balance),0) FI_VNPAY_RCGCARD_ZING_balance,
+        IFNULL(SUM(FI_VNPAY_RCGCARD_ZING_fees),0) FI_VNPAY_RCGCARD_ZING_fees
+        from
+            system_agent_merchant_income_statistics
+        WHERE merchant_id IN
+            <foreach  collection="miList" item="i" separator="," open="(" close=")" >
+            #{i}
+            </foreach>
+          AND
+            `date` BETWEEN #{start} AND #{end}
+        GROUP BY `date`
+    </select>
+
+    <select id="getSummaryReportDataPoList" resultType="org.example.agent.po.SummaryReportDataPo">
+        select
+            b.merchant_id,
+            b.`code`,
+            b.`name`,
+            b.agent_id,
+            f.full_name agent_name,
+            b.agent_id sh100_agent_id,
+            f.full_name sh100_agent_name,
+            IFNULL(c.belong_id,b.agent_id) top_agent_id,
+            d.full_name top_agent_name,
+            e.currency,
+            SUM(e.amount) adjustment,
+            SUM(a.FI_VNPAY_BANK_CARD_balance) FI_VNPAY_BANK_CARD_balance,
+            SUM(a.FI_VNPAY_MOMO_QR_balance) FI_VNPAY_MOMO_QR_balance,
+            SUM(a.FI_VNPAY_RCGCARD_PC_balance) FI_VNPAY_RCGCARD_PC_balance,
+            SUM(a.FI_VNPAY_RCGCARD_ZING_balance) FI_VNPAY_RCGCARD_ZING_balance,
+            SUM(a.FI_VNPAY_VIETTEL_FIX_balance) FI_VNPAY_VIETTEL_FIX_balance,
+            SUM(a.FI_VNPAY_VIETTEL_QR_balance) FI_VNPAY_VIETTEL_QR_balance,
+            SUM(a.FI_VNPAY_ZALO_QR_balance) FI_VNPAY_ZALO_QR_balance,
+            SUM(a.FI_bank_balance) FI_bank_balance,
+            SUM(a.FI_qrpay_balance) FI_qrpay_balance,
+            SUM(a.FI_truewallet_balance) FI_truewallet_balance,
+            SUM(a.FO_balance) FO_balance,
+            SUM(a.loss_amount) loss_amount,
+            SUM(a.FI_bank_rebate + a.FI_truewallet_rebate + a.FI_qrpay_rebate + a.FO_rebate) total_rebate,
+            SUM(a.FI_bank_markup_rate + a.FI_qrpay_markup_rate + a.FI_truewallet_markup_rate +a.FO_markup_rate) total_markup,
+            SUM(a.FI_bank_fees +
+            a.FI_qrpay_fees +
+            a.FO_fees +
+            a.FI_VNPAY_ZALO_QR_fees +
+            a.FI_VNPAY_MOMO_QR_fees +
+            a.FI_VNPAY_VIETTEL_QR_fees +
+            a.FI_VNPAY_VIETTEL_FIX_fees +
+            a.FI_VNPAY_BANK_QR_fees +
+            a.FI_VNPAY_BANK_fees +
+            a.FI_VNPAY_BANK_CARD_fees +
+            a.FI_VNPAY_RCGCARD_PC_fees +
+            a.FI_VNPAY_RCGCARD_ZING_fees
+            ) total_fee
+        FROM
+            system_agent_merchant_income_statistics a
+                left JOIN
+            system_merchant b
+            on a.merchant_id = b.merchant_id
+                LEFT JOIN
+            system_agents c
+            ON b.agent_id = c.agent_id
+                LEFT JOIN
+            system_agents d
+            ON c.belong_id = d.agent_id
+                LEFT JOIN
+            system_merchant_adjust e
+            ON e.merchant_id = a.merchant_id
+                LEFT JOIN
+            system_agents f
+            on b.agent_id = f.agent_id
+        where
+            a.merchant_id in
+            <foreach collection="miList" item="i" open="(" separator="," close=")">
+                #{i}
+            </foreach>
+
+          and e.`year` = #{year}
+          and e.`month` = #{month}
+          and e.currency = #{currency}
+        GROUP BY a.merchant_id
+            LIMIT #{start},#{size}
+
+    </select>
+</mapper>
