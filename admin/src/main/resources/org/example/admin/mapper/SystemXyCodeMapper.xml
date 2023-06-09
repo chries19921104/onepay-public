@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.example.admin.mapper.SystemXyCodeMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="org.example.common.entity.SystemXyCode">
+        <id column="code_id" property="codeId" />
+        <result column="type" property="type" />
+        <result column="currency" property="currency" />
+        <result column="bank_card_id" property="bankCardId" />
+        <result column="virtual_id" property="virtualId" />
+        <result column="command_id" property="commandId" />
+        <result column="data" property="data" />
+        <result column="captcha" property="captcha" />
+        <result column="is_press_button" property="pressButton" />
+        <result column="creator" property="creator" />
+        <result column="updater" property="updater" />
+        <result column="created_at" property="createdAt" />
+        <result column="updated_at" property="updatedAt" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        code_id, type, currency, bank_card_id, virtual_id, command_id, data, captcha, is_press_button, creator, updater, created_at, updated_at
+    </sql>
+
+</mapper>

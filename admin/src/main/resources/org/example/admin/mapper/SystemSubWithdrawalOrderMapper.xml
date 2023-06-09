@@ -66,4 +66,52 @@
         sub_fo_id, fo_id, fo_pre_id, bank_card_id, tpi100_id, txn_mode, request_amount, paid_amount, rate, bank_fee, tpi_bank_fee, balance, pre_balance, balance_xy, pre_balance_xy, wallet_balance, currency, step, retry_times, is_press_button, status, action, message, command_id, virtual_bank_id, receivedOTPtime, otptimer, ref_code, bankreferenceno, is_ref_code, is_entry, vnd_otp, vnd_payment_method, postscript, note, token_input, xy_to_man, description, created_man, updated_man, created_at, updated_at, local_created_at, local_updated_at, server_id, alt_vpn_id, is_late_times, is_weird, external_description, is_urgent, receipt, keep_point, superior_keep_point, frozen_guarantee_balance, runmon_number
     </sql>
 
+    <select id="selectSubWithdrawalOrderVo" resultType="org.example.admin.vo.SubWithdrawalOrderVo">
+        SELECT
+            sswo.bank_card_id bankCardId,
+            sbc.mobile_name bankCardMobileName,
+            sswo.fo_id foId,
+            sswo.sub_fo_id subFoId,
+            sswo.fo_pre_id foPreId,
+            swo.mechant_id mechantId,
+            sm.wd_rate mechantWdRate,
+            sswo.virtual_bank_id vbId,
+            sswo.action action,
+            sswo.bank_fee bankFee,
+            sswo.tpi_bank_fee bankFeeTpi,
+            sswo.command_id commandId,
+            swo.confirm_accname confirmAccname,
+            sswo.created_at createdAt,
+            sswo.created_man createdMan,
+            sswo.currency currency,
+            sbc.account_code fromAccountCode,
+            sswo.is_entry isEntry,
+            sswo.local_updated_at localUpdatedAt,
+            sswo.message message,
+            sswo.note note,
+            sswo.paid_amount paidAmount,
+            sswo.postscript postscript,
+            sswo.rate rate,
+            swo.reference reference,
+            sswo.request_amount requestAmount,
+            sswo.retry_times retryTimes,
+            sswo.`status` status,
+            sswo.step step,
+            sswo.tpi100_id thirdId,
+            sswo.txn_mode txnMode,
+            sswo.updated_at updatedAt,
+            sswo.updated_man updatedMan,
+            sswo.vnd_otp vndOtp,
+            sswo.vnd_payment_method vndPaymentMethod,
+            swo.`status` foStatus
+        FROM
+            system_sub_withdrawal_order sswo
+            JOIN system_bank_card sbc ON sswo.bank_card_id = sbc.card_id
+            JOIN system_withdrawal_order swo ON sswo.fo_id = swo.fo_id
+            JOIN system_merchant sm ON swo.mechant_id = sm.merchant_id
+            JOIN system_virtual_bank_statement svbs ON sswo.virtual_bank_id = svbs.vb_id
+        WHERE
+	        sswo.fo_id = #{foId}
+    </select>
+
 </mapper>

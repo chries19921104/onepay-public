@@ -1,8 +1,12 @@
 package org.example.admin.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import org.apache.ibatis.annotations.Param;
+import org.example.admin.vo.SubWithdrawalOrderVo;
 import org.example.common.entity.SystemSubWithdrawalOrder;
 import org.springframework.stereotype.Repository;
+
+import java.util.List;
 
 
 /**
@@ -15,5 +19,7 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 public interface SystemSubWithdrawalOrderMapper extends BaseMapper<SystemSubWithdrawalOrder> {
+
+    List<SubWithdrawalOrderVo> selectSubWithdrawalOrderVo(@Param("foId") Long foId);
 
 }

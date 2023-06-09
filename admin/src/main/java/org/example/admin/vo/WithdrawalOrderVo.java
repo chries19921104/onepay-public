@@ -119,10 +119,23 @@ public class WithdrawalOrderVo {
     private String confirmedMan;
 
     /**
+     * 币别
+     */
+    @JsonProperty("currency")
+    private String currency;
+
+    /**
      * 创建时间
      */
     @JsonProperty("created_at")
     private LocalDateTime createdAt;
+
+    /**
+     * 创建人
+     */
+    @JsonProperty("created_man")
+    private String createdMan;
+
 
     /**
      * 手动的时候才会有回调方法为true 即status为4

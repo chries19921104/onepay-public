@@ -35,6 +35,6 @@ public interface SystemWithdrawalOrderService extends IService<SystemWithdrawalO
      * @param foId
      * @return
      */
-    List<WithdrawalOrderVo> getWithdrawalOrderVoByFoId(Long foId);
+    WithdrawalOrderVo getWithdrawalOrderVoByFoId(Long foId);
 
 }

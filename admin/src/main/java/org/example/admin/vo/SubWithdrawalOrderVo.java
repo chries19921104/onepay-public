@@ -11,50 +11,77 @@ import java.time.LocalDateTime;
  */
 @Data
 public class SubWithdrawalOrderVo {
+    /**
+     * 银行卡表id
+     */
     @JsonProperty("BC100_ID")
-    private int bc100Id;
+    private Long bankCardId;
 
+    /**
+     * 银行卡表
+     */
     @JsonProperty("BC100_mobile_name")
-    private String bc100MobileName;
+    private String bankCardMobileName;
 
+    /**
+     * 代付表id
+     */
     @JsonProperty("FO100_ID")
-    private int fo100Id;
+    private Long foId;
 
     @JsonProperty("FO110_ID")
-    private int fo110Id;
+    private Long subFoId;
 
     @JsonProperty("FO110_PREID")
-    private String fo110Preid;
+    private Long foPreId;
 
+    /**
+     * 商户表id
+     */
     @JsonProperty("SH100_ID")
-    private int sh100Id;
+    private Long mechantId;
 
+    /**
+     * 商户表
+     */
     @JsonProperty("SH100_wd_rate")
-    private int sh100WdRate;
+    private Integer mechantWdRate;
 
+    /**
+     * 虚拟银行对账单id
+     */
     @JsonProperty("VB100_ID")
-    private String vb100Id;
+    private Long vbId;
 
     @JsonProperty("action")
     private String action;
 
+    /**
+     * 拼接主键id
+     */
     @JsonProperty("alt_id")
     private String altId;
 
     @JsonProperty("bank_fee")
-    private int bankFee;
+    private Integer bankFee;
 
     @JsonProperty("bank_fee_tpi")
     private String bankFeeTpi;
 
+    /**
+     * fo100 controller中的字段
+     */
     @JsonProperty("check_btn")
-    private int checkBtn;
+    private Integer checkBtn;
 
     @JsonProperty("command_id")
     private String commandId;
 
+    /**
+     * 代付表 审核账户名称
+     */
     @JsonProperty("confirm_accname")
-    private int confirmAccname;
+    private Integer confirmAccname;
 
     @JsonProperty("created_at")
     private LocalDateTime createdAt;
@@ -65,20 +92,32 @@ public class SubWithdrawalOrderVo {
     @JsonProperty("currency")
     private String currency;
 
+    /**
+     * 银行卡表 账户代码
+     */
     @JsonProperty("from_account_code")
     private String fromAccountCode;
 
     @JsonProperty("is_entry")
-    private int isEntry;
+    private Integer isEntry;
 
+    /**
+     * fo100 controller中的字段 是否有错误图片地址
+     */
     @JsonProperty("is_errurl")
-    private boolean isErrurl;
+    private Boolean isErrurl;
 
+    /**
+     * 是否点选过按钮
+     */
     @JsonProperty("is_press_button")
-    private boolean isPressButton;
+    private Boolean isPressButton;
 
+    /**
+     * fo100 controller中的字段
+     */
     @JsonProperty("is_runMon")
-    private boolean isRunMon;
+    private Boolean isRunMon;
 
     @JsonProperty("local_updated_at")
     private String localUpdatedAt;
@@ -95,26 +134,35 @@ public class SubWithdrawalOrderVo {
     @JsonProperty("postscript")
     private String postscript;
 
+    /**
+     * 过去子代付id拼接
+     */
     @JsonProperty("prev_alt_id")
     private String prevAltId;
 
     @JsonProperty("rate")
     private String rate;
 
+    /**
+     * 代付表 参考编号
+     */
     @JsonProperty("reference")
     private String reference;
 
     @JsonProperty("request_amount")
-    private int requestAmount;
+    private Integer requestAmount;
 
+    /**
+     * TODO 未知
+     */
     @JsonProperty("retry_btn")
-    private boolean retryBtn;
+    private Boolean retryBtn;
 
     @JsonProperty("retry_times")
-    private int retryTimes;
+    private Integer retryTimes;
 
     @JsonProperty("status")
-    private int status;
+    private Integer status;
 
     @JsonProperty("step")
     private String step;
@@ -123,10 +171,10 @@ public class SubWithdrawalOrderVo {
     private String tpi100Driver;
 
     @JsonProperty("tpi100_id")
-    private String tpi100Id;
+    private Long thirdId;
 
     @JsonProperty("txn_mode")
-    private int txnMode;
+    private Integer txnMode;
 
     @JsonProperty("updated_at")
     private LocalDateTime updatedAt;
@@ -139,4 +187,9 @@ public class SubWithdrawalOrderVo {
 
     @JsonProperty("vnd_payment_method")
     private String vndPaymentMethod;
+
+    /**
+     * 代付表状态
+     */
+    private Integer foStatus;
 }

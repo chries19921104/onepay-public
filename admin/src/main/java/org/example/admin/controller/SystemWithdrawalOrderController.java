@@ -6,7 +6,9 @@ import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.util.IOUtils;
 import org.example.admin.conf.interceptor.NoAuthorization;
+import org.example.admin.service.SystemSubWithdrawalOrderService;
 import org.example.admin.service.SystemWithdrawalOrderService;
+import org.example.admin.vo.SubWithdrawalOrderVo;
 import org.example.common.base.MerchantResp;
 import org.example.common.base.Totals;
 import org.example.admin.dto.WithdrawalOrderDto;
@@ -27,6 +29,8 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -38,6 +42,9 @@ public class SystemWithdrawalOrderController {
 
     @Autowired
     private SystemWithdrawalOrderService withdrawalOrderService;
+
+    @Autowired
+    private SystemSubWithdrawalOrderService subWithdrawalOrderService;
 
     @GetMapping
     @ApiOperation(value = "代付搜索接口")
@@ -147,15 +154,28 @@ public class SystemWithdrawalOrderController {
 
     @GetMapping("/{foId}/fo110")
     @ApiOperation(value = "代付详情接口")
-    @NoAuthorization
-    public Map<String, List<Map<String, List>>> getDetail(@PathVariable Long foId, HttpServletRequest request) {
-        // 获取fo100的list
-        List<WithdrawalOrderVo> orderVoList = withdrawalOrderService.getWithdrawalOrderVoByFoId(foId);
-        PageUtils.getPageRecords(1, 50, orderVoList);
+    public Map<String, Map<String, Object>> getDetail(@PathVariable Long foId, HttpServletRequest request) {
+        // 获取fo100数据
+        WithdrawalOrderVo orderVo = withdrawalOrderService.getWithdrawalOrderVoByFoId(foId);
         // 获取fo110的list
-
-
-        return null;
+        List<SubWithdrawalOrderVo> subOrderVoList = subWithdrawalOrderService.getSubWithdrawalOrderVo(foId);
+        MerchantResp merchantResp = new MerchantResp();
+        if (subOrderVoList != null){
+            Page<SubWithdrawalOrderVo> subOrderPage = new Page<>();
+            subOrderPage.setTotal(50);
+            subOrderPage.setRecords(subOrderVoList);
+            subOrderPage.setCurrent(1);
+            subOrderPage.setSize(50);
+            merchantResp = MerchantResp.getMerchantResp(request, subOrderPage);
+        }
+        // 返回的map
+        Map<String, Map<String, Object>> map = new HashMap<>();
+        // 最内层map
+        HashMap<String, Object> hashMap = new HashMap<>();
+        hashMap.put("FO100", orderVo);
+        hashMap.put("FO110", merchantResp);
+        map.put("data", hashMap);
+        return map;
     }
 
     /**

@@ -76,7 +76,7 @@ public class MerchantResp {
         int pageSize = (int) page.getSize();
         MerchantResp merchantResp = new MerchantResp();
         merchantResp.setCurrent_page(pageNum);
-        merchantResp.setData(page);
+        merchantResp.setData(page.getRecords());
         //获取当前接口的url
         String url = URLUtils.getCurrentURL(request);
         merchantResp.setFirst_page_url(url + "?page=1");

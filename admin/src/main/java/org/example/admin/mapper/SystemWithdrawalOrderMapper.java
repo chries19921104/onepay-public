@@ -15,7 +15,7 @@ import java.util.List;
 public interface SystemWithdrawalOrderMapper extends BaseMapper<SystemWithdrawalOrder> {
 
     /**
-     * 通过条件查询SystemWithdrawalOrderVo的全部数据
+     * 通过条件查询WithdrawalOrderVo的全部数据
      * @param dto 全部条件
      * @param foId 去掉的拼接主键id
      * @param subFoAltId 去掉的子代付拼接主键id
@@ -52,4 +52,10 @@ public interface SystemWithdrawalOrderMapper extends BaseMapper<SystemWithdrawal
                                         @Param("paidAmountMin") BigDecimal paidAmountMin,
                                         @Param("paidAmountMax") BigDecimal paidAmountMax);
 
+    /**
+     * 通过 代付id查询WithdrawalOrderVo的数据
+     * @param foId 代付id
+     * @return
+     */
+    WithdrawalOrderVo selectWithdrawalOrderVoByFoId(@Param("foId") Long foId);
 }

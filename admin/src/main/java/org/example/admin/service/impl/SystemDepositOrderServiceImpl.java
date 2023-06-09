@@ -16,6 +16,7 @@ import org.example.admin.dto.DashboardDto;
 import org.example.admin.dto.DepositOrderDto;
 import org.example.common.entity.*;
 import org.example.common.exception.MsgException;
+import org.example.common.utils.TransactionRecordUtils;
 import org.springframework.beans.BeanUtils;
 import org.example.common.entity.SystemBankCard;
 import org.example.common.entity.SystemDepositOrder;
@@ -215,7 +216,7 @@ public class SystemDepositOrderServiceImpl extends ServiceImpl<SystemDepositOrde
         }if (depositOrderDto.getFrom() !=null && !depositOrderDto.getFrom().isEmpty()){
             queryWrapper.eq(SystemDepositOrder::getFromBank, depositOrderDto.getFrom());
         }if(depositOrderDto.getAltId() != null){
-            queryWrapper.eq(SystemDepositOrder::getFiId, depositOrderDto.getAltId());
+            queryWrapper.eq(SystemDepositOrder::getFiId, TransactionRecordUtils.getIdByAltId(depositOrderDto.getAltId()));
         }if (depositOrderDto.getReference() != null){
             queryWrapper.eq(SystemDepositOrder::getReference, depositOrderDto.getReference());
         }if (depositOrderDto.getVb100Id() != null){
@@ -251,11 +252,8 @@ public class SystemDepositOrderServiceImpl extends ServiceImpl<SystemDepositOrde
             BeanUtils.copyProperties(item, vo);
             // 主键处理
             Long id = item.getFiId();
-            LocalDate localDate = LocalDate.now();
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("ddMMyy");
-            String format = localDate.format(formatter);
-            String altId = "D-" + format + id;
-            vo.setAltId(altId);
+            String altIdNow = TransactionRecordUtils.getAltId(id, "D-", item.getCreatedAt());
+            vo.setAltId(altIdNow);
             // 判断是否有回调方法
             Integer status = item.getStatus();
             if (status == 4) {
@@ -314,19 +312,6 @@ public class SystemDepositOrderServiceImpl extends ServiceImpl<SystemDepositOrde
 
 
         return orderVoPage;
-    }
-
-    /**
-     * 拼接主键id的方法
-     * @param id
-     * @return
-     */
-    private String getAltId(Long id) {
-        LocalDate localDate = LocalDate.now();
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("ddMMyy");
-        String format = localDate.format(formatter);
-        String altId = "D-" + format + id;
-        return altId;
     }
 
     @Override

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.example.admin.mapper.SystemWithdrawalOrderLogMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="org.example.common.entity.SystemWithdrawalOrderLog">
+        <id column="log_id" property="logId" />
+        <result column="wo_id" property="woId" />
+        <result column="type" property="type" />
+        <result column="created_man" property="createdMan" />
+        <result column="updated_man" property="updatedMan" />
+        <result column="created_at" property="createdAt" />
+        <result column="updated_at" property="updatedAt" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        log_id, wo_id, type, created_man, updated_man, created_at, updated_at
+    </sql>
+
+</mapper>

@@ -27,7 +27,7 @@ public class DepositOrderDto {
      * 拼接主键
      */
     @JsonProperty("alt_id")
-    private Integer altId;
+    private String altId;
 
     /**
      * 商户订单号

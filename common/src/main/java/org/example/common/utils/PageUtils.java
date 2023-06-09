@@ -13,6 +13,9 @@ public class PageUtils {
      * @return 当前页显示数据
      */
     public static <T> List<T> getPageRecords(int page, int pageSize, List<T> list) {
+        if (list.size() <= pageSize){
+            return list;
+        }
         int startNum = (page - 1) * pageSize;
         int endNum = page * pageSize;
         List<T> records = list.subList(startNum, endNum);

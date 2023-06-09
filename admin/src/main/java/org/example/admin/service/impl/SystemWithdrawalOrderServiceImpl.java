@@ -14,6 +14,7 @@ import org.example.common.entity.SystemSubWithdrawalOrder;
 import org.example.common.entity.SystemWithdrawalOrder;
 import org.example.admin.vo.WithdrawalOrderVo;
 import org.example.common.exception.MsgException;
+import org.example.common.utils.TransactionRecordUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -29,7 +30,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static org.example.common.constant.SystemWithdrawalOrderConstant.*;
+import static org.example.common.constant.WithdrawalOrderConstant.*;
 
 @Service
 public class SystemWithdrawalOrderServiceImpl extends ServiceImpl<SystemWithdrawalOrderMapper, SystemWithdrawalOrder> implements SystemWithdrawalOrderService {
@@ -47,12 +48,12 @@ public class SystemWithdrawalOrderServiceImpl extends ServiceImpl<SystemWithdraw
         // 获取altId并返回成id
         Long altId = null;
         if (withdrawalOrderDto.getAltId() != null){
-            altId = Long.parseLong(withdrawalOrderDto.getAltId().substring(8));
+            altId = TransactionRecordUtils.getIdByAltId(withdrawalOrderDto.getAltId());
         }
         // 获取子代付altId
         Long subFoAltId = null;
         if (withdrawalOrderDto.getFo110AltId() != null){
-            subFoAltId = Long.parseLong(withdrawalOrderDto.getFo110AltId().substring(8));
+            subFoAltId = TransactionRecordUtils.getIdByAltId(withdrawalOrderDto.getFo110AltId());
         }
         // 请求金额最小值
         BigDecimal requestAmountMin = null;
@@ -80,9 +81,8 @@ public class SystemWithdrawalOrderServiceImpl extends ServiceImpl<SystemWithdraw
             // 拷贝
             BeanUtils.copyProperties(item, vo);
             // 主键处理
-            Long id = item.getFoId();
-            String alt_Id = getAltId(id);
-            vo.setAltId(alt_Id);
+            String altIdNow = TransactionRecordUtils.getAltId(item.getFoId(), "W-", item.getCreatedAt());
+            vo.setAltId(altIdNow);
             // 获取confirm_accname字段
             int confirmAccname = item.getConfirmAccname();
             // 处理accNameForConfirm字段
@@ -329,47 +329,34 @@ public class SystemWithdrawalOrderServiceImpl extends ServiceImpl<SystemWithdraw
     }
 
     @Override
-    public List<WithdrawalOrderVo> getWithdrawalOrderVoByFoId(Long foId) {
+    public WithdrawalOrderVo getWithdrawalOrderVoByFoId(Long foId) {
         // 获取数据
-        List<WithdrawalOrderVo> orderVoList = systemWithdrawalOrderMapper.selectWithdrawalOrderVo(new WithdrawalOrderDto(),
-                foId, null, null, null, null, null);
-        orderVoList = orderVoList.stream().map(item -> {
-            WithdrawalOrderVo vo = new WithdrawalOrderVo();
-            BeanUtils.copyProperties(item, vo);
-            vo.setSubBalance(null);
-            vo.setBankFeeMerchant(0);
-            // 获取forceSubManual
-            Integer forceSubManual = item.getForceSubManual();
-            Boolean force = forceSubManual == 0 ? false : true;
-            vo.setForce(force);
-            // 状态
-            // 查询子代付表
-            List<SystemSubWithdrawalOrder> list = systemSubWithdrawalOrderService.list(
-                    new LambdaQueryWrapper<SystemSubWithdrawalOrder>()
-                            .eq(SystemSubWithdrawalOrder::getFoId, foId)
-                            .eq(SystemSubWithdrawalOrder::getStatus, STATUS_FAILED));
-            int status = item.getStatus();
+        WithdrawalOrderVo orderVo = systemWithdrawalOrderMapper.selectWithdrawalOrderVoByFoId(foId);
+        orderVo.setSubBalance(null);
+        orderVo.setBankFeeMerchant(0);
+        // 获取forceSubManual
+        Integer forceSubManual = orderVo.getForceSubManual();
+        Boolean force = forceSubManual == null ? false : (forceSubManual == 0 ? false : true);
+        orderVo.setForce(force);
+        // 状态
+        // 查询子代付表
+        List<SystemSubWithdrawalOrder> list = systemSubWithdrawalOrderService.list(
+                new LambdaQueryWrapper<SystemSubWithdrawalOrder>()
+                        .eq(SystemSubWithdrawalOrder::getFoId, foId)
+                        .eq(SystemSubWithdrawalOrder::getStatus, STATUS_FAILED));
+        if(list != null && list.size() > 0){
+            int status = orderVo.getStatus();
             if (status == STATUS_COMPLETED || status == STATUS_FAILED){
-                vo.setAddDisplay(0);
+                orderVo.setAddDisplay(0);
             }else if (force || list != null || list.size() > 0){
-                vo.setAddDisplay(1);
+                orderVo.setAddDisplay(1);
+            }else {
+                orderVo.setAddDisplay(0);
             }
-            return vo;
-        }).collect(Collectors.toList());
-        return orderVoList;
-    }
-
-    /**
-     * 拼接主键id的方法
-     * @param id
-     * @return
-     */
-    private String getAltId(Long id) {
-        LocalDate localDate = LocalDate.now();
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("ddMMyy");
-        String format = localDate.format(formatter);
-        String altId = "W-" + format + id;
-        return altId;
+        }else {
+            orderVo.setAddDisplay(0);
+        }
+        return orderVo;
     }
 
     /**
