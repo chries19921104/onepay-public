@@ -6,7 +6,9 @@ import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.util.IOUtils;
 import org.example.admin.conf.interceptor.NoAuthorization;
+import org.example.admin.service.SystemSubWithdrawalOrderService;
 import org.example.admin.service.SystemWithdrawalOrderService;
+import org.example.admin.vo.SubWithdrawalOrderVo;
 import org.example.common.base.MerchantResp;
 import org.example.common.base.Totals;
 import org.example.admin.dto.WithdrawalOrderDto;
@@ -38,6 +40,9 @@ public class SystemWithdrawalOrderController {
 
     @Autowired
     private SystemWithdrawalOrderService withdrawalOrderService;
+
+    @Autowired
+    private SystemSubWithdrawalOrderService subWithdrawalOrderService;
 
     @GetMapping
     @ApiOperation(value = "代付搜索接口")
@@ -153,8 +158,12 @@ public class SystemWithdrawalOrderController {
         List<WithdrawalOrderVo> orderVoList = withdrawalOrderService.getWithdrawalOrderVoByFoId(foId);
         PageUtils.getPageRecords(1, 50, orderVoList);
         // 获取fo110的list
-
-
+        List<SubWithdrawalOrderVo> subOrderVoList = subWithdrawalOrderService.getSubWithdrawalOrderVo(foId);
+        Page<SubWithdrawalOrderVo> subOrderPage = new Page<>();
+        subOrderPage.setTotal(50);
+        subOrderPage.setRecords(subOrderVoList);
+        subOrderPage.setCurrent(1);
+        subOrderPage.setSize(50);
         return null;
     }
 
