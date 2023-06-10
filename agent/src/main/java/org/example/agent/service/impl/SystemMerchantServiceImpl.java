@@ -50,48 +50,50 @@ public class SystemMerchantServiceImpl extends ServiceImpl<SystemMerchantMapper,
         PlanSummaryVo info = systemAgentsMapper.info(summaryDto);
 
         LambdaQueryWrapper<SystemMerchant> wrapper = new LambdaQueryWrapper<>();
-        wrapper.eq(SystemMerchant::getAgentId, summaryDto.getAgentId());
-        wrapper.eq(SystemMerchant::getCurrency, summaryDto.getCurrency());
+        wrapper.eq(SystemMerchant::getAgentId, summaryDto.getAgentId())
+                .eq(SystemMerchant::getStatus, 1)
+                .eq(SystemMerchant::getCurrency, summaryDto.getCurrency());
         wrapper.in(!CollectionUtils.isEmpty(summaryDto.getSH100ID()), SystemMerchant::getMerchantId, summaryDto.getSH100ID());
         List<SystemMerchant> merchants = list(wrapper);
-
         List<CurrentRebateVo> currentRebates = agentCommissionSettingsMapper
                 .currentRebate(summaryDto.getAgentId(), summaryDto.getCurrency());
         List<SummaryVo> summarys = BeanCopyUtils.copyBeanList(merchants, SummaryVo.class);
-        List<SummaryVo> summaryVos = new ArrayList<>();
-        summarys.forEach(summaryVo -> {
-            currentRebates.stream()
-                    .filter(currentRebateVo -> summaryVo.getMerchantId().equals(currentRebateVo.getSh100Id()))
-                    .forEach(currentRebateVo -> {
-                        summaryVo.setCurrentRebate(currentRebateVo);
-                        summaryVos.add(summaryVo);
-                    });
-        });
+        for (SummaryVo summaryVo : summarys) {
+            for (CurrentRebateVo currentRebate : currentRebates) {
+                if (summaryVo.getMerchantId()
+                        .equals(currentRebate.getSh100Id())) {
+                    summaryVo.setCurrentRebate(currentRebate);
+                    break;
+                }
+            }
+        }
+
 
         LambdaQueryWrapper<SystemAgentCommissionSettings> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.eq(SystemAgentCommissionSettings::getAgentId,summaryDto.getAgentId());
+        queryWrapper.eq(SystemAgentCommissionSettings::getAgentId, summaryDto.getAgentId())
+                .eq(SystemAgentCommissionSettings::getActive, 0);
         List<SystemAgentCommissionSettings> agentCommissionSettings
                 = agentCommissionSettingsService.list(queryWrapper);
-
         LocalDate currentDate = LocalDate.now();
-        summaryVos.forEach(summary -> {
-            List<SystemAgentCommissionSettings>  nearest= new ArrayList<>();
-            agentCommissionSettings.forEach(date -> {
+        for (SummaryVo summary : summarys) {
+            List<SystemAgentCommissionSettings> nearest = new ArrayList<>();
+            for (SystemAgentCommissionSettings date : agentCommissionSettings) {
                 if (summary.getMerchantId().equals(date.getSh100Id())) {
                     if (date.getYear() >= currentDate.getYear() && date.getMonth() > currentDate.getMonthValue()) {
                         nearest.add(date);
                     }
                 }
-            });
-           List<SystemAgentCommissionSettings> agentCommissionListAsc = nearest.stream()
-                    .sorted(Comparator.comparing(SystemAgentCommissionSettings::getYear)
-                            .thenComparing(SystemAgentCommissionSettings::getMonth))
-                    .collect(Collectors.toList());
-           summary.setNearestRebate(agentCommissionListAsc.get(0));
-        });
+                List<SystemAgentCommissionSettings> agentCommissionListAsc = nearest.stream()
+                        .sorted(Comparator.comparing(SystemAgentCommissionSettings::getYear)
+                                .thenComparing(SystemAgentCommissionSettings::getMonth))
+                        .collect(Collectors.toList());
+                if (!agentCommissionListAsc.isEmpty()) {
+                    summary.setNearestRebate(agentCommissionListAsc.get(0));
+                }
+            }
+        }
 
-
-        info.setPlanSummary(summaryVos);
+        info.setPlanSummary(summarys);
         return Result.success(info);
     }
 }

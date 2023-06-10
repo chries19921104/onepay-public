@@ -13,7 +13,10 @@
                tr_rate,
                tr_true_rate,
                wd_rate
-        from system_merchant where agent_id=${summaryDto.getAgentId} and currency=${summaryDto.getCurryDto}
+        from system_merchant
+        where agent_id = ${summaryDto.getAgentId}
+          and currency = ${summaryDto.getCurryDto}
+          and status = 1
     </select>
 
 </mapper>
