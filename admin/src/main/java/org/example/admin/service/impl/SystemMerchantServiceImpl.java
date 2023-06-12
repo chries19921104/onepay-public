@@ -28,7 +28,7 @@ import java.util.stream.Collectors;
 
 /**
 * <p>
-* system_merchant Service 接口实现
+* system_merchant ExternalStatementService 接口实现
 * </p>
 *
 * @author Administrator

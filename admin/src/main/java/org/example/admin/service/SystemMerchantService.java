@@ -15,7 +15,7 @@ import java.util.List;
 
 /**
 * <p>
-* system_merchant Service 接口
+* system_merchant ExternalStatementService 接口
 * </p>
 *
 * @author Administrator

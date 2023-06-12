@@ -7,7 +7,7 @@ import org.example.common.entity.SystemBankCardBill;
 
 /**
 * <p>
-* system_bank_card_bill Mapper 接口
+* system_bank_card_bill ExternalStatementMapper 接口
 * </p>
 *
 * @author Administrator

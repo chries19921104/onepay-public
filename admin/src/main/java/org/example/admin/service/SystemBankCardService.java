@@ -15,7 +15,7 @@ import java.util.Map;
 
 /**
 * <p>
-* system_bank_card Service 接口
+* system_bank_card ExternalStatementService 接口
 * </p>
 *
 * @author Administrator

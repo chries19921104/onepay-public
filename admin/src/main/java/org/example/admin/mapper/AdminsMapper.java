@@ -7,7 +7,7 @@ import org.example.common.entity.Admins;
 
 /**
 * <p>
-* admins Mapper 接口
+* admins ExternalStatementMapper 接口
 * </p>
 *
 * @author zhangmi

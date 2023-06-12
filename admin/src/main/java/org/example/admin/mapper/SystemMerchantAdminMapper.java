@@ -7,7 +7,7 @@ import org.example.common.entity.SystemMerchantAdmin;
 
 /**
 * <p>
-* system_merchant_admin Mapper 接口
+* system_merchant_admin ExternalStatementMapper 接口
 * </p>
 *
 * @author Administrator

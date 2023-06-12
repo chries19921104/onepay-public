@@ -46,7 +46,7 @@ import java.util.stream.Collectors;
 
 /**
 * <p>
-* system_bank_card Service 接口实现
+* system_bank_card ExternalStatementService 接口实现
 * </p>
 *
 * @author zhangmi

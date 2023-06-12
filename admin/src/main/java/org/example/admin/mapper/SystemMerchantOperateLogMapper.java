@@ -7,7 +7,7 @@ import org.example.common.entity.SystemMerchantOperateLog;
 
 /**
 * <p>
-* system_merchant_operate_log Mapper 接口
+* system_merchant_operate_log ExternalStatementMapper 接口
 * </p>
 *
 * @author Administrator

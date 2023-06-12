@@ -7,7 +7,7 @@ import org.example.common.entity.SystemServerList;
 
 /**
 * <p>
-* system_server_list Mapper 接口
+* system_server_list ExternalStatementMapper 接口
 * </p>
 *
 * @author Administrator
