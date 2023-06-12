@@ -9,7 +9,7 @@ import java.util.List;
 
 /**
 * <p>
-* system_agents Service 接口
+* system_agents ExternalStatementService 接口
 * </p>
 *
 * @author Administrator

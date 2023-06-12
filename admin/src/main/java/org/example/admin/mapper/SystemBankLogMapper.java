@@ -7,7 +7,7 @@ import org.springframework.stereotype.Repository;
 
 /**
 * <p>
-* system_bank_log Mapper 接口
+* system_bank_log ExternalStatementMapper 接口
 * </p>
 *
 * @author Administrator

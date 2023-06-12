@@ -36,7 +36,7 @@ import java.util.stream.Collectors;
 
 /**
  * <p>
- * system_deposit_order Service 接口实现
+ * system_deposit_order ExternalStatementService 接口实现
  * </p>
  *
  * @author zhangmi

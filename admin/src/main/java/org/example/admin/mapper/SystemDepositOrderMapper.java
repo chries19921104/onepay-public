@@ -13,7 +13,7 @@ import java.util.List;
 
 /**
  * <p>
- * system_deposit_order Mapper 接口
+ * system_deposit_order ExternalStatementMapper 接口
  * </p>
  *
  * @author zhangmi

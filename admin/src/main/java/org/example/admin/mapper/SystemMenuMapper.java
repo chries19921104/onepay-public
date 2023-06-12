@@ -6,7 +6,7 @@ import org.example.common.entity.SystemMenu;
 
 /**
 * <p>
-* system_menu Mapper 接口
+* system_menu ExternalStatementMapper 接口
 * </p>
 *
 * @author Administrator

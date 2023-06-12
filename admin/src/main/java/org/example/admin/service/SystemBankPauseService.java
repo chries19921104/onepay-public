@@ -10,7 +10,7 @@ import java.util.Map;
 
 /**
 * <p>
-* system_bank_pause Service 接口
+* system_bank_pause ExternalStatementService 接口
 * </p>
 *
 * @author Administrator

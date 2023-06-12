@@ -7,7 +7,7 @@ import org.example.common.entity.SystemDabTokenCard;
 
 /**
 * <p>
-* system_dab_token_card Mapper 接口
+* system_dab_token_card ExternalStatementMapper 接口
 * </p>
 *
 * @author Administrator

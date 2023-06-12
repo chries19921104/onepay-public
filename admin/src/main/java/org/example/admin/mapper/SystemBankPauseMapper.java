@@ -7,7 +7,7 @@ import org.example.common.entity.SystemBankPause;
 
 /**
 * <p>
-* system_bank_pause Mapper 接口
+* system_bank_pause ExternalStatementMapper 接口
 * </p>
 *
 * @author Administrator

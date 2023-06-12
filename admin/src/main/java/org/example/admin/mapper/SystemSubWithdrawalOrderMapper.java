@@ -11,7 +11,7 @@ import java.util.List;
 
 /**
  * <p>
- * Withdrawal_子代付订单 Mapper 接口
+ * Withdrawal_子代付订单 ExternalStatementMapper 接口
  * </p>
  *
  * @author rj
