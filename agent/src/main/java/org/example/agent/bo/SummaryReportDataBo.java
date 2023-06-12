@@ -23,7 +23,7 @@ public class SummaryReportDataBo {
     private Integer total;
 
     private List<SummaryReportDataPo> data;
-    private Object subtotalas;
-    private Object totals;
+    private SummaryReportTotalsBo subtotalas;
+    private SummaryReportTotalsBo totals;
 
 }

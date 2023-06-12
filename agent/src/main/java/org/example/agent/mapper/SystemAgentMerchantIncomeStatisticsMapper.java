@@ -28,4 +28,9 @@ public interface SystemAgentMerchantIncomeStatisticsMapper extends BaseMapper<Sy
                                                                 @Param("start") Integer start_record,
                                                                 @Param("size") Integer size,
                                                                 @Param("currency") String currency);
+
+    public Integer getTotalNumberOfPages(@Param("miList")List<Long> merchantIdList ,
+                                         @Param("year") Integer year,
+                                         @Param("month") Integer month,
+                                         @Param("currency") String currency);
 }

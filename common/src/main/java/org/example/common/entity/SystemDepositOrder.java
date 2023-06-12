@@ -27,6 +27,16 @@ import java.time.LocalDateTime;
 public class SystemDepositOrder implements Serializable {
     private static final long serialVersionUID = 1L;
 
+    public static final Integer TXN_MODE_VNPAY_BANK = 106;
+    public static final Integer TXN_MODE_QRPAY = 2;
+    public static final Integer TXN_MODE_TRUE_WALLET = 3;
+    public static final Integer TXN_MODE_VNPAY_ZALO_QR = 101;
+    public static final Integer TXN_MODE_VNPAY_MOMO_QR = 102;
+    public static final Integer TXN_MODE_VNPAY_VIETTEL_QR = 103;
+    public static final Integer TXN_MODE_VNPAY_VIETTEL_FIX = 104;
+    public static final Integer TXN_MODE_VNPAY_BANK_QR = 105;
+
+
     /**
     * 充值ID
     */

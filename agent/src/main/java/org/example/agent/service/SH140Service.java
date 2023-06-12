@@ -1,12 +1,9 @@
 package org.example.agent.service;
 
 import org.example.agent.dto.DailyReportDto;
+import org.example.agent.dto.OverviewDto;
 import org.example.agent.dto.SummaryReportDto;
-import org.example.agent.vo.AgentZoneMerchantVo;
-import org.example.agent.vo.DailyBaseInfoVo;
-import org.example.agent.vo.DailyReportVo;
-import org.example.agent.vo.SummaryReportVo;
-import org.example.common.entity.SystemAgentUsers;
+import org.example.agent.vo.*;
 import org.example.common.entity.SystemAgents;
 
 import java.util.List;
@@ -31,5 +28,13 @@ public interface SH140Service {
      */
     public List<AgentZoneMerchantVo> getAgentZoneMerchantList(String currency,Long agent_id);
 
+    /**
+     * 代理总体报表
+     * @param summaryReportDto
+     * @return
+     */
     public SummaryReportVo getSummaryReport(SummaryReportDto summaryReportDto);
+
+
+
 }

@@ -1,9 +1,12 @@
 package org.example.agent.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import io.swagger.models.auth.In;
 import org.example.agent.bo.SummaryReportDataBo;
+import org.example.agent.bo.SummaryReportTotalsBo;
 import org.example.agent.bo.TotalBalanceBo;
 import org.example.agent.dto.DailyReportDto;
+import org.example.agent.dto.OverviewDto;
 import org.example.agent.dto.SummaryReportDto;
 import org.example.agent.mapper.SystemAgentMerchantIncomeStatisticsMapper;
 import org.example.agent.mapper.SystemAgentRebateStatisticsMapper;
@@ -12,10 +15,7 @@ import org.example.agent.mapper.SystemMerchantMapper;
 import org.example.agent.po.DailyReportPo;
 import org.example.agent.po.SummaryReportDataPo;
 import org.example.agent.service.SH140Service;
-import org.example.agent.vo.AgentZoneMerchantVo;
-import org.example.agent.vo.DailyBaseInfoVo;
-import org.example.agent.vo.DailyReportVo;
-import org.example.agent.vo.SummaryReportVo;
+import org.example.agent.vo.*;
 import org.example.common.entity.SystemAgents;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -26,8 +26,7 @@ import java.util.List;
 @Service
 public class SH140ServiceImpl implements SH140Service {
 
-    final Integer IDENTITY_GEN_AGENT = 1; //总代
-    final Integer IDENTITY_AGENT = 2; //代理
+
 
     @Autowired
     private SystemAgentRebateStatisticsMapper sarsMapper;
@@ -67,7 +66,6 @@ public class SH140ServiceImpl implements SH140Service {
                             .add(aReport.getFiTruewalletMarkupRate())
                             .add(aReport.getFoMarkupRate())
             );
-
         }
         dailyReportVo.setTotals(totals);
         dailyReportVo.setData(dailyReportPoList);
@@ -100,6 +98,21 @@ public class SH140ServiceImpl implements SH140Service {
     public SummaryReportVo getSummaryReport(SummaryReportDto summaryReportDto) {
         SummaryReportDataBo summaryReportDataBo = new SummaryReportDataBo();
         TotalBalanceBo totalBalanceBo = new TotalBalanceBo();
+        SummaryReportTotalsBo subTotals =  new SummaryReportTotalsBo();
+        SummaryReportTotalsBo totals = new SummaryReportTotalsBo();
+        summaryReportDataBo.setSubtotalas(subTotals);
+        summaryReportDataBo.setTotals(totals);
+        Integer page = summaryReportDto.getPage();
+        String prefix_url = "https://api-ta-outside.100scrop.tech/api/sh140/summaryReport?page=";
+        summaryReportDataBo.setCurrent_page(page);
+        //查询数据的总条数，计算页面信息
+        Integer count_records = samisMapper.getTotalNumberOfPages(summaryReportDto.getSH100_ID(),
+                summaryReportDto.getYear(),
+                summaryReportDto.getMonth(),
+                summaryReportDto.getCurrency());
+        Integer count_page = (int) Math.ceil((double) count_records/ page);
+        summaryReportDataBo.setLast_page(count_page);
+        summaryReportDataBo.setTotal(count_records);
         Integer start = (summaryReportDto.getPage()-1) * summaryReportDto.getRp();
         List<SummaryReportDataPo> summaryReportDataPoList = samisMapper.getSummaryReportDataPoList(
                 summaryReportDto.getSH100_ID(),
@@ -108,10 +121,27 @@ public class SH140ServiceImpl implements SH140Service {
                 start, summaryReportDto.getRp(),
                 summaryReportDto.getCurrency());
         summaryReportDataBo.setData(summaryReportDataPoList);
+
+        // 计算total_balance的值
+        for (SummaryReportDataPo one: summaryReportDataPoList) {
+            totalBalanceBo.setFO_balance(totalBalanceBo.getFO_balance().add(one.getFoBalance()));
+            totalBalanceBo.setFI_qrpay_balance(totalBalanceBo.getFI_qrpay_balance().add(one.getFiQrpayBalance()));
+            totalBalanceBo.setFI_bank_balance(totalBalanceBo.getFI_bank_balance().add(one.getFiBankBalance()));
+            totalBalanceBo.setFI_MOMO_QR_balance(totalBalanceBo.getFI_MOMO_QR_balance().add(one.getFiVnpayMomoQrBalance()));
+            totalBalanceBo.setFI_RCGCARD_PC_balance(totalBalanceBo.getFI_RCGCARD_PC_balance().add(one.getFiVnpayRcgcardPcBalance()));
+            totalBalanceBo.setFI_RCGCARD_ZING_balance(totalBalanceBo.getFI_RCGCARD_ZING_balance().add(one.getFiVnpayRcgcardZingBalance()));
+            totalBalanceBo.setFI_BANK_CARD_balance(totalBalanceBo.getFI_BANK_CARD_balance().add(one.getFiVnpayBankCardBalance()));
+            totalBalanceBo.setFI_VIETTEL_FIX_balance(totalBalanceBo.getFI_VIETTEL_FIX_balance().add(one.getFiVnpayViettelFixBalance()));
+            totalBalanceBo.setFI_VIETTEL_QR_balance(totalBalanceBo.getFI_VIETTEL_QR_balance().add(one.getFiVnpayViettelQrBalance()));
+            totalBalanceBo.setFI_truewallet_balance(totalBalanceBo.getFI_truewallet_balance().add(one.getFiTruewalletBalance()));
+            totalBalanceBo.setFI_ZALO_QR_balance(totalBalanceBo.getFI_ZALO_QR_balance().add(one.getFiVnpayZaloQrBalance()));
+        }
         SummaryReportVo summaryReportVo = new SummaryReportVo();
         summaryReportVo.setData(summaryReportDataBo);
         summaryReportVo.setTotalBalance(totalBalanceBo);
         return summaryReportVo;
     }
+
+
 
 }
