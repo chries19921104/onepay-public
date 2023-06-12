@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.example.admin.mapper.SystemIntroversionOrderMapper">
+
+    <resultMap id="BaseResultMap" type="org.example.common.entity.SystemIntroversionOrder">
+            <id property="trId" column="tr_id" jdbcType="OTHER"/>
+            <result property="reference" column="reference" jdbcType="VARCHAR"/>
+            <result property="fromBankCardId" column="from_bank_card_id" jdbcType="OTHER"/>
+            <result property="toBankCardId" column="to_bank_card_id" jdbcType="OTHER"/>
+            <result property="requestAmount" column="request_amount" jdbcType="DECIMAL"/>
+            <result property="paidAmount" column="paid_amount" jdbcType="DECIMAL"/>
+            <result property="rate" column="rate" jdbcType="DECIMAL"/>
+            <result property="bankFee" column="bank_fee" jdbcType="DECIMAL"/>
+            <result property="balanceFrom" column="balance_from" jdbcType="DECIMAL"/>
+            <result property="preBalanceFrom" column="pre_balance_from" jdbcType="DECIMAL"/>
+            <result property="balanceFromXy" column="balance_from_xy" jdbcType="DECIMAL"/>
+            <result property="preBalanceFromXy" column="pre_balance_from_xy" jdbcType="DECIMAL"/>
+            <result property="balanceTo" column="balance_to" jdbcType="DECIMAL"/>
+            <result property="preBalanceTo" column="pre_balance_to" jdbcType="DECIMAL"/>
+            <result property="balanceToXy" column="balance_to_xy" jdbcType="DECIMAL"/>
+            <result property="preBalanceToXy" column="pre_balance_to_xy" jdbcType="DECIMAL"/>
+            <result property="completedAt" column="completed_at" jdbcType="TIMESTAMP"/>
+            <result property="currency" column="currency" jdbcType="VARCHAR"/>
+            <result property="step" column="step" jdbcType="VARCHAR"/>
+            <result property="message" column="message" jdbcType="VARCHAR"/>
+            <result property="action" column="action" jdbcType="TINYINT"/>
+            <result property="note" column="note" jdbcType="VARCHAR"/>
+            <result property="tokenInput" column="token_input" jdbcType="VARCHAR"/>
+            <result property="commandId" column="command_id" jdbcType="VARCHAR"/>
+            <result property="fromVsId" column="from_vs_id" jdbcType="OTHER"/>
+            <result property="toVsId" column="to_vs_id" jdbcType="OTHER"/>
+            <result property="retryTimes" column="retry_times" jdbcType="TINYINT"/>
+            <result property="status" column="status" jdbcType="TINYINT"/>
+            <result property="type" column="type" jdbcType="TINYINT"/>
+            <result property="creator" column="creator" jdbcType="VARCHAR"/>
+            <result property="updater" column="updater" jdbcType="VARCHAR"/>
+            <result property="createdAt" column="created_at" jdbcType="TIMESTAMP"/>
+            <result property="updatedAt" column="updated_at" jdbcType="TIMESTAMP"/>
+            <result property="localCreatedAt" column="local_created_at" jdbcType="TIMESTAMP"/>
+            <result property="localUpdatedAt" column="local_updated_at" jdbcType="TIMESTAMP"/>
+            <result property="receivedotptime" column="receivedOTPtime" jdbcType="TIMESTAMP"/>
+            <result property="otptimer" column="otptimer" jdbcType="INTEGER"/>
+            <result property="refCode" column="ref_code" jdbcType="VARCHAR"/>
+            <result property="bankreferenceno" column="bankreferenceno" jdbcType="VARCHAR"/>
+            <result property="isRefCode" column="is_ref_code" jdbcType="VARCHAR"/>
+            <result property="isEntry" column="is_entry" jdbcType="TINYINT"/>
+            <result property="vndOtp" column="vnd_otp" jdbcType="VARCHAR"/>
+            <result property="vndPaymentMethod" column="vnd_payment_method" jdbcType="VARCHAR"/>
+            <result property="postscript" column="postscript" jdbcType="VARCHAR"/>
+            <result property="serverId" column="server_id" jdbcType="OTHER"/>
+            <result property="trAuto" column="tr_auto" jdbcType="TINYINT"/>
+            <result property="altVpnId" column="alt_vpn_id" jdbcType="OTHER"/>
+            <result property="runmonNumber" column="runmon_number" jdbcType="TINYINT"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        tr_id,reference,from_bank_card_id,
+        to_bank_card_id,request_amount,paid_amount,
+        rate,bank_fee,balance_from,
+        pre_balance_from,balance_from_xy,pre_balance_from_xy,
+        balance_to,pre_balance_to,balance_to_xy,
+        pre_balance_to_xy,completed_at,currency,
+        step,message,action,
+        note,token_input,command_id,
+        from_vs_id,to_vs_id,retry_times,
+        status,type,creator,
+        updater,created_at,updated_at,
+        local_created_at,local_updated_at,receivedOTPtime,
+        otptimer,ref_code,bankreferenceno,
+        is_ref_code,is_entry,vnd_otp,
+        vnd_payment_method,postscript,server_id,
+        tr_auto,alt_vpn_id,runmon_number
+    </sql>
+
+    <select id="getInternalTransfer" resultType="org.example.admin.vo.InternalTransferVo">
+        select completed_at,is_entry,tr_id as TR100_ID,type,from_bank_card_id as BC100_ID_from,to_bank_card_id as BC100_ID_to,
+               request_amount,paid_amount,bank_fee,status,step,created_at,updated_at,creator as created_man,
+               updater as updated_man,message,retry_times,from_vs_id as VB100_ID_from,to_vs_id as VB100_ID_to,
+               command_id,note,local_updated_at,is_entry,vnd_otp,postscript,vnd_payment_method,currency,
+               tr_auto,`action` from system_introversion_order
+    </select>
+</mapper>

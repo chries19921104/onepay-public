@@ -6,10 +6,13 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import io.netty.util.internal.StringUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.example.admin.dto.BankAccountListDto;
+import org.example.admin.dto.InternalTransferDto;
 import org.example.admin.dto.TransactionScreenRecordsDto;
 import org.example.admin.mapper.*;
+import org.example.admin.req.Transaction;
 import org.example.admin.service.InternalReportsService;
 import org.example.admin.vo.BankAccountListVo;
+import org.example.admin.vo.InternalTransferVo;
 import org.example.common.base.CommResp;
 import org.example.common.base.GetNoResp;
 import org.example.common.base.MerchantResp;
@@ -23,6 +26,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import java.lang.reflect.Field;
 import java.util.*;
 
 /**
@@ -44,7 +48,8 @@ public class InternalReportsServiceImpl implements InternalReportsService {
     private SystemApprovedAccountReportMapper systemApprovedAccountReportMapper;
     @Resource
     private SystemMerchantMapper systemMerchantMapper;
-
+    @Resource
+    private SystemIntroversionOrderMapper systemIntroversionOrderMapper;
 
 
 
@@ -78,6 +83,18 @@ public class InternalReportsServiceImpl implements InternalReportsService {
             return getMerchantResp(bankAccountListVoPage,null,request,bankAccountListDto.getRp());
         }
         return GetNoResp.getNoBankAccountListResp(request,bankAccountListDto.getRp());
+    }
+
+
+    @Override
+    public MerchantResp getInternalTransfer(HttpServletRequest request, InternalTransferDto internalTransferDto) {
+        if (internalTransferDto.getCompleted_start_time() != null){
+            List<Integer> status = new ArrayList<>(Transaction.STATUS_COMPLETED);
+            internalTransferDto.setStatus(status);
+        }
+        List<InternalTransferVo> internalTransferVos = systemIntroversionOrderMapper.getInternalTransfer(internalTransferDto);
+
+        return null;
     }
 
     @Override
@@ -125,10 +142,6 @@ public class InternalReportsServiceImpl implements InternalReportsService {
 
         return CommResp.data(systemApprovedAccountReports);
     }
-
-
-
-
 
 
     private MerchantResp getMerchantResp(Page bankAccountListVoPage, Totals totals, HttpServletRequest request, Integer rp) {

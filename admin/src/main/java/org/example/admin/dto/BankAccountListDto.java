@@ -3,6 +3,7 @@ package org.example.admin.dto;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModel;
 import lombok.Data;
+import org.springframework.validation.annotation.Validated;
 
 /**
  * @author Txd
@@ -10,6 +11,7 @@ import lombok.Data;
  */
 @Data
 @ApiModel(description = "接收前端的银行监控列表的查询参数")
+@Validated
 public class BankAccountListDto {
 
     @JsonProperty("currency")

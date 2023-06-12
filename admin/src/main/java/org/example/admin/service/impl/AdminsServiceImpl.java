@@ -44,7 +44,6 @@ public class AdminsServiceImpl extends ServiceImpl<AdminsMapper, Admins> impleme
     private String key;
 
     @Override
-
     public CommResp login(Admins admins) {
         Admins one = this.query().eq("username", admins.getUsername()).one();
         //验证账户是否存在,并且是否可用

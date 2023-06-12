@@ -1,6 +1,7 @@
 package org.example.admin.service;
 
 import org.example.admin.dto.BankAccountListDto;
+import org.example.admin.dto.InternalTransferDto;
 import org.example.admin.dto.TransactionScreenRecordsDto;
 import org.example.common.base.CommResp;
 import org.example.common.base.MerchantResp;
@@ -19,4 +20,6 @@ public interface InternalReportsService {
     MerchantResp getTransactionScreenRecords(HttpServletRequest request, TransactionScreenRecordsDto transactionScreenRecordsDto);
 
     CommResp getApprovedCardReport(String number);
+
+    MerchantResp getInternalTransfer(HttpServletRequest request, InternalTransferDto internalTransferDto);
 }

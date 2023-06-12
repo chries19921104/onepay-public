@@ -3,6 +3,7 @@ package org.example.admin.controller;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.example.admin.dto.BankAccountListDto;
+import org.example.admin.dto.InternalTransferDto;
 import org.example.admin.dto.TransactionScreenRecordsDto;
 import org.example.admin.service.InternalReportsService;
 import org.example.common.base.CommResp;
@@ -40,6 +41,22 @@ public class InternalReportsController {
         return internalReportsService.getBankAccountList(request, bankAccountListDto);
     }
 
+    @ApiOperation(value = "内部转账查询接口")
+    @GetMapping("/internalTransfer")
+    public MerchantResp getInternalTransfer(HttpServletRequest request, InternalTransferDto internalTransferDto) {
+        if (internalTransferDto.getCompleted_end_time() != null){
+            if (internalTransferDto.getCompleted_start_time() == null){
+                throw new NullPointerException("传递的起始成功日期的值是null");
+            }
+        }
+        if (internalTransferDto.getUpdated_end_date() != null){
+            if (internalTransferDto.getUpdated_start_date() == null){
+                throw new NullPointerException("传递的起始更新日期的值是null");
+            }
+        }
+        return internalReportsService.getInternalTransfer(request, internalTransferDto);
+    }
+
     @ApiOperation(value = "交易画面记录查询接口")
     @GetMapping("/transactionScreenRecords")
     public MerchantResp getTransactionScreenRecords(HttpServletRequest request,@Validated TransactionScreenRecordsDto transactionScreenRecordsDto) {
@@ -55,4 +72,5 @@ public class InternalReportsController {
         }
         return internalReportsService.getApprovedCardReport(number);
     }
+
 }
