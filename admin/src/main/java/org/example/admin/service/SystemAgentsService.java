@@ -42,4 +42,6 @@ public interface SystemAgentsService extends IService<SystemAgents> {
 
     //代理-代理列表-详情-重置密码
     CommResp updateAgentPassword(Long id);
+
+    CommResp getAgentDataSelect(Long id);
 }

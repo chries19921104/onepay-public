@@ -10,6 +10,7 @@ import org.example.common.base.CommResp;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.Map;
 
@@ -40,7 +41,7 @@ public class SystemAgentsController {
 
     //http://localhost:8088/api/agent/all
     @ApiOperation(value = "代理-代理列表-条件查询")
-    @GetMapping("/agent/all")
+    @GetMapping("/agent")
     @NoAuthorization
     public CommResp getAgentsAll(AgentDto agentDto){
 
@@ -77,7 +78,7 @@ public class SystemAgentsController {
     //http://localhost:8088/api/agent/{id}
     @ApiOperation(value = "代理-代理列表-详情-编辑")
     @PutMapping("/agent/{id}/")
-    public CommResp updateAgent(@PathVariable("id")Long id,@RequestBody AgentDto agentDto){
+    public CommResp updateAgent(@PathVariable("id")Long id, @RequestBody AgentDto agentDto){
 
         return systemAgentsService.updateAgent(id,agentDto);
     }
@@ -89,6 +90,15 @@ public class SystemAgentsController {
     public CommResp updateAgentPassword(@PathVariable("id")Long id){
 
         return systemAgentsService.updateAgentPassword(id);
+    }
+
+    //http://localhost:8088/api/agent/{id}/plans/summary
+    @ApiOperation(value = "代理-代理列表-详情-搜索")
+    @PutMapping("/agent/{id}/plans/summary")
+    @NoAuthorization
+    public CommResp getAgentDataSelect(@PathVariable("id")Long id){
+
+        return systemAgentsService.getAgentDataSelect(id);
     }
 
 

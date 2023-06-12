@@ -276,13 +276,13 @@ public class SystemAgentsServiceImpl extends ServiceImpl<SystemAgentsMapper, Sys
             systemAgents.setBelongId(null);
         }
 
-        if(agentDto.getFullName().length()>255){
+        if(agentDto.getFullName()!=null&&agentDto.getFullName().length()>255){
             return CommResp.FAIL("代理名称过长");
         }
-        if(agentDto.getPassword().length()<6){
-            return CommResp.FAIL("密码太短了");
+        if(agentDto.getPassword()!=null&&agentDto.getPassword().length()<6){
+            return CommResp.FAIL("密码太短了，至少六位");
         }
-        if(!(agentDto.getStatus()==1||agentDto.getStatus()==0)){
+        if(agentDto.getStatus()==null||!(agentDto.getStatus()==1||agentDto.getStatus()==0)){
             return CommResp.FAIL("状态必须为启用或停用");
         }
 
@@ -301,7 +301,6 @@ public class SystemAgentsServiceImpl extends ServiceImpl<SystemAgentsMapper, Sys
         AgentsVo agentsVo=new AgentsVo();
         BeanUtils.copyProperties(systemAgents,agentsVo);
         return CommResp.data(agentsVo);
-
 
     }
 
@@ -325,5 +324,15 @@ public class SystemAgentsServiceImpl extends ServiceImpl<SystemAgentsMapper, Sys
 
         return CommResp.data(map);
     }
+
+    @Override
+    public CommResp getAgentDataSelect(Long id) {
+        SystemAgents systemAgents = systemAgentsMapper.selectById(id);
+
+
+
+        return null;
+    }
+
 
 }
