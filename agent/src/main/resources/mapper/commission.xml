@@ -4,29 +4,30 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="org.example.agent.mapper.AgentCommissionSettingsMapper">
     <select id="currentRebate" resultType="org.example.agent.vo.CurrentRebateVo">
-           select RB100_ID,
-                  SH100_ID,
-                  active,
-                  agent_id,
-                  bdm_rate,
-                  bdrs_rp_id,
-                  created_at,
-                  created_man,
-                  currency,
-                  month,
-                  qdm_rate,
-                  qdrs_rp_id,
-                  twdm_rate,
-                  twdrs_rp_id,
-                  wrs_rp_id,
-                  updated_at,
-                  updated_man,
-                  wdm_rate,
-                  wrs_rp_id,
-                  year
-           from system_agent_commission_settings
-           where agent_id = #{agentId}
-             and currency = #{currency}
+        select RB100_ID,
+               SH100_ID,
+               active,
+               agent_id,
+               bdm_rate,
+               bdrs_rp_id,
+               created_at,
+               created_man,
+               currency,
+               month,
+               qdm_rate,
+               qdrs_rp_id,
+               twdm_rate,
+               twdrs_rp_id,
+               wrs_rp_id,
+               updated_at,
+               updated_man,
+               wdm_rate,
+               wrs_rp_id,
+               year
+        from system_agent_commission_settings
+        where agent_id = #{agentId}
+          and currency = #{currency}
+          and active = 0
     </select>
 
 </mapper>

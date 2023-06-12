@@ -1,6 +1,8 @@
 package org.example.agent.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
+import org.example.agent.base.Result;
+import org.example.agent.dto.UserDto;
 import org.example.common.entity.SystemAgents;
 
 
@@ -12,5 +14,6 @@ import org.example.common.entity.SystemAgents;
  */
 public interface SystemAgentsService extends IService<SystemAgents> {
 
+    Result login(UserDto userDto);
 }
 

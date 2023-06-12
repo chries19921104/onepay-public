@@ -9,12 +9,14 @@ import org.example.agent.mapper.SystemAgentsMapper;
 import org.example.agent.mapper.SystemMerchantMapper;
 import org.example.agent.service.AgentCommissionSettingsService;
 import org.example.agent.service.SystemMerchantService;
+import org.example.agent.service.SystemRebateSchemeService;
 import org.example.agent.utils.BeanCopyUtils;
 import org.example.agent.vo.CurrentRebateVo;
 import org.example.agent.vo.PlanSummaryVo;
 import org.example.agent.vo.SummaryVo;
 import org.example.common.entity.SystemAgentCommissionSettings;
 import org.example.common.entity.SystemMerchant;
+import org.example.common.entity.SystemRebateScheme;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
@@ -43,9 +45,12 @@ public class SystemMerchantServiceImpl extends ServiceImpl<SystemMerchantMapper,
     private AgentCommissionSettingsMapper agentCommissionSettingsMapper;
     @Autowired
     private AgentCommissionSettingsService agentCommissionSettingsService;
+    @Autowired
+    private SystemRebateSchemeService systemRebateScheme;
 
     @Override
     public Result loadPlanSummaryTable(SummaryDto summaryDto) {
+
 
         PlanSummaryVo info = systemAgentsMapper.info(summaryDto);
 
@@ -55,13 +60,28 @@ public class SystemMerchantServiceImpl extends ServiceImpl<SystemMerchantMapper,
                 .eq(SystemMerchant::getCurrency, summaryDto.getCurrency());
         wrapper.in(!CollectionUtils.isEmpty(summaryDto.getSH100ID()), SystemMerchant::getMerchantId, summaryDto.getSH100ID());
         List<SystemMerchant> merchants = list(wrapper);
+
         List<CurrentRebateVo> currentRebates = agentCommissionSettingsMapper
                 .currentRebate(summaryDto.getAgentId(), summaryDto.getCurrency());
         List<SummaryVo> summarys = BeanCopyUtils.copyBeanList(merchants, SummaryVo.class);
+        List<SystemRebateScheme> rebateSchemes = systemRebateScheme.list();
         for (SummaryVo summaryVo : summarys) {
             for (CurrentRebateVo currentRebate : currentRebates) {
-                if (summaryVo.getMerchantId()
-                        .equals(currentRebate.getSh100Id())) {
+                for (SystemRebateScheme rebateScheme : rebateSchemes) {
+                    if (currentRebate.getBdrsRpId().equals(rebateScheme.getRsId())) {
+                        currentRebate.setBankDepositRebatePlan(rebateScheme);
+                    }
+                    if (currentRebate.getQdrsRpId().equals(rebateScheme.getRsId())) {
+                        currentRebate.setQrDepositRebatePlan(rebateScheme);
+                    }
+                    if (currentRebate.getWrsRpId().equals(rebateScheme.getRsId())) {
+                        currentRebate.setWithdrawRebatePlan(rebateScheme);
+                    }
+                    if (currentRebate.getTwdrsRpId().equals(rebateScheme.getRsId())) {
+                        currentRebate.setTrueWalletDepositRebatePlan(rebateScheme);
+                    }
+                }
+                if (summaryVo.getMerchantId().equals(currentRebate.getSh100Id())) {
                     summaryVo.setCurrentRebate(currentRebate);
                     break;
                 }
@@ -92,6 +112,7 @@ public class SystemMerchantServiceImpl extends ServiceImpl<SystemMerchantMapper,
                 }
             }
         }
+
 
         info.setPlanSummary(summarys);
         return Result.success(info);

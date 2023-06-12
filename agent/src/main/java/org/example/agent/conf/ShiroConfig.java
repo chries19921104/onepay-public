@@ -31,6 +31,7 @@ public class ShiroConfig {
     }
 
 
+
     @Bean
     public ShiroFilterFactoryBean shiroFilterFactoryBean(SecurityManager securityManager) {
         ShiroFilterFactoryBean shiroFilterFactoryBean = new ShiroFilterFactoryBean();
@@ -65,10 +66,11 @@ public class ShiroConfig {
         filterChainDefinitionMap.put("/aas/*", "anon");
         filterChainDefinitionMap.put("/hello", "anon");
         filterChainDefinitionMap.put("/userlogin", "anon");
-        filterChainDefinitionMap.put("/**", "authc");
+        filterChainDefinitionMap.put("/**", "anon");
         shiroFilterFactoryBean.setFilterChainDefinitionMap(filterChainDefinitionMap);
         return shiroFilterFactoryBean;
     }
+
 
     @Bean
     public AuthorizationAttributeSourceAdvisor authorizationAttributeSourceAdvisor(DefaultWebSecurityManager securityManager) {
@@ -91,4 +93,9 @@ public class ShiroConfig {
         securityManager.setRealm(realm());
         return securityManager;
     }
+
+
+
+
+
 }

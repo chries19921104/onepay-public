@@ -3,6 +3,7 @@ package org.example.agent.vo;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.example.common.entity.SystemRebateScheme;
 
 import java.util.Date;
 
@@ -35,16 +36,16 @@ public class CurrentRebateVo {
     private Double wdmRate;
     //使用中
     private Integer active;
-    private Long twdrsRpId;
+    private Integer twdrsRpId;
     //创建人员
     private String createdMan;
     //更新人员
     private String updatedMan;
     private Date createdAt;
     private Date updatedAt;
-    private BankDepositRebatePlanVo bankDepositRebatePlanVo;
-    private QrDepositRebatePlanVo qrDepositRebatePlanVo;
-    private WithdrawRebatePlanVo withdrawRebatePlanVo;
-
+    private SystemRebateScheme bankDepositRebatePlan;
+    private SystemRebateScheme qrDepositRebatePlan;
+    private SystemRebateScheme withdrawRebatePlan;
+    private SystemRebateScheme trueWalletDepositRebatePlan;
 
 }
