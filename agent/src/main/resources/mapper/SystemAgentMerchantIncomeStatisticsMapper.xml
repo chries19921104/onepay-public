@@ -35,11 +35,21 @@
         IFNULL(SUM(FI_VNPAY_RCGCARD_ZING_fees),0) FI_VNPAY_RCGCARD_ZING_fees
         from
             system_agent_merchant_income_statistics
-        WHERE merchant_id IN
-            <foreach  collection="miList" item="i" separator="," open="(" close=")" >
-            #{i}
-            </foreach>
-          AND
+        WHERE
+            <choose>
+                <when test="miList.size == 0">
+
+                </when>
+                <otherwise>
+                    merchant_id IN
+                    <foreach  collection="miList" item="i" separator="," open="(" close=")" >
+                        #{i}
+                    </foreach>
+                    AND
+                </otherwise>
+            </choose>
+
+
             `date` BETWEEN #{start} AND #{end}
         GROUP BY `date`
     </select>
@@ -114,4 +124,42 @@
             LIMIT #{start},#{size}
 
     </select>
+
+    <select id="getTotalNumberOfPages" resultType="java.lang.Integer">
+        select
+        count(1)
+        FROM
+        (
+        select
+        a.merchant_id
+        FROM
+        system_agent_merchant_income_statistics a
+        left JOIN
+        system_merchant b
+        on a.merchant_id = b.merchant_id
+        LEFT JOIN
+        system_agents c
+        ON b.agent_id = c.agent_id
+        LEFT JOIN
+        system_agents d
+        ON c.belong_id = d.agent_id
+        LEFT JOIN
+        system_merchant_adjust e
+        ON e.merchant_id = a.merchant_id
+        LEFT JOIN
+        system_agents f
+        on b.agent_id = f.agent_id
+        where
+        a.merchant_id in
+        <foreach collection="miList" item="i" open="(" separator="," close=")">
+            #{i}
+        </foreach>
+        and e.`year` = #{year}
+        and e.`month` = #{month}
+        and e.currency = #{currency}
+        GROUP BY a.merchant_id
+        ) x
+
+    </select>
+
 </mapper>
