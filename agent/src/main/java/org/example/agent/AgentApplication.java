@@ -5,7 +5,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-@MapperScan(basePackages = "org.example.**.mapper")
+@MapperScan(basePackages = "org.example.agent.mapper")
 public class AgentApplication {
 
     public static void main(String[] args) {

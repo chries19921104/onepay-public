@@ -11,6 +11,7 @@ import org.example.agent.service.AgentCommissionSettingsService;
 import org.example.agent.service.SystemMerchantService;
 import org.example.agent.service.SystemRebateSchemeService;
 import org.example.agent.utils.BeanCopyUtils;
+import org.example.agent.utils.TokenUtils;
 import org.example.agent.vo.CurrentRebateVo;
 import org.example.agent.vo.PlanSummaryVo;
 import org.example.agent.vo.SummaryVo;
@@ -21,6 +22,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
+import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -37,8 +39,7 @@ import java.util.stream.Collectors;
 public class SystemMerchantServiceImpl extends ServiceImpl<SystemMerchantMapper, SystemMerchant> implements SystemMerchantService {
 
 
-    @Autowired
-    private SystemMerchantMapper merchantMapper;
+
     @Autowired
     private SystemAgentsMapper systemAgentsMapper;
     @Autowired
@@ -47,22 +48,24 @@ public class SystemMerchantServiceImpl extends ServiceImpl<SystemMerchantMapper,
     private AgentCommissionSettingsService agentCommissionSettingsService;
     @Autowired
     private SystemRebateSchemeService systemRebateScheme;
+    @Autowired
+    private HttpServletRequest request;
 
     @Override
     public Result loadPlanSummaryTable(SummaryDto summaryDto) {
-
-
+        String token = request.getHeader("token");
+        Long agentId = TokenUtils.getAgentId(token);
         PlanSummaryVo info = systemAgentsMapper.info(summaryDto);
 
         LambdaQueryWrapper<SystemMerchant> wrapper = new LambdaQueryWrapper<>();
-        wrapper.eq(SystemMerchant::getAgentId, summaryDto.getAgentId())
+        wrapper.eq(SystemMerchant::getAgentId, agentId)
                 .eq(SystemMerchant::getStatus, 1)
                 .eq(SystemMerchant::getCurrency, summaryDto.getCurrency());
         wrapper.in(!CollectionUtils.isEmpty(summaryDto.getSH100ID()), SystemMerchant::getMerchantId, summaryDto.getSH100ID());
         List<SystemMerchant> merchants = list(wrapper);
 
         List<CurrentRebateVo> currentRebates = agentCommissionSettingsMapper
-                .currentRebate(summaryDto.getAgentId(), summaryDto.getCurrency());
+                .currentRebate(agentId, summaryDto.getCurrency());
         List<SummaryVo> summarys = BeanCopyUtils.copyBeanList(merchants, SummaryVo.class);
         List<SystemRebateScheme> rebateSchemes = systemRebateScheme.list();
         for (SummaryVo summaryVo : summarys) {
@@ -90,7 +93,7 @@ public class SystemMerchantServiceImpl extends ServiceImpl<SystemMerchantMapper,
 
 
         LambdaQueryWrapper<SystemAgentCommissionSettings> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.eq(SystemAgentCommissionSettings::getAgentId, summaryDto.getAgentId())
+        queryWrapper.eq(SystemAgentCommissionSettings::getAgentId, agentId)
                 .eq(SystemAgentCommissionSettings::getActive, 0);
         List<SystemAgentCommissionSettings> agentCommissionSettings
                 = agentCommissionSettingsService.list(queryWrapper);

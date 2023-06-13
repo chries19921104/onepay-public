@@ -18,6 +18,6 @@ import java.util.List;
 @Mapper
 public interface SystemMerchantMapper extends BaseMapper<SystemMerchant> {
 
-    public List<AgentZoneMerchantVo> getAgentZoneMerchantList(String currency,Long agent_id);
+    List<AgentZoneMerchantVo> getAgentZoneMerchantList(String currency,Long agent_id);
 }
 
