@@ -1,16 +1,13 @@
 package org.example.agent.conf;
 
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import org.apache.shiro.authc.*;
 import org.apache.shiro.authz.AuthorizationInfo;
 import org.apache.shiro.authz.SimpleAuthorizationInfo;
 import org.apache.shiro.realm.AuthorizingRealm;
 import org.apache.shiro.subject.PrincipalCollection;
 import org.example.agent.mapper.SystemAgentsMapper;
-import org.example.common.entity.SystemAgents;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.Objects;
 import java.util.Set;
 
 public class ShiroRealm extends AuthorizingRealm {
@@ -37,19 +34,9 @@ public class ShiroRealm extends AuthorizingRealm {
      **/
     @Override
     protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken token) throws AuthenticationException {
-        UsernamePasswordToken upToken = (UsernamePasswordToken) token;
-
-        String name = upToken.getUsername();
+        String name = token.getPrincipal().toString();
+        String pwd = token.getCredentials().toString();
         String password = new String((char[]) token.getCredentials());
-
-        LambdaQueryWrapper<SystemAgents> wrapper = new LambdaQueryWrapper<>();
-        wrapper.eq(SystemAgents::getUsername, name)
-                .eq(SystemAgents::getStatus,1);
-        SystemAgents systemAgents = agentsMapper.selectOne(wrapper);
-        if (Objects.isNull(systemAgents)) {
-            return null;
-        }
-
         if (!"admin".equals(name) || !"admin".equals(password)) {
             throw new UnknownAccountException();
         }
