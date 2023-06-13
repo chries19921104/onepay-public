@@ -92,8 +92,9 @@ public class SystemAgentsController {
         return systemAgentsService.updateAgentPassword(id);
     }
 
+    //未完成
     //http://localhost:8088/api/agent/{id}/plans/summary
-    @ApiOperation(value = "代理-代理列表-详情-搜索")
+    @ApiOperation(value = "代理-代理列表-详情-搜索（未完成）")
     @PutMapping("/agent/{id}/plans/summary")
     @NoAuthorization
     public CommResp getAgentDataSelect(@PathVariable("id")Long id){

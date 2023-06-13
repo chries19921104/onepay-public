@@ -20,14 +20,14 @@ public class SystemRebateSchemeController {
     private SystemRebateSchemeService systemRebateSchemeService;
 
 
+
+    //http://localhost:8091/api/rp100
     @ApiOperation(value = "代理-返点设置-条件查询")
     @GetMapping("/rp100")
-    @NoAuthorization
-    public CommResp getAll(RebateSchemeDto rebateSchemeDto){
+//    @NoAuthorization
+    public CommResp getScheme(RebateSchemeDto rebateSchemeDto){
 
-
-
-        return systemRebateSchemeService.getAll(rebateSchemeDto);
+        return systemRebateSchemeService.getScheme(rebateSchemeDto);
     }
 
 

@@ -31,7 +31,7 @@ public class SystemMerchant implements Serializable {
     /**
     * 商户ID
     */
-    @TableId(type = IdType.AUTO)
+    @TableId(value = "merchant_id" ,type = IdType.AUTO)
     private Long merchantId;
 
     /**

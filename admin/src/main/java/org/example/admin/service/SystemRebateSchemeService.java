@@ -7,6 +7,6 @@ import org.example.common.entity.SystemRebateScheme;
 
 public interface SystemRebateSchemeService extends IService<SystemRebateScheme> {
 
-
-    CommResp getAll(RebateSchemeDto rebateSchemeDto);
+    //代理-返点设置-条件查询
+    CommResp getScheme(RebateSchemeDto rebateSchemeDto);
 }

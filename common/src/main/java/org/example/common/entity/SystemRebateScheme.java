@@ -9,6 +9,7 @@ import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.Date;
 
@@ -17,7 +18,8 @@ import java.util.Date;
 @Data
 @TableName("system_rebate_scheme")
 @ApiModel(description = "回扣方案实体类")
-public class SystemRebateScheme {
+public class SystemRebateScheme implements Serializable {
+    private static final long serialVersionUID = 1L;
 
     @TableId(value = "rs_id",type = IdType.AUTO)
     private Long rsId;

@@ -41,4 +41,14 @@ public class RebateSchemeDto {
      */
     private LocalDateTime UpdatedAt;
 
+    /**
+     * 当前页
+     */
+    private Integer page;
+
+    /**
+     * 每页显示条数
+     */
+    private Integer rp;
+
 }
