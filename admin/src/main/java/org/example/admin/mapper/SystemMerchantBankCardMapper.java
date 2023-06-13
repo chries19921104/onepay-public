@@ -7,7 +7,7 @@ import org.example.common.entity.SystemMerchantBankCard;
 
 /**
 * <p>
-* system_merchant_bank_card Mapper 接口
+* system_merchant_bank_card ExternalStatementMapper 接口
 * </p>
 *
 * @author Administrator

@@ -111,6 +111,16 @@
             <version>2.12.4</version>
         </dependency>
 
+        <!--解析yml文件-->
+        <dependency>
+            <groupId>org.yaml</groupId>
+            <artifactId>snakeyaml</artifactId>
+            <version>1.29</version>
+        </dependency>
+
+
+
+
     </dependencies>
 
     <build>

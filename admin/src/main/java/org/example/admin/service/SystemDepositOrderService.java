@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
 
 /**
 * <p>
-* system_deposit_order Service 接口
+* system_deposit_order ExternalStatementService 接口
 * </p>
 *
 * @author zhangmi

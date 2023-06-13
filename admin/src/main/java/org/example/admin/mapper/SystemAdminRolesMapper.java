@@ -6,7 +6,7 @@ import org.springframework.stereotype.Repository;
 
 /**
  * <p>
- * 平台管理员角色表 Mapper 接口
+ * 平台管理员角色表 ExternalStatementMapper 接口
  * </p>
  *
  * @author rj

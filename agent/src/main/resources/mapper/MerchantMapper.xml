@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.example.agent.mapper.SystemAgentsMapper">
+    <select id="summary" resultType="org.example.agent.vo.SummaryVo">
+        select merchant_id,
+               agent_id,
+               code,
+               currency,
+               name,
+               tr_qr_rate,
+               tr_rate,
+               tr_true_rate,
+               wd_rate
+        from system_merchant
+        where agent_id = ${summaryDto.getAgentId}
+          and currency = ${summaryDto.getCurryDto}
+          and status = 1
+    </select>
+
+</mapper>

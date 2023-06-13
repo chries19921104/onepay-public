@@ -31,7 +31,7 @@ import java.util.stream.Collectors;
 
 /**
 * <p>
-* system_agents Service 接口实现
+* system_agents ExternalStatementService 接口实现
 * </p>
 *
 * @author Administrator

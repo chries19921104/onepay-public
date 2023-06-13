@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @SpringBootTest
-public class SystemWithdrawalOrderMapperTests {
+public class SystemWithdrawalOrderExternalStatementMapperTests {
 
     @Autowired
     private SystemWithdrawalOrderMapper systemWithdrawalOrderMapper;

@@ -15,7 +15,7 @@ import java.util.Map;
 
 /**
 * <p>
-* system_bank_card Service 接口
+* system_bank_card ExternalStatementService 接口
 * </p>
 *
 * @author Administrator
@@ -30,8 +30,14 @@ public interface SystemBankCardService extends IService<SystemBankCard> {
     Map<String, List<BankCardAllVo>> getBrankByType(BankCardDto bankCardDto);
 
     //银行账户管理-银行账户-搜索
-    MerchantResp getBrankAccount(BankCardDto bankCardDto, HttpServletRequest request);
+    MerchantResp getBrankAccountList(BankCardDto bankCardDto, HttpServletRequest request);
 
     //银行账户管理-银行账户-新增
     Map<String,BankCardAllVo> createBrankAccount(BankCardCreateDto bankCardDto);
+
+    //银行账户管理-银行账户-详情
+    Map<String, BankCardAllVo> getBrankAccount(Long id);
+
+    //银行账户管理-银行账户-修改
+    Map<String, Boolean> updateBrankAccount(BankCardAllVo bankCardAllVo);
 }

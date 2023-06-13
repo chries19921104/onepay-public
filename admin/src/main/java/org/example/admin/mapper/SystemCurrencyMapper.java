@@ -6,7 +6,7 @@ import org.springframework.stereotype.Repository;
 
 /**
  * <p>
- * 币别 Mapper 接口
+ * 币别 ExternalStatementMapper 接口
  * </p>
  *
  * @author rj

@@ -47,3 +47,8 @@ logging:
 mybatis-plus:
   configuration:
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+
+hold_time_limit:
+  BRI: 10
+  MDR: 6
+  CIMB: 30

@@ -1,18 +1,15 @@
 package org.example.agent.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import io.swagger.models.auth.In;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.example.agent.po.DailyReportPo;
 import org.example.agent.po.SummaryReportDataPo;
-import org.example.agent.vo.DailyReportVo;
 import org.example.common.entity.SystemAgentMerchantIncomeStatistics;
 import org.springframework.stereotype.Repository;
 
 import java.sql.Timestamp;
 import java.util.List;
-import java.util.Map;
 
 @Repository
 @Mapper

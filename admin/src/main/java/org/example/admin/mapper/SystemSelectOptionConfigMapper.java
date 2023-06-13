@@ -6,7 +6,7 @@ import org.springframework.stereotype.Repository;
 
 /**
  * <p>
- * 系统下拉选单设定档 Mapper 接口
+ * 系统下拉选单设定档 ExternalStatementMapper 接口
  * </p>
  *
  * @author rj

@@ -6,7 +6,7 @@ import org.example.common.entity.SystemBankCardGroup;
 
 /**
 * <p>
-* system_bank_card_group Mapper 接口
+* system_bank_card_group ExternalStatementMapper 接口
 * </p>
 *
 * @author Administrator

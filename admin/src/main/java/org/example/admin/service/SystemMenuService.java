@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 
 /**
 * <p>
-* system_menu Service 接口
+* system_menu ExternalStatementService 接口
 * </p>
 *
 * @author Administrator
