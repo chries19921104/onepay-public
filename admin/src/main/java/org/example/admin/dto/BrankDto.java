@@ -15,6 +15,7 @@ public class BrankDto {
     @JsonProperty("is_enable")
     private Integer isEnabled;
 
+
     @JsonProperty("txn_type")
     private Integer txnType;
 

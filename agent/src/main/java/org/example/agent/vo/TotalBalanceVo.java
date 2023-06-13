@@ -1,4 +1,4 @@
-package org.example.agent.bo;
+package org.example.agent.vo;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -10,7 +10,7 @@ import java.math.BigDecimal;
  */
 @Getter
 @Setter
-public class TotalBalanceBo {
+public class TotalBalanceVo {
 
 
     //银行充值
@@ -48,7 +48,7 @@ public class TotalBalanceBo {
     //VNPAY 充值卡 Zing 充值
     private BigDecimal FI_RCGCARD_ZING_balance;
 
-    public TotalBalanceBo() {
+    public TotalBalanceVo() {
         this.FI_bank_balance = new BigDecimal(0);
         this.FI_qrpay_balance = new BigDecimal(0);
         this.FI_truewallet_balance = new BigDecimal(0);
@@ -62,7 +62,7 @@ public class TotalBalanceBo {
         this.FI_RCGCARD_ZING_balance = new BigDecimal(0);
     }
 
-    public TotalBalanceBo(BigDecimal FI_bank_balance, BigDecimal FI_qrpay_balance, BigDecimal FI_truewallet_balance, BigDecimal FO_balance, BigDecimal FI_ZALO_QR_balance, BigDecimal FI_MOMO_QR_balance, BigDecimal FI_VIETTEL_QR_balance, BigDecimal FI_VIETTEL_FIX_balance, BigDecimal FI_BANK_CARD_balance, BigDecimal FI_RCGCARD_PC_balance, BigDecimal FI_RCGCARD_ZING_balance) {
+    public TotalBalanceVo(BigDecimal FI_bank_balance, BigDecimal FI_qrpay_balance, BigDecimal FI_truewallet_balance, BigDecimal FO_balance, BigDecimal FI_ZALO_QR_balance, BigDecimal FI_MOMO_QR_balance, BigDecimal FI_VIETTEL_QR_balance, BigDecimal FI_VIETTEL_FIX_balance, BigDecimal FI_BANK_CARD_balance, BigDecimal FI_RCGCARD_PC_balance, BigDecimal FI_RCGCARD_ZING_balance) {
         this.FI_bank_balance = FI_bank_balance;
         this.FI_qrpay_balance = FI_qrpay_balance;
         this.FI_truewallet_balance = FI_truewallet_balance;

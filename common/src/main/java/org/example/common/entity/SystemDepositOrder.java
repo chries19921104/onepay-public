@@ -4,10 +4,6 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.annotations.ApiModel;
 import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
-
-import java.awt.*;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
@@ -34,7 +30,21 @@ public class SystemDepositOrder implements Serializable {
     public static final Integer TXN_MODE_VNPAY_MOMO_QR = 102;
     public static final Integer TXN_MODE_VNPAY_VIETTEL_QR = 103;
     public static final Integer TXN_MODE_VNPAY_VIETTEL_FIX = 104;
+    public static final Integer TXN_MODE_VNPAY_BANK_CARD = 107;
+    public static final Integer TXN_MODE_VNPAY_RCGCARD_PC_VIETTEL = 108;
+    public static final Integer TXN_MODE_VNPAY_RCGCARD_PC_MOBIFONE = 109;
+    public static final Integer TXN_MODE_VNPAY_RCGCARD_PC_VINAPHONE = 110;
+    public static final Integer TXN_MODE_VNPAY_RCGCARD_ZING = 111;
+
+    public static final Integer TXN_MODE_EIGHTPAY_5_ONLY_WITHDRAWL = 301;
+    public static final Integer TXN_MODE_QIJIPAY_WITHDRAWL = 401;
     public static final Integer TXN_MODE_VNPAY_BANK_QR = 105;
+    public static final Integer TXN_MODE_DAPAY_ZFBYHK = 205;
+    public static final Integer TXN_MODE_DAPAY_NETGATE = 208;
+    public static final Integer TXN_MODE_DAPAY_FO = 215;
+    public static final Integer TXN_MODE_DAPAY_BANK2BANK = 216;
+    public static final Integer TXN_MODE_H1PAY_UNION_PAY = 501;
+
 
 
     /**

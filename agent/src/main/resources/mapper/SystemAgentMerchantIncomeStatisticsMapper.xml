@@ -112,12 +112,17 @@
             system_agents f
             on b.agent_id = f.agent_id
         where
-            a.merchant_id in
-            <foreach collection="miList" item="i" open="(" separator="," close=")">
-                #{i}
-            </foreach>
-
-          and e.`year` = #{year}
+            <choose>
+                <when test="miList.size == 0"></when>
+                <otherwise>
+                    a.merchant_id in
+                    <foreach collection="miList" item="i" open="(" separator="," close=")">
+                        #{i}
+                    </foreach>
+                    and
+                </otherwise>
+            </choose>
+           e.`year` = #{year}
           and e.`month` = #{month}
           and e.currency = #{currency}
         GROUP BY a.merchant_id
@@ -150,16 +155,21 @@
         system_agents f
         on b.agent_id = f.agent_id
         where
-        a.merchant_id in
-        <foreach collection="miList" item="i" open="(" separator="," close=")">
-            #{i}
-        </foreach>
-        and e.`year` = #{year}
+            <choose>
+                <when test="miList.size == 0"></when>
+                <otherwise>
+                    a.merchant_id in
+                    <foreach collection="miList" item="i" open="(" separator="," close=")">
+                        #{i}
+                    </foreach>
+                    and
+                </otherwise>
+            </choose>
+         e.`year` = #{year}
         and e.`month` = #{month}
         and e.currency = #{currency}
         GROUP BY a.merchant_id
         ) x
-
     </select>
 
 </mapper>

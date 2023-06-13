@@ -8,7 +8,7 @@ import java.math.BigDecimal;
 public class OverviewVo {
 
     private BigDecimal revenue;
-    private BigDecimal today_ransacation;
+    private Integer today_ransacation;
     private BigDecimal today_bank_deposit;
     private BigDecimal today_qr_deposit;
     private BigDecimal today_truewallet_deposit;

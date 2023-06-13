@@ -1,4 +1,4 @@
-package org.example.agent.bo;
+package org.example.agent.vo;
 
 import lombok.Data;
 import org.example.agent.po.SummaryReportDataPo;
@@ -6,7 +6,7 @@ import org.example.agent.po.SummaryReportDataPo;
 import java.util.List;
 
 @Data
-public class SummaryReportDataBo {
+public class SummaryReportDataVo {
 
     private Integer per_page;
     private Integer current_page;
@@ -23,7 +23,7 @@ public class SummaryReportDataBo {
     private Integer total;
 
     private List<SummaryReportDataPo> data;
-    private SummaryReportTotalsBo subtotalas;
-    private SummaryReportTotalsBo totals;
+    private SummaryReportTotalsVo subtotalas;
+    private SummaryReportTotalsVo totals;
 
 }
