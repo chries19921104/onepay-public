@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.example.admin.mapper.ExternalStatementMapper">
+    
+    <resultMap id="BankStatement" type="org.example.admin.vo.ExternalStatementVo">
+        <id column="vb_id" property="vbId"/>
+        <result column="local_created_at" property="localCreatedAt"/>
+        <result column="merchant_id" property="merchantId"/>
+        <result column="bank_id" property="bankId"/>
+        <result column="bank_card_id" property="bankCardId"/>
+        <result column="transaction_date" property="transactionDate"/>
+        <result column="balance_xy" property="balanceXy"/>
+        <result column="pre_balance_xy" property="preBalanceXy"/>
+        <result column="bank_fee" property="bankFee"/>
+        <result column="command_id" property="commandId"/>
+        <result column="model_class" property="modelClass"/>
+        <result column="txn_mode" property="txnMode"/>
+        <result column="void" property="voId"/>
+        <result column="duplicate_id" property="duplicateId"/>
+        <result column="void_requester" property="voidRequester"/>
+        <result column="void_approver" property="voidApprover"/>
+        <result column="void_approved_at" property="voidApprovedAt"/>
+        <result column="void_rejector" property="voidRejector"/>
+        <result column="created_at" property="createdAt"/>
+        <result column="updated_at" property="updatedAt"/>
+        <result column="transaction_created_at" property="transactionCreatedAt"/>
+
+        <result column="bank_id" property="bankId"/>
+        <result column="fi_max" property="fiMax"/>
+        <result column="fi_min" property="fiMin"/>
+        <result column="fo_max" property="foMax"/>
+        <result column="fo_min" property="foMin"/>
+        <result column="fx_max" property="fxMax"/>
+        <result column="fx_min" property="fxMin"/>
+        <result column="tr_max" property="trMax"/>
+        <result column="tr_min" property="trMin"/>
+        <result column="reserved_amount" property="reservedAmount"/>
+        <result column="day_treshold" property="dayTreshold"/>
+        <result column="is_captcha" property="isCaptcha"/>
+        <result column="created_at" property="createdAt"/>
+        <result column="updated_at" property="updatedAt"/>
+
+        <result column="card_id" property="cardId"/>
+        <result column="card_group_id" property="cardGroupId"/>
+        <result column="bank_id" property="bankId"/>
+        <result column="bank_number" property="bankNumber"/>
+        <result column="withdraw_pin" property="withdrawPin"/>
+        <result column="atm_card_number" property="atmCardNumber"/>
+        <result column="atm_pin" property="atmPin"/>
+        <result column="user_name" property="userName"/>
+        <result column="beginning_balance" property="beginningBalance"/>
+        <result column="beginning_balance_xy" property="beginningBalanceXy"/>
+        <result column="daily_collection_limit" property="dailyCollectionLimit"/>
+        <result column="daily_disbursement_limit" property="dailyDisbursementLimit"/>
+        <result column="month_disbursement_limit" property="monthDisbursementLimit"/>
+        <result column="month_treshold" property="monthTreshold"/>
+        <result column="day_treshold" property="dayTreshold"/>
+        <result column="healthy_balance" property="healthyBalance"/>
+        <result column="min_balance_percentage" property="minBalancePercentage"/>
+        <result column="min_reserved_amount" property="minReservedAmount"/>
+        <result column="mobile_name" property="mobileName"/>
+        <result column="min_reserved_amount" property="minReservedAmount"/>
+        <result column="phone_number" property="phoneNumber"/>
+        <result column="sim_opt" property="simOpt"/>
+        <result column="sim_credit_expired" property="simCreditExpired"/>
+        <result column="account_code" property="accountCode"/>
+        <result column="opening_status" property="openingStatus"/>
+        <result column="payment_mode" property="paymentMode"/>
+        <result column="qr_pay_code" property="qrPayCode"/>
+        <result column="promptpay_code" property="promptpayCode"/>
+        <result column="command_id" property="commandId"/>
+        <result column="created_at" property="createdAt"/>
+        <result column="updated_at" property="updatedAt"/>
+        <result column="server_id" property="serverId"/>
+        <result column="pre_server_id" property="preServerId"/>
+        <result column="step_opencard" property="stepOpencard"/>
+        <result column="step_history" property="stepHistory"/>
+        <result column="vnd_otp" property="vndOtp"/>
+        <result column="vnd_payment_method" property="vndPaymentMethod"/>
+        <result column="vnd_app_password" property="vndAppPassword"/>
+        <result column="mobile_id" property="mobileId"/>
+        <result column="m_pin" property="mPin"/>
+        <result column="pw_transfer" property="pwTransfer"/>
+        <result column="secure_answer" property="secureAnswer"/>
+        <result column="phone_ip" property="phoneIp"/>
+        <result column="for_testing" property="forTesting"/>
+        <result column="hold_at" property="holdAt"/>
+        <result column="status_preset" property="statusPreset"/>
+        <result column="day_number" property="dayNumber"/>
+    </resultMap>
+    <select id="getAll" resultMap="BankStatement">
+        SELECT
+    sbc.statement,
+	sb.`name`,
+	sbc.account_code,
+	svbs.transaction_date,
+	svbs.description,
+	sbc.note,
+	svbs.debit,
+	svbs.credit,
+	svbs.creator,
+	svbs.updater,
+	svbs.created_at,
+	svbs.updated_at,
+	svbs.command_id,
+	svbs.bank_fee,
+	svbs.type,
+	svbs.currency
+FROM
+	system_virtual_bank_statement AS svbs
+	LEFT JOIN
+	system_bank_card AS sbc
+	ON svbs.bank_id = sbc.bank_id
+	LEFT JOIN
+	system_bank AS sb
+ ON
+	sbc.bank_id = sb.bank_id
+	and svbs.merchant_id = null
+	<if test="bankCardId != null">
+        WHERE sb.`name` = #{bankCardId}
+    </if>
+
+    <if test="statement != null">
+        where svbc.statement = #{statement}
+    </if>
+
+     <if test="accountCode != null">
+        where sbc.account_code = #{accountCode}
+    </if>
+
+     <if test="commandId != null">
+        where svbs.command_id = #{commandId}
+    </if>
+
+     <if test="transactionStartDate != null">
+        where svbs.transaction_date <![CDATA[>=]]> #{transactionStartDate}
+    </if>
+
+     <if test="transactionEndDate != null">
+        where svbs.transaction_date <![CDATA[<=]]> #{transactionEndDate}
+    </if>
+        <if test="currency != null">
+        where svbs.currency = #{currency}
+    </if>
+      <if test="type != null">
+        where svbs.type = #{type}
+    </if>
+      <if test="debit != null">
+        where svbs.debit = #{debit}
+    </if>
+      <if test="credit != null">
+        where svbs.credit = #{credit}
+    </if>
+
+      <if test="description != null">
+        where svbs.description = #{description}
+    </if>
+
+      <if test="updatedStartAt != null">
+        where svbs.updated_at <![CDATA[<=]]> #{updatedStartAt}
+    </if>
+
+      <if test="updatedEndAt != null">
+        where svbs.updated_at <![CDATA[>=]]> #{updatedEndAt}
+    </if>
+
+    </select>
+</mapper>

@@ -30,7 +30,7 @@ import java.util.stream.Collectors;
 
 /**
 * <p>
-* system_bank Service 接口实现
+* system_bank ExternalStatementService 接口实现
 * </p>
 *
 * @author Administrator

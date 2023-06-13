@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.example.agent.mapper.AgentOverviewMapper">
+    <select id="getSuccessfulFi" resultType="org.example.agent.po.SuccessfulPo">
+        select 
+            COUNT(*) count,
+        SUM(b.paid_amount) amount,
+        SUM(b.paid_amount * IFNULL(c.bdm_rate,0)) / 100 rate
+        FROM
+            system_merchant a
+        LEFT JOIN
+            system_deposit_order b
+        ON a.agent_id = b.merchant_id
+            LEFT JOIN
+            system_agent_commission_settings c
+            ON a.merchant_id = c.SH100_ID
+            AND a.agent_id = c.agent_id
+        WHERE c.active = 1
+          AND b.`status` = 3
+          AND a.currency = #{currency}
+          AND b.completed_at
+          AND a.agent_id = #{agent_id}
+            BETWEEN #{start}
+          AND #{end}
+            <choose>
+                <when test="modelList.size == 0">
+                    AND b.txn_mode = 1
+                </when>
+            <otherwise>
+                AND b.txn_mode IN
+        <foreach collection="modelList" separator="," open="(" item="i" close=")">
+            #{i}
+        </foreach>
+            </otherwise>
+            </choose>
+    </select>
+
+    <select id="getSuccessFulTPIQr" resultType="org.example.agent.po.SuccessfulPo">
+        SELECT
+            COUNT(*) count,
+SUM(b.paid_amount) AS amount,
+0 as rate
+        FROM
+            system_merchant a
+            LEFT JOIN
+            system_deposit_order b
+        ON a.merchant_id = b.merchant_id
+            LEFT JOIN
+            system_agent_commission_settings c
+            ON a.merchant_id = c.SH100_ID
+            AND a.agent_id = c.agent_id
+        WHERE c.active = 1
+          AND b.`status` = 3
+          AND a.agent_id = #{agent_id}
+          AND b.currency = #{currency}
+          AND b.completed_at
+            BETWEEN #{start} and #{end}
+           OR b.txn_mode IN (101,102,103,104,105)
+    </select>
+
+    <select id="getSuccessfulFo" resultType="org.example.agent.po.SuccessfulPo">
+        select
+            count(*) count,
+        SUM(b.paid_amount) amount,
+        SUM(c.paid_amount * IFNULL(d.wdm_rate,0) / 100.0) rate
+        FROM
+            system_merchant a
+            INNER JOIN
+            system_withdrawal_order b
+        ON
+            b.merchant_id = a.merchant_id
+            INNER JOIN
+            system_sub_withdrawal_order c
+            ON
+            b.fo_id = c.fo_id
+            LEFT JOIN
+            system_agent_commission_settings d
+            ON
+            d.SH100_ID = a.merchant_id
+            AND
+            a.agent_id = d.agent_id
+        WHERE
+            d.active = 1
+          AND
+            b.currency = #{currency}
+
+        <choose>
+            <when test="modelList.size == 0"></when>
+        <otherwise>
+            AND
+            c.txn_mode IN
+            <foreach collection="modelList" item="i" open="(" separator="," close=")">
+                #{i}
+            </foreach>
+        </otherwise>
+        </choose>
+          AND
+            b.completed_at
+            BETWEEN
+            #{start}
+          and #{end}
+
+    </select>
+
+    <select id="countAllSuccessfulFo" resultType="java.lang.Integer">
+        select
+            count(*)
+        FROM
+            system_merchant a
+                INNER JOIN
+            system_withdrawal_order b
+            ON
+                a.merchant_id = b.merchant_id
+        WHERE
+            b.`status` = 3
+          AND
+            b.currency = #{currency}
+          AND
+            b.completed_at
+          AND a.agent_id = #{agent_id}
+        BETWEEN
+                #{start}
+                AND
+                #{end}
+
+
+    </select>
+
+    <select id="getSuccessfulFoAmount">
+        SELECT SUM(fo110.paid_amount) amount
+        FROM system_merchant sh
+        INNER JOIN system_withdrawal_order fo100
+        ON sh.merchant_id = fo100.merchant_id
+        INNER JOIN system_sub_withdrawal_order fo110
+        ON fo100.fo_id = fo110.fo_id
+        LEFT JOIN system_agent_commission_settings rb
+        ON sh.merchant_id = rb.SH100_ID
+        AND sh.agent_id = rb.agent_id
+        WHERE rb.active = 1
+        <choose>
+            <when test="modelList.size==0">
+                AND fo110.txn_mode = 1
+            </when>
+            <otherwise>
+                AND fo110.txn_mode IN
+                <foreach collection="modelList" separator="," item="i" open="(" close=")">
+                    #{i}
+                </foreach>
+            </otherwise>
+        </choose>
+        AND a.agent_id = #{agent_id}
+        AND fo100.currency = #{currency}
+        AND fo100.completed_at
+        BETWEEN #{start}
+        AND #{end}
+
+
+    </select>
+</mapper>

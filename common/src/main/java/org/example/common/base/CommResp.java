@@ -68,4 +68,16 @@ public class CommResp {
         return map;
     }
 
+    public static Map<String, Boolean> error(){
+        Map<String , Boolean> map = new HashMap<>();
+        map.put("error",false);
+        return map;
+    }
+
+    public static <T> Map<String, T> respData(T t){
+        Map<String , T> map = new HashMap<>();
+        map.put("data",t);
+        return map;
+    }
+
 }

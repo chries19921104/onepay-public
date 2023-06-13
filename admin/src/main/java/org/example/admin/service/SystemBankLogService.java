@@ -9,7 +9,7 @@ import javax.servlet.http.HttpServletRequest;
 
 /**
 * <p>
-* system_bank_log Service 接口
+* system_bank_log ExternalStatementService 接口
 * </p>
 *
 * @author Administrator

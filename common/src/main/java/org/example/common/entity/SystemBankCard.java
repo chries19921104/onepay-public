@@ -1,5 +1,6 @@
 package org.example.common.entity;
 
+import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.models.auth.In;
@@ -28,7 +29,7 @@ public class SystemBankCard implements Serializable {
     /**
     * 银行卡主键ID
     */
-    @TableId
+    @TableId(type = IdType.AUTO)
     private Long cardId;
 
     /**

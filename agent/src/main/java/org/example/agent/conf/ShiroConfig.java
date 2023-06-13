@@ -24,12 +24,13 @@ public class ShiroConfig {
     }
 
 
-    /**使用缓存， subject.logout()  后清除缓存。**/
+    /**
+     * 使用缓存， subject.logout()  后清除缓存。
+     **/
     @Bean
     protected CacheManager cacheManager() {
         return new MemoryConstrainedCacheManager();
     }
-
 
 
     @Bean
@@ -54,7 +55,7 @@ public class ShiroConfig {
 
 
         // 放行Swagger相关访问
-        filterChainDefinitionMap.put("/login","anon");
+        filterChainDefinitionMap.put("/login", "anon");
         filterChainDefinitionMap.put("/doc.html", "anon");
         filterChainDefinitionMap.put("/swagger-resources/**", "anon");
         filterChainDefinitionMap.put("/v2/api-docs", "anon");
@@ -62,11 +63,13 @@ public class ShiroConfig {
         filterChainDefinitionMap.put("/webjars/**", "anon");
 
 
-
         filterChainDefinitionMap.put("/aas/*", "anon");
         filterChainDefinitionMap.put("/hello", "anon");
         filterChainDefinitionMap.put("/userlogin", "anon");
         filterChainDefinitionMap.put("/**", "anon");
+
+//        filterChainDefinitionMap.put("/sh140/*", "anon");
+
         shiroFilterFactoryBean.setFilterChainDefinitionMap(filterChainDefinitionMap);
         return shiroFilterFactoryBean;
     }
@@ -93,9 +96,6 @@ public class ShiroConfig {
         securityManager.setRealm(realm());
         return securityManager;
     }
-
-
-
 
 
 }

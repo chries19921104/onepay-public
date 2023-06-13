@@ -41,7 +41,7 @@ public class Admins implements Serializable {
     * 角色ID
     */
     @JsonProperty("role_id")
-    private Integer roleId;
+    private Long roleId;
 
     /**
     * 登录密码
@@ -83,6 +83,16 @@ public class Admins implements Serializable {
     * 创建人员
     */
     private String creator;
+
+    /**
+     * 登录方式
+     */
+    private String totpSecret;
+
+    /**
+     * 延伸权限
+     */
+    private Integer penguin;
 
     /**
     * 更新人员

@@ -27,12 +27,13 @@ import java.util.stream.Collectors;
 
 /**
  * <p>
- * admins Service 接口实现
+ * admins ExternalStatementService 接口实现
  * </p>
  *
  * @author zhangmi
  * @since 2023-05-11 16:46:06
  */
+
 @Service
 
 @Slf4j

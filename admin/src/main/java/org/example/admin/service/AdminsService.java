@@ -12,7 +12,7 @@ import java.util.List;
 
 /**
 * <p>
-* admins Service 接口
+* admins ExternalStatementService 接口
 * </p>
 *
 * @author zhangmi
