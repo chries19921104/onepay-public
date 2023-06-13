@@ -31,6 +31,11 @@ public class SystemAgents implements Serializable {
     private Long agentId;
 
     /**
+     * 代理id
+     */
+    private String displayId;
+
+    /**
     * 1 总代, 2 代理
     */
     private Integer identity;
