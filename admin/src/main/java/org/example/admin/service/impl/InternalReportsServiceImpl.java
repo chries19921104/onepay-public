@@ -55,13 +55,13 @@ public class InternalReportsServiceImpl implements InternalReportsService {
 
     @Override
     public MerchantResp getBankAccountList(HttpServletRequest request, BankAccountListDto bankAccountListDto) {
-        //当前页
+        // 当前页
         int page = bankAccountListDto.getPage();
-
+        // 每页条数
         bankAccountListDto.setPage((bankAccountListDto.getPage() - 1) * bankAccountListDto.getRp());
-
+        // 查询得到大部分数据
         List<BankAccountListVo> bankAccountList = internalReportsMapper.getBankAccountList(bankAccountListDto);
-
+        // 分页参数
         Page<BankAccountListVo> bankAccountListVoPage = new Page<>(page,bankAccountListDto.getRp(),
                 (((List<Integer>)bankAccountList.get(1)).get(0)));
         bankAccountListVoPage.setRecords((List<BankAccountListVo>)bankAccountList.get(0));
@@ -77,24 +77,39 @@ public class InternalReportsServiceImpl implements InternalReportsService {
 //            }
 //
 //        }
-
+        // 查询数据不为空
         if (bankAccountListVoPage.getRecords() != null && bankAccountListVoPage.getRecords().size() != 0){
             //其他信息
             return getMerchantResp(bankAccountListVoPage,null,request,bankAccountListDto.getRp());
         }
+        // 查询数据为空
         return GetNoResp.getNoBankAccountListResp(request,bankAccountListDto.getRp());
     }
 
 
     @Override
     public MerchantResp getInternalTransfer(HttpServletRequest request, InternalTransferDto internalTransferDto) {
+        // 当前页
+        int page = internalTransferDto.getPage();
+        // 每页条数
+        internalTransferDto.setPage((internalTransferDto.getPage() - 1) * internalTransferDto.getRp());
+        // 判断 getCompleted_start_time() 不为空，给status赋值
         if (internalTransferDto.getCompleted_start_time() != null){
             List<Integer> status = new ArrayList<>(Transaction.STATUS_COMPLETED);
             internalTransferDto.setStatus(status);
         }
         List<InternalTransferVo> internalTransferVos = systemIntroversionOrderMapper.getInternalTransfer(internalTransferDto);
-
-        return null;
+        // 分页参数
+        Page<InternalTransferVo> internalTransferVoPage = new Page<>(page,internalTransferDto.getRp(),
+                (((List<Integer>)internalTransferVos.get(1)).get(0)));
+        internalTransferVoPage.setRecords((List<InternalTransferVo>)internalTransferVos.get(0));
+        // 查询数据不为空
+        if (internalTransferVoPage.getRecords() != null && internalTransferVoPage.getRecords().size() != 0){
+            // 其他信息
+            return getMerchantResp(internalTransferVoPage,null,request,internalTransferDto.getRp());
+        }
+        // 查询数据为空
+        return GetNoResp.getNoBankAccountListResp(request,internalTransferDto.getRp());
     }
 
     @Override

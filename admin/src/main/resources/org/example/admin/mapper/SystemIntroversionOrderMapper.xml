@@ -55,6 +55,14 @@
             <result property="runmonNumber" column="runmon_number" jdbcType="TINYINT"/>
     </resultMap>
 
+    <resultMap id="InternalTransferVoMap" type="org.example.admin.vo.InternalTransferVo">
+
+    </resultMap>
+
+    <resultMap id="InternalTransferVosCount" type="java.lang.Integer">
+        <result column="total"/>
+    </resultMap>
+
     <sql id="Base_Column_List">
         tr_id,reference,from_bank_card_id,
         to_bank_card_id,request_amount,paid_amount,
@@ -74,11 +82,12 @@
         tr_auto,alt_vpn_id,runmon_number
     </sql>
 
-    <select id="getInternalTransfer" resultType="org.example.admin.vo.InternalTransferVo">
+    <select id="getInternalTransfer" resultMap="InternalTransferVoMap,InternalTransferVosCount">
         select completed_at,is_entry,tr_id as TR100_ID,type,from_bank_card_id as BC100_ID_from,to_bank_card_id as BC100_ID_to,
                request_amount,paid_amount,bank_fee,status,step,created_at,updated_at,creator as created_man,
                updater as updated_man,message,retry_times,from_vs_id as VB100_ID_from,to_vs_id as VB100_ID_to,
                command_id,note,local_updated_at,is_entry,vnd_otp,postscript,vnd_payment_method,currency,
-               tr_auto,`action` from system_introversion_order
+               tr_auto,`action` from system_introversion_order limit #{page},#{rp};
+        select FOUND_ROWS() as total;
     </select>
 </mapper>

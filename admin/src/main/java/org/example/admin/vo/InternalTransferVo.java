@@ -1,6 +1,8 @@
 package org.example.admin.vo;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import io.swagger.annotations.ApiModel;
 import lombok.Data;
 
 import java.sql.Timestamp;
@@ -10,6 +12,7 @@ import java.sql.Timestamp;
  * @since 2023-06-12 17:14:53
  */
 @Data
+@ApiModel(description = "返回前端的内部转账列表的查询数据")
 public class InternalTransferVo {
 
     @JsonProperty("completed_at")
@@ -84,6 +87,9 @@ public class InternalTransferVo {
     private String altId;
 
     private Integer action;
+
+    @JsonIgnore
+    private Integer total;
 
     public boolean isRetryBtn() {
         if (this.isEntry == 1){
