@@ -1,9 +1,9 @@
 package org.example.agent.conf;
 
+
 import com.baomidou.mybatisplus.annotation.DbType;
 import com.baomidou.mybatisplus.extension.plugins.MybatisPlusInterceptor;
 import com.baomidou.mybatisplus.extension.plugins.inner.PaginationInnerInterceptor;
-import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -11,7 +11,6 @@ import org.springframework.context.annotation.Configuration;
  * myatis-plus配置
  */
 @Configuration
-@MapperScan(basePackages = "org.example.**.mapper")
 public class MyBatisPlusConfig {
 
     /**

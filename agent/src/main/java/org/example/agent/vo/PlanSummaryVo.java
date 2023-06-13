@@ -12,16 +12,17 @@ import java.util.List;
 @NoArgsConstructor
 public class PlanSummaryVo {
     private Long belongId;
-    private LocalDateTime createdMan;
-    private LocalDateTime createdAt;
+    private String displayId;
+    private String creator;
+    private String createdAt;
 
     private String fullName;
     private Long agentId;
     private Integer identity;
     private List<SummaryVo> planSummary;
     private Integer status;
-    private Integer updatedAt;
-    private String updatedMan;
+    private LocalDateTime updatedAt;
+    private String updater;
     private String username;
 
 
