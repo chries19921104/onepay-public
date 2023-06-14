@@ -18,6 +18,6 @@ public class AgentInfoVo {
     private Integer status;
     private List<String> currency;
     private Integer isTester;
-    private String belongId;
-    private List<String> belongName;
+    private Long belongId;
+    private List<Object> belongName;
 }

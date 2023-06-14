@@ -16,14 +16,13 @@
                updater ,
                username
         from system_agents
-        where agent_id = #{summaryDto.agentId}
+        where agent_id = #{agentId}
           and status = 1
     </select>
     <select id="selectAgentfoVo" resultType="org.example.agent.vo.AgentProfileInfoVo">
         select agent_id as agentId, display_id as displayId, full_name as fullName, username
         from system_agents
-        where agent_id = #{agentId}
-          and belong_id = #{belongId}
+        where agent_id = belong_id
     </select>
 
 </mapper>

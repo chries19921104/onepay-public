@@ -22,5 +22,9 @@ public interface SystemAgentsService extends IService<SystemAgents> {
     Result logout(String token);
 
     Result profile(String token);
+
+    Result simple(String token);
+
+    Result merchantSimple(String token);
 }
 

@@ -54,8 +54,9 @@ public class SystemMerchantServiceImpl extends ServiceImpl<SystemMerchantMapper,
     @Override
     public Result loadPlanSummaryTable(SummaryDto summaryDto) {
         String token = request.getHeader("token");
+//        token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJhZ2VudElkIjoxMSwibmJmIjoxNjg2NzA4NDY4LCJleHAiOjE2ODY3MTIwNjgsImlhdCI6MTY4NjcwODQ2OCwidXNlcm5hbWUiOiJhZG1pbiJ9.M2FFgkZkw-11hSwAuRxKu345HjGuYk2xy6H8oX0aJDk";
         Long agentId = TokenUtils.getAgentId(token);
-        PlanSummaryVo info = systemAgentsMapper.info(summaryDto);
+        PlanSummaryVo info = systemAgentsMapper.info(agentId);
 
         LambdaQueryWrapper<SystemMerchant> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(SystemMerchant::getAgentId, agentId)
@@ -68,6 +69,7 @@ public class SystemMerchantServiceImpl extends ServiceImpl<SystemMerchantMapper,
                 .currentRebate(agentId, summaryDto.getCurrency());
         List<SummaryVo> summarys = BeanCopyUtils.copyBeanList(merchants, SummaryVo.class);
         List<SystemRebateScheme> rebateSchemes = systemRebateScheme.list();
+
         for (SummaryVo summaryVo : summarys) {
             for (CurrentRebateVo currentRebate : currentRebates) {
                 for (SystemRebateScheme rebateScheme : rebateSchemes) {

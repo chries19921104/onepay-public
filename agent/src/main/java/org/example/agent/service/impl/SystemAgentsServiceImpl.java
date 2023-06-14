@@ -13,6 +13,7 @@ import org.example.agent.dto.UserDto;
 import org.example.agent.mapper.SystemAgentsMapper;
 import org.example.agent.mapper.SystemCurrencyMapper;
 import org.example.agent.service.SystemAgentsService;
+import org.example.agent.service.SystemMerchantService;
 import org.example.agent.utils.BeanCopyUtils;
 import org.example.agent.utils.TokenUtils;
 import org.example.agent.vo.*;
@@ -23,6 +24,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 /**
@@ -40,6 +42,8 @@ public class SystemAgentsServiceImpl extends ServiceImpl<SystemAgentsMapper, Sys
     private SystemAgentsMapper agentsMapper;
     @Autowired
     private SystemCurrencyMapper systemCurrencyMapper;
+    @Autowired
+    private SystemMerchantService systemMerchantService;
 
     @Override
     public Result login(UserDto userDto) {
@@ -72,26 +76,21 @@ public class SystemAgentsServiceImpl extends ServiceImpl<SystemAgentsMapper, Sys
         agentVo.setToken(token);
 
 
-        return Result.success(agentVo);
+        return Result.success(302, agentVo);
     }
 
     @Override
     public Result changePassword(ChangePasswordVo changePasswordVo, String token) {
+//        token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJhZ2VudElkIjoxMSwibmJmIjoxNjg2NzA4NDY4LCJleHAiOjE2ODY3MTIwNjgsImlhdCI6MTY4NjcwODQ2OCwidXNlcm5hbWUiOiJhZG1pbiJ9.M2FFgkZkw-11hSwAuRxKu345HjGuYk2xy6H8oX0aJDk";
         Long agentId = TokenUtils.getAgentId(token);
         SystemAgents agents = getById(agentId);
-        if (agents.getPassword().equals(SecureUtil.md5(changePasswordVo.getOldPassword()))) {
-            return Result.failed("旧密码不正确");
-        }
-        if (changePasswordVo.getNewPassword().equals(changePasswordVo.getOldPassword())) {
-            return Result.failed("新密码与旧密码必须不同");
-        }
-        if (changePasswordVo.getConfirmPassword().equals(changePasswordVo.getNewPassword())) {
-            return Result.failed("请与新密码保持一致");
+        if (!agents.getPassword().equals(SecureUtil.md5(changePasswordVo.getOldPassword()))) {
+            return Result.failed(422, "旧密码不正确");
         }
 
         LambdaUpdateWrapper<SystemAgents> wrapper = new LambdaUpdateWrapper<>();
         wrapper.eq(SystemAgents::getAgentId, agentId)
-                .set(SystemAgents::getPassword, changePasswordVo.getNewPassword())
+                .set(SystemAgents::getPassword, SecureUtil.md5(changePasswordVo.getNewPassword()))
                 .set(SystemAgents::getUpdater, agents.getFullName());
         update(null, wrapper);
         return Result.success("修改成功");
@@ -99,35 +98,66 @@ public class SystemAgentsServiceImpl extends ServiceImpl<SystemAgentsMapper, Sys
 
     @Override
     public Result logout(String token) {
-//        Long agentId = TokenUtils.getAgentId(token);
-//        LambdaUpdateWrapper<SystemAgents> wrapper = new LambdaUpdateWrapper<>();
-//        wrapper.eq(SystemAgents::getAgentId, agentId)
-//                .set(SystemAgents::getStatus, 0);
-//        update(null, wrapper);
-        return Result.success();
+        Long agentId = TokenUtils.getAgentId(token);
+        LambdaUpdateWrapper<SystemAgents> wrapper = new LambdaUpdateWrapper<>();
+        wrapper.eq(SystemAgents::getAgentId, agentId)
+                .set(SystemAgents::getStatus, 0);
+        update(null, wrapper);
+        return Result.success(302);
     }
 
     @Override
     public Result profile(String token) {
-        Long agentId = TokenUtils.getAgentId("token");
+//        token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJhZ2VudElkIjoxMSwibmJmIjoxNjg2NzA4NDY4LCJleHAiOjE2ODY3MTIwNjgsImlhdCI6MTY4NjcwODQ2OCwidXNlcm5hbWUiOiJhZG1pbiJ9.M2FFgkZkw-11hSwAuRxKu345HjGuYk2xy6H8oX0aJDk";
+        Long agentId = TokenUtils.getAgentId(token);
         SystemAgents agents = getById(agentId);
         ProfileInfoVo profileInfoVo = BeanCopyUtils.copyBean(agents, ProfileInfoVo.class);
+        List<String> currencys = systemCurrencyMapper.selectCurrency();
 
         if (profileInfoVo.getIdentity().equals(1)) {
-            List<String> currencys = systemCurrencyMapper.selectCurrency();
             profileInfoVo.setCurrency(currencys);
-            List<AgentProfileInfoVo> agentProfileInfoVos = agentsMapper.selectAgentfoVo(agents.getAgentId(), agents.getBelongId());
+            List<AgentProfileInfoVo> agentProfileInfoVos = agentsMapper.selectAgentfoVo();
             profileInfoVo.setCrews(agentProfileInfoVos);
             return Result.success(profileInfoVo);
         }
 
         AgentInfoVo agentInfoVo = BeanCopyUtils.copyBean(agents, AgentInfoVo.class);
+        agentInfoVo.setCurrency(currencys);
         LambdaQueryWrapper<SystemAgents> wrapper = new LambdaQueryWrapper<>();
-        wrapper.eq(SystemAgents::getAgentId,agentId)
-                .apply("`belong_id` = `agent_Id'");
-        List<SystemAgents> list = list(wrapper);
-        return null;
+        wrapper.select(SystemAgents::getFullName)
+                .eq(SystemAgents::getAgentId, agentId)
+                .apply("belong_id = agent_id");
+        List<Object> belongName = listObjs(wrapper);
+        agentInfoVo.setBelongName(belongName);
+        return Result.success(agentInfoVo);
 
+    }
+
+    @Override
+    public Result simple(String token) {
+//        token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJhZ2VudElkIjoxMSwibmJmIjoxNjg2NzA4NDY4LCJleHAiOjE2ODY3MTIwNjgsImlhdCI6MTY4NjcwODQ2OCwidXNlcm5hbWUiOiJhZG1pbiJ9.M2FFgkZkw-11hSwAuRxKu345HjGuYk2xy6H8oX0aJDk";
+        Long agentId = TokenUtils.getAgentId(token);
+        SystemAgents agents = getById(agentId);
+        LambdaQueryWrapper<SystemAgents> wrapper = new LambdaQueryWrapper<>();
+        wrapper.select(SystemAgents::getAgentId, SystemAgents::getDisplayId, SystemAgents::getUsername, SystemAgents::getFullName);
+
+        if (agents.getIdentity().equals(1)) {
+            wrapper.eq(SystemAgents::getBelongId, agentId);
+            List<Map<String, Object>> maps = listMaps(wrapper);
+            return Result.success(maps);
+        }
+
+        wrapper.eq(SystemAgents::getAgentId, agentId);
+        List<Map<String, Object>> maps = listMaps(wrapper);
+        return Result.success(maps);
+    }
+
+    @Override
+    public Result merchantSimple(String token) {
+        Long agentId = TokenUtils.getAgentId(token);
+
+
+        return null;
     }
 
 }
