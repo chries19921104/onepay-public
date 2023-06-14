@@ -33,7 +33,7 @@ public class SystemRebateRegular {
     /**
      * 返点率
      */
-    private double rate;
+    private BigDecimal rate;
 
     /**
      * 创建时间

@@ -4,6 +4,7 @@ import io.swagger.annotations.ApiModel;
 import lombok.Data;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 @ApiModel(description = "接受前端返点设置数据")
@@ -50,5 +51,10 @@ public class RebateSchemeDto {
      * 每页显示条数
      */
     private Integer rp;
+
+    /**
+     *存放details数据的数组
+     */
+    private Object[] details;
 
 }

@@ -5,7 +5,6 @@ import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.annotations.ApiModel;
-import jakarta.persistence.Column;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -42,7 +41,7 @@ public class SystemRebateProgression {
     /**
      * 返点率
      */
-    private double rate;
+    private BigDecimal rate;
 
     /**
      * 创建时间
