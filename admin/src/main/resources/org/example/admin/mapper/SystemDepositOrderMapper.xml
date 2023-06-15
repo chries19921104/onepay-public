@@ -82,7 +82,7 @@
 <!--    前四个-->
     <select id="selectMoneyAndCount" resultType="org.example.admin.vo.DepositOrderVo">
         SELECT `txn_mode` as txnMode,
-        max(bank_fee) as bankFee,
+        IFNULL(SUM(bank_fee), 0) as bankFee,
         SUM(paid_amount) as successMoney,
         SUM(request_amount) as failMoney,
         COUNT(IF(paid_amount > 0, 1, null)) as successCount,
@@ -103,7 +103,7 @@
 <!--    下发-->
     <select id="selectSettlement" resultType="org.example.admin.vo.DepositOrderVo">
         SELECT
-               bank_fee as bankFee,
+               IFNULL(SUM(bank_fee), 0) as bankFee,
                SUM(paid_amount) as successMoney,
                SUM(request_amount) as failMoney,
                COUNT(IF(paid_amount > 0, 1, null)) as successCount,
@@ -113,11 +113,14 @@
           AND completed_at <![CDATA[>=]]> #{beginTime}
           AND completed_at <![CDATA[<]]> #{endTime}
           AND status in(#{status})
+        <if test="merchantId != null and merchantId!=''">
+            AND merchant_id in(#{merchantId})
+        </if>
     </select>
 <!--代付-->
     <select id="selectWithdrawal" resultType="org.example.admin.vo.DepositOrderVo">
         SELECT
-               bank_fee as bankFee,
+               IFNULL(SUM(bank_fee), 0) as bankFee,
                SUM(paid_amount) as successMoney,
                SUM(request_amount) as failMoney,
                COUNT(IF(paid_amount > 0, 1, null)) as successCount,
@@ -127,6 +130,9 @@
           AND completed_at <![CDATA[>=]]> #{beginTime}
           AND completed_at <![CDATA[<]]> #{endTime}
           AND status in(#{status})
+        <if test="merchantId != null and merchantId!=''">
+            AND merchant_id in(#{merchantId})
+        </if>
     </select>
 <!--    虚拟币-->
     <select id="selectCrypto" resultType="org.example.admin.vo.DepositOrderVo">
@@ -139,6 +145,9 @@
           AND complete_at <![CDATA[>=]]> #{beginTime}
           AND complete_at <![CDATA[<]]> #{endTime}
           AND status in (#{status})
+        <if test="merchantId != null and merchantId!=''">
+            AND merchant_id in(#{merchantId})
+        </if>
     </select>
 
     <select id="selectWithdrawalrCommission" resultType="org.example.admin.vo.DepositOrderCommissionVo">
@@ -310,7 +319,7 @@
                COUNT(*) as count
         FROM system_external_trade_order
         WHERE currency = #{currency}
-          AND status in(9)
+          AND status = 9
     </select>
 
 

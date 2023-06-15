@@ -1,9 +1,9 @@
 package org.example.agent.service.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import org.example.agent.mapper.SystemMerchantMapper;
+import org.example.agent.service.SystemMerchantService;
 import org.example.common.entity.SystemMerchant;
-import org.example.topagent.mapper.SystemMerchantMapper;
-import org.example.topagent.service.SystemMerchantService;
 import org.springframework.stereotype.Service;
 
 /**

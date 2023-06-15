@@ -7,24 +7,25 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.util.IOUtils;
 import org.example.admin.conf.interceptor.NoAuthorization;
 import org.example.admin.dto.DashboardDto;
+import org.example.admin.dto.DepositOrderDto;
+import org.example.admin.service.SystemDepositOrderService;
+import org.example.admin.vo.DepositOrderVo;
 import org.example.common.base.CommResp;
 import org.example.common.base.MerchantResp;
 import org.example.common.base.Totals;
-import org.example.admin.dto.DepositOrderDto;
 import org.example.common.exception.MsgException;
 import org.example.common.utils.URLUtils;
-import org.example.admin.vo.DepositOrderVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.io.*;
-import java.math.BigDecimal;
-import java.util.List;
-
-import org.example.admin.service.SystemDepositOrderService;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.math.BigDecimal;
+import java.util.List;
 
 /**
 * <p>
@@ -44,6 +45,7 @@ public class SystemDepositOrderController {
     private SystemDepositOrderService systemDepositOrderService;
 
     @GetMapping("/dashboard")
+    @NoAuthorization
     public CommResp dashboard(DashboardDto dashboardDto) {
         return systemDepositOrderService.selectTxnModeByRegion(dashboardDto);
     }

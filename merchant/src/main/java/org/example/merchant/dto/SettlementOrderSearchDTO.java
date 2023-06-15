@@ -1,9 +1,9 @@
 package org.example.merchant.dto;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.PageDTO;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
-import org.example.admin.dto.PageDTO;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.util.Date;
@@ -66,7 +66,5 @@ public class SettlementOrderSearchDTO extends PageDTO {
     @ApiModelProperty(value = "成功结束时间")
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date completedAtEndTime;
-
-
 
 }

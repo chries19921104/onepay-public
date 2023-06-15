@@ -34,7 +34,7 @@ public interface SystemDepositOrderMapper extends BaseMapper<SystemDepositOrder>
                                     @Param("beginTime") String beginTime,
                                     @Param("endTime") String endTime,
                                     @Param("status") String status,
-                                    @Param("cardId") String cardId
+                                    @Param("merchantId") String merchantId
 
     );
 
@@ -42,7 +42,7 @@ public interface SystemDepositOrderMapper extends BaseMapper<SystemDepositOrder>
                                     @Param("beginTime") String beginTime,
                                     @Param("endTime") String endTime,
                                     @Param("status") String status,
-                                    @Param("cardId") String cardId
+                                    @Param("merchantId") String merchantId
 
     );
 

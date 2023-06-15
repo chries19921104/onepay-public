@@ -4,12 +4,9 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.PageDTO;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
-import org.example.admin.dto.PageDTO;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.util.Date;
-import java.util.List;
 
 @ApiModel(value = "子下发查询模型")
 @Data

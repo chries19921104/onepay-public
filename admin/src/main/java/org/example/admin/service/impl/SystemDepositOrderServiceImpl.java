@@ -68,14 +68,15 @@ public class SystemDepositOrderServiceImpl extends ServiceImpl<SystemDepositOrde
     String today = DateUtil.today();
     String tomorrow = DateUtil.formatDate(DateUtil.tomorrow());
     String yesterday = DateUtil.formatDate(DateUtil.yesterday());
-    private final static String successStatus = "1";
-    private final static String failStatus = "4,5";
+    private final static String successStatus = "3";
+    private final static String failStatus = "5";
     private final static String incomeStatus = "3";
     private DataVo dataVo = new DataVo();
 
 
     @Override
     public CommResp selectTxnModeByRegion(DashboardDto dashboardDto) {
+
         StringBuilder cardId = new StringBuilder();
         StringBuilder merchantId = new StringBuilder();
         if (dashboardDto.getCardGroupId() != null) {
@@ -95,6 +96,7 @@ public class SystemDepositOrderServiceImpl extends ServiceImpl<SystemDepositOrde
             }
             merchantId.deleteCharAt(merchantId.length() - 1);
         }
+        //System.out.println(cardId + ":" + merchantId);
         todaySuccess(dashboardDto.getCurrency(), cardId.toString(), merchantId.toString());
         todayFail(dashboardDto.getCurrency(), cardId.toString(), merchantId.toString());
         income(dashboardDto.getCurrency(), cardId.toString(), merchantId.toString());
@@ -575,38 +577,37 @@ public class SystemDepositOrderServiceImpl extends ServiceImpl<SystemDepositOrde
         //前四个
         List<DepositOrderVo> todayList = systemDepositOrderMapper
                 .selectMoneyAndCount(currency, today, tomorrow, successStatus, cardId, merchantId);
-        //银行
+
         if (todayList != null && todayList.size() != 0) {
             for (DepositOrderVo depositOrderVo : todayList) {
                 switch (depositOrderVo.getTxnMode()) {
                     case 1: {
+                        //银行
                         dataVo.setTodaySuccessBankMoney(depositOrderVo.getSuccessMoney());
                         dataVo.setTodaySuccessBankCount(depositOrderVo.getSuccessCount());
-                        dataVo.setTodayBankIncome(amountFee(depositOrderVo.getFailMoney(), depositOrderVo.getBankFee()));
+                        //dataVo.setTodayBankIncome(amountFee(depositOrderVo.getFailMoney(), depositOrderVo.getBankFee()));
                     }
                     case 2:{
                         //QR
                         dataVo.setTodaySuccessQRMoney(depositOrderVo.getSuccessMoney());
                         dataVo.setTodaySuccessQRCount(depositOrderVo.getSuccessCount());
-                        dataVo.setTodayQRIncome(amountFee(depositOrderVo.getFailMoney(), depositOrderVo.getBankFee()));
+                        //dataVo.setTodayQRIncome(amountFee(depositOrderVo.getFailMoney(), depositOrderVo.getBankFee()));
                     }
 
                     case 3:{
-                        //True Wallet
-                        dataVo.setTodaySuccessTWMoney(depositOrderVo.getSuccessMoney());
-                        dataVo.setTodaySuccessTWCount(depositOrderVo.getSuccessCount());
+                        if("THB".equals(currency)){
+                            //True Wallet
+                            dataVo.setTodaySuccessTWMoney(depositOrderVo.getSuccessMoney());
+                            dataVo.setTodaySuccessTWCount(depositOrderVo.getSuccessCount());
+                        }else {
+                            dataVo.setTodaySuccessBDBankMoney(depositOrderVo.getSuccessMoney());
+                            dataVo.setTodaySuccessBDBankCount(depositOrderVo.getSuccessCount());
+                        }
 
-                        dataVo.setTodayTWIncome(amountFee(depositOrderVo.getFailMoney(), depositOrderVo.getBankFee()));
+
+                        //dataVo.setTodayTWIncome(amountFee(depositOrderVo.getFailMoney(), depositOrderVo.getBankFee()));
                     }
 
-                    case 4:{
-                        //本地银行
-                        dataVo.setTodaySuccessBDBankMoney(depositOrderVo.getSuccessMoney());
-                        dataVo.setTodaySuccessBDBankCount(depositOrderVo.getSuccessCount());
-
-                        dataVo.setTodayBDBankIncome(amountFee(depositOrderVo.getFailMoney(), depositOrderVo.getBankFee()));
-                    }
-                        ;
                 }
             }
         }
@@ -619,57 +620,55 @@ public class SystemDepositOrderServiceImpl extends ServiceImpl<SystemDepositOrde
                     case 1: {
                         dataVo.setYesterdaySuccessBankMoney(depositOrderVo.getSuccessMoney());
                         dataVo.setYesterdaySuccessBankCount(depositOrderVo.getSuccessCount());
-                        dataVo.setYesterdayBankIncome(amountFee(depositOrderVo.getFailMoney(), depositOrderVo.getBankFee()));
+                        //dataVo.setYesterdayBankIncome(amountFee(depositOrderVo.getFailMoney(), depositOrderVo.getBankFee()));
                     }
                     case 2:{
                         //QR
                         dataVo.setYesterdaySuccessQRMoney(depositOrderVo.getSuccessMoney());
                         dataVo.setYesterdaySuccessQRCount(depositOrderVo.getSuccessCount());
-                        dataVo.setYesterdayQRIncome(amountFee(depositOrderVo.getFailMoney(), depositOrderVo.getBankFee()));
+                        //dataVo.setYesterdayQRIncome(amountFee(depositOrderVo.getFailMoney(), depositOrderVo.getBankFee()));
                     }
 
                     case 3:{
                         //True WalYesterday
-                        dataVo.setYesterdaySuccessTWMoney(depositOrderVo.getSuccessMoney());
-                        dataVo.setYesterdaySuccessTWCount(depositOrderVo.getSuccessCount());
+                        if("THB".equals(currency)){
+                            dataVo.setYesterdaySuccessTWMoney(depositOrderVo.getSuccessMoney());
+                            dataVo.setYesterdaySuccessTWCount(depositOrderVo.getSuccessCount());
+                        }else {
+                            dataVo.setYesterdaySuccessBDBankMoney(depositOrderVo.getSuccessMoney());
+                            dataVo.setYesterdaySuccessBDBankCount(depositOrderVo.getSuccessCount());
+                        }
 
-                        dataVo.setYesterdayTWIncome(amountFee(depositOrderVo.getFailMoney(), depositOrderVo.getBankFee()));
-                    }
 
-                    case 4:{
-                        //本地银行
-                        dataVo.setYesterdaySuccessBDBankMoney(depositOrderVo.getSuccessMoney());
-                        dataVo.setYesterdaySuccessBDBankCount(depositOrderVo.getSuccessCount());
-                        dataVo.setYesterdayBDBankIncome(amountFee(depositOrderVo.getFailMoney(), depositOrderVo.getBankFee()));
+                        //dataVo.setYesterdayTWIncome(amountFee(depositOrderVo.getFailMoney(), depositOrderVo.getBankFee()));
                     }
-                    ;
                 }
             }
         }
         //代付
-        DepositOrderVo todayDF = systemDepositOrderMapper.selectWithdrawal(currency, today, tomorrow, successStatus, cardId);
+        DepositOrderVo todayDF = systemDepositOrderMapper.selectWithdrawal(currency, today, tomorrow, successStatus, merchantId);
         dataVo.setTodaySuccessDFMoney(todayDF.getSuccessMoney());
         dataVo.setTodaySuccessDFCount(todayDF.getSuccessCount());
 
-        DepositOrderVo yesterdayDF = systemDepositOrderMapper.selectWithdrawal(currency, yesterday, today, successStatus, cardId);
+        DepositOrderVo yesterdayDF = systemDepositOrderMapper.selectWithdrawal(currency, yesterday, today, successStatus, merchantId);
         dataVo.setYesterdaySuccessDFMoney(yesterdayDF.getSuccessMoney());
         dataVo.setYesterdaySuccessDFCount(yesterdayDF.getSuccessCount());
         //下发
-        DepositOrderVo todayXF = systemDepositOrderMapper.selectSettlement(currency, today, tomorrow, successStatus, cardId);
-        DepositOrderVo yesterdayXF = systemDepositOrderMapper.selectSettlement(currency, yesterday, today, successStatus, cardId);
+        DepositOrderVo todayXF = systemDepositOrderMapper.selectSettlement(currency, today, tomorrow, successStatus, merchantId);
+        DepositOrderVo yesterdayXF = systemDepositOrderMapper.selectSettlement(currency, yesterday, today, successStatus, merchantId);
         dataVo.setTodaySuccessXFMoney(todayXF.getSuccessMoney());
         dataVo.setTodaySuccessXFCount(todayXF.getSuccessCount());
 
         dataVo.setYesterdaySuccessXFMoney(yesterdayXF.getSuccessMoney());
         dataVo.setYesterdaySuccessXFCount(yesterdayXF.getSuccessCount());
         //虚拟币
-        DepositOrderVo todayXN = systemDepositOrderMapper.selectCrypto(currency, today, tomorrow, successStatus, cardId);
-        DepositOrderVo yesterdayXN = systemDepositOrderMapper.selectCrypto(currency, yesterday, today, successStatus, cardId);
-        dataVo.setTodaySuccessXNMoney(todayXN.getSuccessMoney());
-        dataVo.setTodaySuccessXNCount(todayXN.getSuccessCount());
-
-        dataVo.setYesterdaySuccessXNMoney(yesterdayXN.getSuccessMoney());
-        dataVo.setYesterdaySuccessXNCount(yesterdayXN.getSuccessCount());
+//        DepositOrderVo todayXN = systemDepositOrderMapper.selectCrypto(currency, today, tomorrow, successStatus, cardId);
+//        DepositOrderVo yesterdayXN = systemDepositOrderMapper.selectCrypto(currency, yesterday, today, successStatus, cardId);
+//        dataVo.setTodaySuccessXNMoney(todayXN.getSuccessMoney());
+//        dataVo.setTodaySuccessXNCount(todayXN.getSuccessCount());
+//
+//        dataVo.setYesterdaySuccessXNMoney(yesterdayXN.getSuccessMoney());
+//        dataVo.setYesterdaySuccessXNCount(yesterdayXN.getSuccessCount());
     }
     //今日,昨日失败数据
     public void todayFail(String currency, String cardId, String merchantId) {
@@ -681,23 +680,24 @@ public class SystemDepositOrderServiceImpl extends ServiceImpl<SystemDepositOrde
                 switch (depositOrderVo.getTxnMode()){
                     case 1:{
                         //银行
-                        dataVo.setTodayFailBankMoney(depositOrderVo.getFailMoney());
-                        dataVo.setTodayFailBankCount(depositOrderVo.getFailCount());
+                        dataVo.setTodayFailBankMoney(depositOrderVo.getSuccessMoney());
+                        dataVo.setTodayFailBankCount(depositOrderVo.getSuccessCount());
                     }
                     case 2:{
                         //QR
-                        dataVo.setTodayFailQRMoney(depositOrderVo.getFailMoney());
-                        dataVo.setTodayFailQRCount(depositOrderVo.getFailCount());
+                        dataVo.setTodayFailQRMoney(depositOrderVo.getSuccessMoney());
+                        dataVo.setTodayFailQRCount(depositOrderVo.getSuccessCount());
                     }
                     case 3:{
                         //True Wallet
-                        dataVo.setTodayFailTWMoney(depositOrderVo.getFailMoney());
-                        dataVo.setTodayFailTWCount(depositOrderVo.getFailCount());
-                    }
-                    case 4:{
-                        //本地银行
-                        dataVo.setTodayFailBDBankMoney(depositOrderVo.getFailMoney());
-                        dataVo.setTodayFailBDBankCount(depositOrderVo.getFailCount());
+                        if("THB".equals(currency)){
+                            dataVo.setTodayFailTWMoney(depositOrderVo.getSuccessMoney());
+                            dataVo.setTodayFailTWCount(depositOrderVo.getSuccessCount());
+                        }else {
+                            //本地银行
+                            dataVo.setTodayFailBDBankMoney(depositOrderVo.getSuccessMoney());
+                            dataVo.setTodayFailBDBankCount(depositOrderVo.getSuccessCount());
+                        }
                     }
                 }
             }
@@ -710,51 +710,52 @@ public class SystemDepositOrderServiceImpl extends ServiceImpl<SystemDepositOrde
                 switch (depositOrderVo.getTxnMode()){
                     case 1:{
                         //银行
-                        dataVo.setYesterdayFailBankMoney(depositOrderVo.getFailMoney());
-                        dataVo.setYesterdayFailBankCount(depositOrderVo.getFailCount());
+                        dataVo.setYesterdayFailBankMoney(depositOrderVo.getSuccessMoney());
+                        dataVo.setYesterdayFailBankCount(depositOrderVo.getSuccessCount());
                     }
                     case 2:{
                         //QR
-                        dataVo.setYesterdayFailQRMoney(depositOrderVo.getFailMoney());
-                        dataVo.setYesterdayFailQRCount(depositOrderVo.getFailCount());
+                        dataVo.setYesterdayFailQRMoney(depositOrderVo.getSuccessMoney());
+                        dataVo.setYesterdayFailQRCount(depositOrderVo.getSuccessCount());
                     }
                     case 3:{
+                        if("THB".equals(currency)){
+                            dataVo.setYesterdayFailTWMoney(depositOrderVo.getSuccessMoney());
+                            dataVo.setYesterdayFailTWCount(depositOrderVo.getSuccessCount());
+                        }else {
+                            //本地银行
+                            dataVo.setYesterdayFailBDBankMoney(depositOrderVo.getSuccessMoney());
+                            dataVo.setYesterdayFailBDBankCount(depositOrderVo.getSuccessCount());
+                        }
                         //True WalYesterday
-                        dataVo.setYesterdayFailTWMoney(depositOrderVo.getFailMoney());
-                        dataVo.setYesterdayFailTWCount(depositOrderVo.getFailCount());
-                    }
-                    case 4:{
-                        //本地银行
-                        dataVo.setYesterdayFailBDBankMoney(depositOrderVo.getFailMoney());
-                        dataVo.setYesterdayFailBDBankCount(depositOrderVo.getFailCount());
                     }
                 }
         }
         //代付
-        DepositOrderVo todayDF = systemDepositOrderMapper.selectWithdrawal(currency, today, tomorrow, failStatus, cardId);
-        DepositOrderVo yesterdayDF = systemDepositOrderMapper.selectWithdrawal(currency, yesterday, today, failStatus, cardId);
-        dataVo.setTodayFailDFMoney(todayDF.getFailMoney());
-        dataVo.setTodayFailDFCount(todayDF.getFailCount());
+        DepositOrderVo todayDF = systemDepositOrderMapper.selectWithdrawal(currency, today, tomorrow, failStatus, merchantId);
+        DepositOrderVo yesterdayDF = systemDepositOrderMapper.selectWithdrawal(currency, yesterday, today, failStatus, merchantId);
+        dataVo.setTodayFailDFMoney(todayDF.getSuccessMoney());
+        dataVo.setTodayFailDFCount(todayDF.getSuccessCount());
 
-        dataVo.setYesterdayFailDFMoney(yesterdayDF.getFailMoney());
-        dataVo.setYesterdayFailDFCount(yesterdayDF.getFailCount());
+        dataVo.setYesterdayFailDFMoney(yesterdayDF.getSuccessMoney());
+        dataVo.setYesterdayFailDFCount(yesterdayDF.getSuccessCount());
 
         //下发
-        DepositOrderVo todayXF = systemDepositOrderMapper.selectSettlement(currency, today, tomorrow, failStatus, cardId);
-        DepositOrderVo yesterdayXF = systemDepositOrderMapper.selectSettlement(currency, yesterday, today, failStatus, cardId);
-        dataVo.setTodayFailXFMoney(todayXF.getFailMoney());
-        dataVo.setTodayFailXFCount(todayXF.getFailCount());
+        DepositOrderVo todayXF = systemDepositOrderMapper.selectSettlement(currency, today, tomorrow, failStatus, merchantId);
+        DepositOrderVo yesterdayXF = systemDepositOrderMapper.selectSettlement(currency, yesterday, today, failStatus, merchantId);
+        dataVo.setTodayFailXFMoney(todayXF.getSuccessMoney());
+        dataVo.setTodayFailXFCount(todayXF.getSuccessCount());
 
-        dataVo.setYesterdayFailXFMoney(yesterdayXF.getFailMoney());
-        dataVo.setYesterdayFailXFCount(yesterdayXF.getFailCount());
+        dataVo.setYesterdayFailXFMoney(yesterdayXF.getSuccessMoney());
+        dataVo.setYesterdayFailXFCount(yesterdayXF.getSuccessCount());
         //虚拟币
-        DepositOrderVo todayXN = systemDepositOrderMapper.selectCrypto(currency, today, tomorrow, failStatus, cardId);
-        DepositOrderVo yesterdayXN = systemDepositOrderMapper.selectCrypto(currency, yesterday, today, failStatus, cardId);
-        dataVo.setTodayFailXNMoney(todayXN.getFailMoney());
-        dataVo.setTodayFailXNCount(todayXN.getFailCount());
-
-        dataVo.setYesterdayFailXNMoney(yesterdayXN.getFailMoney());
-        dataVo.setYesterdayFailXNCount(yesterdayXN.getFailCount());
+//        DepositOrderVo todayXN = systemDepositOrderMapper.selectCrypto(currency, today, tomorrow, failStatus, cardId);
+//        DepositOrderVo yesterdayXN = systemDepositOrderMapper.selectCrypto(currency, yesterday, today, failStatus, cardId);
+//        dataVo.setTodayFailXNMoney(todayXN.getFailMoney());
+//        dataVo.setTodayFailXNCount(todayXN.getFailCount());
+//
+//        dataVo.setYesterdayFailXNMoney(yesterdayXN.getFailMoney());
+//        dataVo.setYesterdayFailXNCount(yesterdayXN.getFailCount());
     }
     }
 
@@ -764,11 +765,11 @@ public class SystemDepositOrderServiceImpl extends ServiceImpl<SystemDepositOrde
     private void income(String currency, String cardId, String merchantId) {
         //今日收入
         List<DepositOrderVo> todayList = systemDepositOrderMapper
-                .selectMoneyAndCount(currency, today, tomorrow, incomeStatus, cardId, merchantId);
+                .selectMoneyAndCount(currency, today, tomorrow, successStatus, cardId, merchantId);
 
-        DepositOrderVo todayDF = systemDepositOrderMapper.selectWithdrawal(currency, today, tomorrow, incomeStatus, cardId);
-        DepositOrderVo todayXF = systemDepositOrderMapper.selectSettlement(currency, today, tomorrow, incomeStatus, cardId);
-        DepositOrderVo todayXN = systemDepositOrderMapper.selectCrypto(currency, today, tomorrow, incomeStatus, cardId);
+        DepositOrderVo todayDF = systemDepositOrderMapper.selectWithdrawal(currency, today, tomorrow, successStatus, cardId);
+        DepositOrderVo todayXF = systemDepositOrderMapper.selectSettlement(currency, today, tomorrow, successStatus, cardId);
+        //DepositOrderVo todayXN = systemDepositOrderMapper.selectCrypto(currency, today, tomorrow, incomeStatus, cardId);
 
         if (todayList != null && todayList.size() != 0) {
             dataVo.setTodayBankIncome(amountFee(todayList.get(0).getFailMoney(), todayList.get(0).getBankFee()));
@@ -777,15 +778,15 @@ public class SystemDepositOrderServiceImpl extends ServiceImpl<SystemDepositOrde
             dataVo.setTodayBDBankIncome(amountFee(todayList.get(3).getFailMoney(), todayList.get(3).getBankFee()));
             dataVo.setTodayDFIncome(amountFee(todayDF.getFailMoney(), todayDF.getBankFee()));
             dataVo.setTodayXFIncome(amountFee(todayXF.getFailMoney(), todayXF.getBankFee()));
-            dataVo.setTodayXNIncome(amountFee(todayXN.getFailMoney(), todayXN.getBankFee()));
+            //dataVo.setTodayXNIncome(amountFee(todayXN.getFailMoney(), todayXN.getBankFee()));
         }
 
         //昨日收入 Yesterday
         List<DepositOrderVo> yesterdayList = systemDepositOrderMapper
-                .selectMoneyAndCount(currency, yesterday, today, incomeStatus, cardId, merchantId);
-        DepositOrderVo yesterdayDF = systemDepositOrderMapper.selectWithdrawal(currency, yesterday, today, incomeStatus, cardId);
-        DepositOrderVo yesterdayXF = systemDepositOrderMapper.selectSettlement(currency, yesterday, today, incomeStatus, cardId);
-        DepositOrderVo yesterdayXN = systemDepositOrderMapper.selectCrypto(currency, yesterday, today, incomeStatus, cardId);
+                .selectMoneyAndCount(currency, yesterday, today, successStatus, cardId, merchantId);
+        DepositOrderVo yesterdayDF = systemDepositOrderMapper.selectWithdrawal(currency, yesterday, today, successStatus, cardId);
+        DepositOrderVo yesterdayXF = systemDepositOrderMapper.selectSettlement(currency, yesterday, today, successStatus, cardId);
+        //DepositOrderVo yesterdayXN = systemDepositOrderMapper.selectCrypto(currency, yesterday, today, incomeStatus, cardId);
         if (yesterdayList != null && yesterdayList.size() != 0) {
             dataVo.setYesterdayBankIncome(amountFee(yesterdayList.get(0).getFailMoney(), yesterdayList.get(0).getBankFee()));
             dataVo.setYesterdayQRIncome(amountFee(yesterdayList.get(1).getFailMoney(), yesterdayList.get(1).getBankFee()));
@@ -794,12 +795,12 @@ public class SystemDepositOrderServiceImpl extends ServiceImpl<SystemDepositOrde
         }
         dataVo.setYesterdayDFIncome(amountFee(yesterdayDF.getFailMoney(), yesterdayDF.getBankFee()));
         dataVo.setYesterdayXFIncome(amountFee(yesterdayXF.getFailMoney(), yesterdayXF.getBankFee()));
-        dataVo.setYesterdayXNIncome(amountFee(yesterdayXN.getFailMoney(), yesterdayXN.getBankFee()));
+        //dataVo.setYesterdayXNIncome(amountFee(yesterdayXN.getFailMoney(), yesterdayXN.getBankFee()));
         //本月
         List<DepositOrderVo> thisMonthList = systemDepositOrderMapper
-                .selectMoneyAndCount(currency, getThisMonth(), getXMonth(), incomeStatus, cardId, merchantId);
-        DepositOrderVo thisMonthDF = systemDepositOrderMapper.selectWithdrawal(currency, getThisMonth(), getXMonth(), incomeStatus, cardId);
-        DepositOrderVo thisMonthXF = systemDepositOrderMapper.selectSettlement(currency, getThisMonth(), getXMonth(), incomeStatus, cardId);
+                .selectMoneyAndCount(currency, getThisMonth(), getXMonth(), successStatus, cardId, merchantId);
+        DepositOrderVo thisMonthDF = systemDepositOrderMapper.selectWithdrawal(currency, getThisMonth(), getXMonth(), successStatus, cardId);
+        DepositOrderVo thisMonthXF = systemDepositOrderMapper.selectSettlement(currency, getThisMonth(), getXMonth(), successStatus, cardId);
         DepositOrderVo thisMonthXN = systemDepositOrderMapper.selectCrypto(currency, getThisMonth(), getXMonth(), incomeStatus, cardId);
 
         if (thisMonthList != null && thisMonthList.size() != 0) {
@@ -814,10 +815,10 @@ public class SystemDepositOrderServiceImpl extends ServiceImpl<SystemDepositOrde
 
         //上月
         List<DepositOrderVo> lastMonthList = systemDepositOrderMapper
-                .selectMoneyAndCount(currency, getLastMonth(), getThisMonth(), incomeStatus, cardId, merchantId);
-        DepositOrderVo lastMonthDF = systemDepositOrderMapper.selectWithdrawal(currency, getLastMonth(), getThisMonth(), incomeStatus, cardId);
-        DepositOrderVo lastMonthXF = systemDepositOrderMapper.selectSettlement(currency, getLastMonth(), getThisMonth(), incomeStatus, cardId);
-        DepositOrderVo lastMonthXN = systemDepositOrderMapper.selectCrypto(currency, getLastMonth(), getThisMonth(), incomeStatus, cardId);
+                .selectMoneyAndCount(currency, getLastMonth(), getThisMonth(), successStatus, cardId, merchantId);
+        DepositOrderVo lastMonthDF = systemDepositOrderMapper.selectWithdrawal(currency, getLastMonth(), getThisMonth(), successStatus, cardId);
+        DepositOrderVo lastMonthXF = systemDepositOrderMapper.selectSettlement(currency, getLastMonth(), getThisMonth(), successStatus, cardId);
+        DepositOrderVo lastMonthXN = systemDepositOrderMapper.selectCrypto(currency, getLastMonth(), getThisMonth(), successStatus, cardId);
 
         if (lastMonthList != null && lastMonthList.size() != 0) {
             dataVo.setLastMonthBankIncome(amountFee(lastMonthList.get(0).getFailMoney(), lastMonthList.get(0).getBankFee()));
@@ -996,35 +997,33 @@ public class SystemDepositOrderServiceImpl extends ServiceImpl<SystemDepositOrde
     private HashMap<String, HashMap<String, DepositQRLossCommissionVo>> info() {
         HashMap<String, HashMap<String, DepositQRLossCommissionVo>> hm = new HashMap<>();
         String[] currency = new String[]{"THB", "kVND", "kIDR", "CNY"};
-        String[] table = new String[]{"system_withdrawal_order", "system_sub_settlement_order"};
-        String[] ss = new String[]{"processing_fo", "processing_fx"};
+        String[] table = new String[]{"system_withdrawal_order", "system_settlement_order"};
+        String[] filed = new String[]{"processing_fo", "processing_fx"};
         for (int i = 0; i < table.length; i++) {
             HashMap<String, DepositQRLossCommissionVo> hs = new HashMap<>();
             for (int j = 0; j < currency.length; j++) {
                 DepositQRLossCommissionVo vo = systemDepositOrderMapper.processingFoAmount(currency[j], table[i]);
                 hs.put(currency[j], vo);
             }
-            hm.put(ss[i], hs);
+            hm.put(filed[i], hs);
         }
         String[] confirmable = new String[]{"1", "2"};
-        String[] sss = new String[]{"confirmable_fo", "mer_confirm_fo"};
+        String[] filed2 = new String[]{"confirmable_fo", "mer_confirm_fo"};
         for (int i = 0; i < confirmable.length; i++) {
             HashMap<String, DepositQRLossCommissionVo> hs = new HashMap<>();
             for (int j = 0; j < currency.length; j++) {
                 DepositQRLossCommissionVo vo = systemDepositOrderMapper.confirmableFoAmount(currency[j], confirmable[i]);
                 hs.put(currency[j], vo);
             }
-            hm.put(sss[i], hs);
-
+            hm.put(filed2[i], hs);
         }
         HashMap<String, DepositQRLossCommissionVo> hs = new HashMap<>();
         for (int i = 0; i < currency.length; i++) {
 
-            DepositQRLossCommissionVo vo = systemDepositOrderMapper.approvalEtAmount(currency[i]);
-            hs.put(currency[i], vo);
+            DepositQRLossCommissionVo commissionVo = systemDepositOrderMapper.approvalEtAmount(currency[i]);
+            hs.put(currency[i], commissionVo);
         }
         hm.put("approval_external", hs);
-
         return hm;
     }
 
