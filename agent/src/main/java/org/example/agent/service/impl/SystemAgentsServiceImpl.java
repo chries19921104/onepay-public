@@ -9,6 +9,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.example.agent.base.Result;
+import org.example.agent.constants.SystemConstants;
 import org.example.agent.dto.UserDto;
 import org.example.agent.mapper.SystemAgentsMapper;
 import org.example.agent.mapper.SystemCurrencyMapper;
@@ -18,14 +19,12 @@ import org.example.agent.utils.BeanCopyUtils;
 import org.example.agent.utils.TokenUtils;
 import org.example.agent.vo.*;
 import org.example.common.entity.SystemAgents;
+import org.example.common.entity.SystemMerchant;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
 /**
  * 代理表(SystemAgents)表服务实现类
@@ -50,11 +49,11 @@ public class SystemAgentsServiceImpl extends ServiceImpl<SystemAgentsMapper, Sys
         LambdaQueryWrapper<SystemAgents> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(SystemAgents::getUsername, userDto.getUsername())
                 .eq(SystemAgents::getPassword, SecureUtil.md5(userDto.getPassword()))
-                .eq(SystemAgents::getStatus, 1);
+                .eq(SystemAgents::getStatus, SystemConstants.STATUS);
         SystemAgents systemAgents = agentsMapper.selectOne(wrapper);
 
         if (Objects.isNull(systemAgents)) {
-            return Result.failed("用户或密码错误");
+            return Result.failed(302,"用户或密码错误");
         }
         //获取jwt
         HashMap<String, Object> payload = new HashMap<>();
@@ -76,7 +75,7 @@ public class SystemAgentsServiceImpl extends ServiceImpl<SystemAgentsMapper, Sys
         agentVo.setToken(token);
 
 
-        return Result.success(302, agentVo);
+        return Result.success(agentVo);
     }
 
     @Override
@@ -101,9 +100,9 @@ public class SystemAgentsServiceImpl extends ServiceImpl<SystemAgentsMapper, Sys
         Long agentId = TokenUtils.getAgentId(token);
         LambdaUpdateWrapper<SystemAgents> wrapper = new LambdaUpdateWrapper<>();
         wrapper.eq(SystemAgents::getAgentId, agentId)
-                .set(SystemAgents::getStatus, 0);
+                .set(SystemAgents::getStatus, SystemConstants.NO_STATUS);
         update(null, wrapper);
-        return Result.success(302);
+        return Result.success();
     }
 
     @Override
@@ -114,7 +113,7 @@ public class SystemAgentsServiceImpl extends ServiceImpl<SystemAgentsMapper, Sys
         ProfileInfoVo profileInfoVo = BeanCopyUtils.copyBean(agents, ProfileInfoVo.class);
         List<String> currencys = systemCurrencyMapper.selectCurrency();
 
-        if (profileInfoVo.getIdentity().equals(1)) {
+        if (profileInfoVo.getIdentity().equals(SystemConstants.AGENT_IDENTITY_ONE)) {
             profileInfoVo.setCurrency(currencys);
             List<AgentProfileInfoVo> agentProfileInfoVos = agentsMapper.selectAgentfoVo();
             profileInfoVo.setCrews(agentProfileInfoVos);
@@ -125,7 +124,6 @@ public class SystemAgentsServiceImpl extends ServiceImpl<SystemAgentsMapper, Sys
         agentInfoVo.setCurrency(currencys);
         LambdaQueryWrapper<SystemAgents> wrapper = new LambdaQueryWrapper<>();
         wrapper.select(SystemAgents::getFullName)
-                .eq(SystemAgents::getAgentId, agentId)
                 .apply("belong_id = agent_id");
         List<Object> belongName = listObjs(wrapper);
         agentInfoVo.setBelongName(belongName);
@@ -141,7 +139,7 @@ public class SystemAgentsServiceImpl extends ServiceImpl<SystemAgentsMapper, Sys
         LambdaQueryWrapper<SystemAgents> wrapper = new LambdaQueryWrapper<>();
         wrapper.select(SystemAgents::getAgentId, SystemAgents::getDisplayId, SystemAgents::getUsername, SystemAgents::getFullName);
 
-        if (agents.getIdentity().equals(1)) {
+        if (agents.getIdentity().equals(SystemConstants.AGENT_IDENTITY_ONE)) {
             wrapper.eq(SystemAgents::getBelongId, agentId);
             List<Map<String, Object>> maps = listMaps(wrapper);
             return Result.success(maps);
@@ -154,10 +152,31 @@ public class SystemAgentsServiceImpl extends ServiceImpl<SystemAgentsMapper, Sys
 
     @Override
     public Result merchantSimple(String token) {
+//        token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJhZ2VudElkIjoxMSwibmJmIjoxNjg2NzA4NDY4LCJleHAiOjE2ODY3MTIwNjgsImlhdCI6MTY4NjcwODQ2OCwidXNlcm5hbWUiOiJhZG1pbiJ9.M2FFgkZkw-11hSwAuRxKu345HjGuYk2xy6H8oX0aJDk";
         Long agentId = TokenUtils.getAgentId(token);
+        SystemAgents systemAgents = agentsMapper.selectById(agentId);
+        LambdaQueryWrapper<SystemMerchant> lambdaQueryWrapper = new LambdaQueryWrapper<>();
+        lambdaQueryWrapper.select(SystemMerchant::getMerchantId,
+                SystemMerchant::getAgentId,
+                SystemMerchant::getCode,
+                SystemMerchant::getCurrency,
+                SystemMerchant::getName,
+                SystemMerchant::getTrQrRate,
+                SystemMerchant::getTrRate,
+                SystemMerchant::getWdRate);
 
+        if (systemAgents.getIdentity().equals(SystemConstants.AGENT_IDENTITY_ONE)) {
+            LambdaQueryWrapper<SystemAgents> wrapper = new LambdaQueryWrapper<>();
+            wrapper.select(SystemAgents::getAgentId)
+                    .eq(SystemAgents::getBelongId, agentId);
+            List<Object> agentIds = listObjs(wrapper);
 
-        return null;
+            lambdaQueryWrapper.in(SystemMerchant::getAgentId, agentIds);
+            return Result.success(systemMerchantService.listMaps(lambdaQueryWrapper));
+        }
+
+        lambdaQueryWrapper.eq(SystemMerchant::getAgentId, agentId);
+        return Result.success(systemMerchantService.listMaps(lambdaQueryWrapper));
     }
 
 }

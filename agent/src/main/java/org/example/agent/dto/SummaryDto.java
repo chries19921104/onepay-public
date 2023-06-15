@@ -11,6 +11,7 @@ import java.util.List;
 @NoArgsConstructor
 public class SummaryDto {
     private List<Long> SH100ID;
+    private Long agentId;
     private String currency;
     private Integer rp;
     private Integer page;

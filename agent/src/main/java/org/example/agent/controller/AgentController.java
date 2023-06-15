@@ -1,5 +1,6 @@
 package org.example.agent.controller;
 
+import io.swagger.annotations.ApiOperation;
 import org.example.agent.base.Result;
 import org.example.agent.dto.SummaryDto;
 import org.example.agent.service.SystemAgentsService;
@@ -22,17 +23,20 @@ public class AgentController {
     @Autowired
     private HttpServletRequest request;
 
+    @ApiOperation(value = "代理详情内的商户列表")
     @GetMapping("/plans/summary")
     public Result planSummary(SummaryDto summaryDto) {
         return merchantService.loadPlanSummaryTable(summaryDto);
     }
 
+    @ApiOperation(value = "代理列表")
     @GetMapping("/agent/simple")
     public Result agentSimple(){
         String token = request.getHeader("token");
         return agentsService.simple(token);
     }
 
+    @ApiOperation(value = "商户")
     @GetMapping("/sh100/simple")
     public Result  merchantSimple(){
         String token=request.getHeader("token");
