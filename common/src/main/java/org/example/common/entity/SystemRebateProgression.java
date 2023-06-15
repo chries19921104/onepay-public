@@ -27,14 +27,12 @@ public class SystemRebateProgression {
     /**
      * 区段开始金额
      */
-//    @Column(name = "`from`")
     @TableField(value = "`from`")
     private BigDecimal from;
 
     /**
      * 区段结束金额
      */
-//    @Column(name = "`to`")
     @TableField(value = "`to`")
     private BigDecimal to;
 

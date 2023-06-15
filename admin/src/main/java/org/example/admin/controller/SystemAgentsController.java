@@ -30,7 +30,7 @@ public class SystemAgentsController {
     @Autowired
     private SystemAgentsService systemAgentsService;
 
-    //http://localhost:8088/api/agent/simple(选择代理)
+    //http://localhost:8091/api/agent/simple(选择代理)
     @ApiOperation(value = "有关代理的一些选项列表查询接口")
     @GetMapping("/agent/simple")
     public List<AgentsVo> getAgents() {
@@ -42,7 +42,7 @@ public class SystemAgentsController {
     //http://localhost:8088/api/agent/all
     @ApiOperation(value = "代理-代理列表-条件查询")
     @GetMapping("/agent")
-    @NoAuthorization
+//    @NoAuthorization
     public CommResp getAgentsAll(AgentDto agentDto){
 
         return systemAgentsService.getAgentsAll(agentDto);
@@ -51,7 +51,7 @@ public class SystemAgentsController {
     //http://localhost:8088/api/agent/noIdentity
     @ApiOperation(value = "代理-代理列表-无身份查询")
     @GetMapping("/agent/noIdentity")
-    @NoAuthorization
+//    @NoAuthorization
     public CommResp getAgentsNoIdentity(AgentDto agentDto){
 
         return systemAgentsService.getAgentsNoIdentity(agentDto);
@@ -69,7 +69,7 @@ public class SystemAgentsController {
     //http://localhost:8088/api/agent/{id}
     @ApiOperation(value = "代理-代理列表-详情")
     @GetMapping("/agent/{id}")
-    @NoAuthorization
+//    @NoAuthorization
     public CommResp getAgentData(@PathVariable("id")Long id){
 
         return systemAgentsService.getAgentData(id);
@@ -86,7 +86,7 @@ public class SystemAgentsController {
     //http://localhost:8088/api/agent/{id}/password/reset
     @ApiOperation(value = "代理-代理列表-详情-重置密码")
     @PutMapping("/agent/{id}/password/reset")
-    @NoAuthorization
+//    @NoAuthorization
     public CommResp updateAgentPassword(@PathVariable("id")Long id){
 
         return systemAgentsService.updateAgentPassword(id);
@@ -96,7 +96,7 @@ public class SystemAgentsController {
     //http://localhost:8088/api/agent/{id}/plans/summary
     @ApiOperation(value = "代理-代理列表-详情-搜索（未完成）")
     @PutMapping("/agent/{id}/plans/summary")
-    @NoAuthorization
+//    @NoAuthorization
     public CommResp getAgentDataSelect(@PathVariable("id")Long id){
 
         return systemAgentsService.getAgentDataSelect(id);

@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.annotations.ApiModel;
+import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.beans.BeanUtils;
@@ -23,6 +24,7 @@ import java.time.LocalDateTime;
 */
 @Getter
 @Setter
+@Data
 @TableName("system_merchant")
 @ApiModel(description = "商户实体类")
 public class SystemMerchant implements Serializable {

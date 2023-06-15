@@ -87,7 +87,7 @@ public class SystemAgentsServiceImpl extends ServiceImpl<SystemAgentsMapper, Sys
         if(agentDto.getAgentId()!=null && agentDto.getAgentId()!=0){
             lqw.eq(SystemAgents::getAgentId,agentDto.getAgentId());
         }
-        if(agentDto.getDisplayId()!=null){
+        if(agentDto.getDisplayId()!=null&&!agentDto.getDisplayId().isEmpty()){
             lqw.eq(SystemAgents::getDisplayId,agentDto.getDisplayId());
         }
         if(agentDto.getBelongId()!=null){
@@ -96,7 +96,7 @@ public class SystemAgentsServiceImpl extends ServiceImpl<SystemAgentsMapper, Sys
         if(agentDto.getStatus()!=null){
             lqw.eq(SystemAgents::getStatus,agentDto.getStatus());
         }
-        if(agentDto.getFullName()!=null){
+        if(agentDto.getFullName()!=null&&!agentDto.getFullName().isEmpty()){
             lqw.eq(SystemAgents::getFullName,agentDto.getFullName());
         }
 

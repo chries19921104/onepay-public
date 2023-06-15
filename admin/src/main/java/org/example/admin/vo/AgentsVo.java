@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 @Data
 @ApiModel(description = "返回代理数据")
 public class AgentsVo {
-    @TableId
+
     private Long agentId;
 
     /**
