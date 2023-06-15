@@ -3,6 +3,7 @@ package org.example.admin.vo;
 import lombok.Data;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 public class ExternalStatementVo {
@@ -13,9 +14,7 @@ public class ExternalStatementVo {
 
     private String accountCode;
 
-    private LocalDateTime transactionDateStartData;
-
-    private LocalDateTime transactionDateEndData;
+    private LocalDateTime transactionDate;
 
     private String description;
 
@@ -38,4 +37,5 @@ public class ExternalStatementVo {
     private Long bankFee;
 
     private Integer type;
+
 }

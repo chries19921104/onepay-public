@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.example.admin.mapper.SystemExternalTrabeOrderMapper">
+
+<resultMap id="ExternalTrabeOrder" type="org.example.admin.vo.SystemExternalTrabeOrderVo">
+    <id column="et_id" property="et_id"/>
+    <result column="account_code" property="accountCode"/>
+    <result column="to_man" property="toMan"/>
+    <result column="to_bank" property="toBank"/>
+    <result column="to_card_number" property="toCardNumber"/>
+    <result column="type" property="type"/>
+    <result column="pai_amount" property="paidAmount"/>
+    <result column="bank_fee" property="bankFee"/>
+    <result column="vnd_payment_method" property="vndPaymentMethod"/>
+    <result column="status" property="status"/>
+    <result column="local_created_at" property="localCreatedAt"/>
+    <result column="local_updated_at" property="localUpdatedAt"/>
+    <result column="created_man" property="createdMan"/>
+    <result column="updated_man" property="updatedStartDate"/>
+    <result column="completed_at" property="completedAt"/>
+    <result column="action_log" property="actionLog"/>
+    <result column="message" property="message"/>
+    <result column="step" property="step"/>
+    <result column="bank_card_id" property="bankCardId"/>
+    <result column="card_id" property="CardId"/>
+    <result column="request_amount" property="requestAmount"/>
+    <result column="currency" property="currency"/>
+</resultMap>
+
+    <select id="getAll" resultMap="ExternalTrabeOrder">
+        SELECT
+	seto.et_id,
+-- 	sbc.account_code,
+	seto.type,
+	seto.request_amount,
+	seto.bank_fee,
+	seto.vnd_payment_method,
+	seto.`status`,
+	seto.step,
+	seto.local_created_at,
+	seto.local_updated_at,
+	seto.created_man,
+	seto.updated_man,
+	seto.action_log,
+	seto.message,
+	seto.completed_at,
+	seto.to_man,
+	seto.to_bank,
+	seto.to_card_number
+FROM
+	system_external_trade_order as seto
+LEFT join
+	system_bank_card as sbc
+on
+        seto.bank_card_id = sbc.card_id
+	<if test="currency != null" >
+     seto.currency = #{dto.currency}
+    </if>
+    <if test="bankId != null">
+     sbc.bank_id = #{dto.bankId}
+    </if>
+    <if test="status != null">
+     seto.`status` = #{dto.status}
+    </if>
+    <if test="type != null">
+    seto.type = #{dto.type}
+    </if>
+    <if test="startDate != null">
+    seto.local_created_at <![CDATA[>=]]> #{dto.startDate}
+    </if>
+
+     <if test="endDate != null">
+    seto.local_created_at <![CDATA[>=]]> #{dto.startDate}
+     </if>
+
+    <if test="from != null">
+    sbc.account_code = #{dto.from}
+    </if>
+
+    <if test="to != null">
+    seto.to_man = #{dto.to} or seto.to_bank = #{dto.to} or seto.to_card_number = #{dto.to}
+     </if>
+
+     <if test="altId != null">
+    seto.alt_id = #{dto.altId}
+    </if>
+
+    <if test="message != null">
+    sbc.message = #{dto.message}
+    </if>
+
+    <if test="altId != null">
+    seto.alt_id = #{dto.altId}
+    </if>
+
+    <if test="postscript != null">
+    seto.postscript = #{dto.postscript}
+    </if>
+
+     <if test="updated_start_date != null">
+     seto.local_updated_at <![CDATA[>=]]> #{dto.updatedStartDate}
+    </if>
+
+     <if test="updated_end_date != null">
+         seto.local_updated_at <![CDATA[<=]]> #{dto.updatedEndDate}
+    </if>
+
+    <if test="completed_start_time != null">
+         seto.completed_time <![CDATA[<=]]> #{dto.completedStartTime}
+    </if>
+
+    <if test="completed_end_time != null">
+         seto.completed_time <![CDATA[<=]]> #{dto.completedEndTime}
+    </if>
+
+    </select>
+</mapper>
