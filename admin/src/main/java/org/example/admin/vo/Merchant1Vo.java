@@ -12,7 +12,7 @@ public class Merchant1Vo {
     private String groupName;
 
     @JsonProperty("SH100_ID")
-    private Long MerchantId;
+    private Long merchantId;
 
     @JsonProperty("agent_display_id")
     private Long agentDisplayId;

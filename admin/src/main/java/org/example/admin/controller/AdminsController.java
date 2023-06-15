@@ -78,5 +78,4 @@ public class AdminsController {
     public List<AdminsVO> getAdminByName(){
         return adminsService.getAdminByName();
     }
-
 }

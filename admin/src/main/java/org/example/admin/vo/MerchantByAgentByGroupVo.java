@@ -13,6 +13,7 @@ public class MerchantByAgentByGroupVo {
      * 商户ID
      */
     @TableId
+    @JsonProperty("SH100_ID")
     private Long merchantId;
 
     /**
@@ -33,6 +34,7 @@ public class MerchantByAgentByGroupVo {
     /**
      * 卡群
      */
+    @JsonProperty("PG100_ID")
     private Long cardGroupId;
 
     /**

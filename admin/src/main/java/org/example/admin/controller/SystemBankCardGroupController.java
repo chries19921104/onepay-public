@@ -49,10 +49,7 @@ public class SystemBankCardGroupController {
     public List<BankGroupVo> getGroup(String with) {
         //返回的数据类型：{PG100_ID: 1, PG100_name: "DEV-THB", currency: "THB"}
         //里面牵涉表，system_bank_card_group
-        if ("currency,model".equals(with)){
-            return systemBankCardGroupService.getGroup();
-        }
-        return null;
+        return systemBankCardGroupService.getGroup();
     }
 
     //http://localhost:8088/api/pg100?

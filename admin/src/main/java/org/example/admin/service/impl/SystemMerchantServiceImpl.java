@@ -118,17 +118,9 @@ public class SystemMerchantServiceImpl extends ServiceImpl<SystemMerchantMapper,
         if (systemMerchants.size()== 0){
             return null;
         }
-        //将结果的部分字段信息拷贝到data结果类中
-        List<MerchantDataVo> collect = systemMerchants.stream().map(iter -> {
-            MerchantDataVo merchantData = new MerchantDataVo();
-            BeanUtils.copyProperties(iter, merchantData);
-            merchantData.setAgentDisplayId(iter.getAgentId());
-            return merchantData;
-        }).collect(Collectors.toList());
-
         //银行条件筛选
         if (merchantDto.getNotAllowedTypes() != null && !merchantDto.getNotAllowedTypes().isEmpty()){
-            for (MerchantDataVo merchantData : collect) {
+            for (SystemMerchant merchantData : systemMerchants) {
                 LambdaQueryWrapper<SystemMerchantSupportBank> branklqw = new LambdaQueryWrapper<>();
                 branklqw.eq(SystemMerchantSupportBank::getMerchantId,merchantData.getMerchantId())
                         .in(SystemMerchantSupportBank::getTxnType,merchantDto.getNotAllowedTypes());
@@ -137,21 +129,29 @@ public class SystemMerchantServiceImpl extends ServiceImpl<SystemMerchantMapper,
                 List<SystemMerchantSupportBank> bankList = systemMerchantSupportBankMapper.selectList(branklqw);
                 //如果查询存在，则不符合条件，删除当前对象
                 if (bankList != null && !bankList.isEmpty()){
-                    collect.remove(merchantData);
+                    systemMerchants.remove(merchantData);
                 }
             }
         }
 
-        //遍历data结果集合
-        for (MerchantDataVo merchantData : collect) {
+        //将结果的部分字段信息拷贝到data结果类中
+        List<MerchantDataVo> collect = systemMerchants.stream().map(iter -> {
+            MerchantDataVo merchantData = new MerchantDataVo();
+            BeanUtils.copyProperties(iter, merchantData);
+            merchantData.setAgentDisplayId(iter.getAgentId());
+            //通过中的群组id查询对应的群组name信息
+            SystemBankCardGroup systemBankCardGroup = systemBankCardGroupMapper.selectById(iter.getCardGroupId());
+            if (systemBankCardGroup != null){
+                merchantData.setGroupName(systemBankCardGroup.getGroupName());
+            }
             //通过data类中的商户id查询对应的商户钱包信息
             SystemMerchantWallet systemMerchantWallet = systemMerchantWalletMapper.selectOne(
                     new LambdaQueryWrapper<SystemMerchantWallet>()
-                    .eq(SystemMerchantWallet::getMerchantId, merchantData.getMerchantId()));
+                            .eq(SystemMerchantWallet::getMerchantId, merchantData.getMerchantId()));
             //通过data中的代理id查询代理表的相关信息
             SystemAgents systemAgent1 = systemAgentsMapper.selectOne(
                     new LambdaQueryWrapper<SystemAgents>()
-                    .eq(SystemAgents::getAgentId, merchantData.getAgentDisplayId()));
+                            .eq(SystemAgents::getAgentId, merchantData.getAgentDisplayId()));
             //如果查询出来的代理信息包含父代理，那么通过父代理id查询代理信息
             if (systemAgent1 != null && systemAgent1.getBelongId() != null){
                 SystemAgents systemAgent2 = systemAgentsMapper.selectOne(
@@ -163,20 +163,16 @@ public class SystemMerchantServiceImpl extends ServiceImpl<SystemMerchantMapper,
             }
             //如果查询出来对应的钱包信息那么就将其中部分字段拷贝到data结果类中
             if (systemMerchantWallet != null){
-                BeanUtils.copyProperties(systemMerchantWallet,merchantData,
-                        "availableBalance",
-                        "depositOutstandingBalance",
-                        "currentBalance",
-                        "holdBalance",
-                        "frozenBalance",
-                        "todayTrFee");
+                BeanUtils.copyProperties(systemMerchantWallet,merchantData);
             }
             //如果查询出来对应的代理信息那么就将其中部分字段拷贝到data结果类中
             if (systemAgent1 != null){
                 merchantData.setAgentDisplayId(systemAgent1.getAgentId());
                 merchantData.setAgentFullName(systemAgent1.getFullName());
             }
-        }
+            return merchantData;
+        }).collect(Collectors.toList());
+
         //分页处理
         Page<MerchantDataVo> page = new Page<>(merchantDto.getPage(),merchantDto.getRp(),collect.size());
         page.setRecords(collect);

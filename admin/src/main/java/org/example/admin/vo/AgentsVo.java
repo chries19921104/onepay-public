@@ -11,11 +11,13 @@ import java.time.LocalDateTime;
 @ApiModel(description = "返回代理数据")
 public class AgentsVo {
     @TableId
+    @JsonProperty("id")
     private Long agentId;
 
     /**
      * 代理ID
      */
+    @JsonProperty(value = "display_id")
     private String displayId;
 
     /**
@@ -37,6 +39,7 @@ public class AgentsVo {
     /**
      * 全称
      */
+    @JsonProperty("full_name")
     private String fullName;
 
     /**
@@ -77,4 +80,10 @@ public class AgentsVo {
      */
     @JsonProperty(value = "updated_at")
     private LocalDateTime updatedAt;
+
+    @JsonProperty("top_agent_id")
+    private String topAgentId;
+
+    @JsonProperty("top_agent_name")
+    private String topAgentName;
 }

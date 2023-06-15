@@ -81,10 +81,7 @@ public class MerchantResp {
         String url = URLUtils.getCurrentURL(request);
         merchantResp.setFirst_page_url(url + "?page=1");
         // 获取总页数
-        int last_page = 1;
-        if (page.getTotal() > 0){
-            last_page = page.getTotal() % pageSize == 0 ? (int)(page.getTotal() / pageSize) : (int)(page.getTotal() / pageSize) + 1;
-        }
+        int last_page = (int) page.getPages();
         merchantResp.setLast_page(last_page);
         merchantResp.setLast_page_url(url + "?page=" + last_page);
         merchantResp.setPath(url);
