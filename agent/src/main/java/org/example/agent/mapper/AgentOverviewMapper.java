@@ -34,9 +34,9 @@ public interface AgentOverviewMapper {
                                         @Param("end") LocalDateTime end,
                                         @Param("agent_id")Long agent_id);
 
-    public Integer getSuccessfulFoAmount(@Param("modelList") List<Integer> modeList,
-                                         @Param("currency") String currency,
-                                         @Param("start") LocalDateTime start,
-                                         @Param("end") LocalDateTime end,
-                                         @Param("agent_id")Long agent_id);
+//    public Integer getSuccessfulFoAmount(@Param("modelList") List<Integer> modeList,
+//                                         @Param("currency") String currency,
+//                                         @Param("start") LocalDateTime start,
+//                                         @Param("end") LocalDateTime end,
+//                                         @Param("agent_id")Long agent_id);
 }

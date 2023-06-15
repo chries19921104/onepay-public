@@ -3,9 +3,9 @@ package org.example.agent;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.scheduling.annotation.EnableAsync;
 
-@SpringBootApplica5tion
+@SpringBootApplication
+@MapperScan(basePackages = "org.example.agent.mapper")
 public class AgentApplication {
 
     public static void main(String[] args) {

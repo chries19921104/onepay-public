@@ -1,6 +1,5 @@
 package org.example.agent.service.impl;
 
-import io.swagger.models.auth.In;
 import org.example.agent.dto.OverviewDto;
 import org.example.agent.mapper.AgentOverviewMapper;
 import org.example.agent.po.SuccessfulPo;
@@ -11,10 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.time.temporal.TemporalAdjuster;
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
 
 @Service
 public class DashBoardServiceImpl implements DashBoardService {

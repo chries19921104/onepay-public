@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.example.agent.mapper.SystemAgentsMapper">
+    <select id="info" resultType="org.example.agent.vo.PlanSummaryVo">
+        select belong_id   as belongId,
+               display_id as displayId,
+               created_at  as createdAt,
+               creator,
+               full_name   as fullName,
+               agent_id    as agentId,
+               identity,
+               status,
+               updated_at  as updatedAt,
+               updater ,
+               username
+        from system_agents
+        where agent_id = #{agentId}
+          and status = 1
+    </select>
+    <select id="selectAgentfoVo" resultType="org.example.agent.vo.AgentProfileInfoVo">
+        select agent_id as agentId, display_id as displayId, full_name as fullName, username
+        from system_agents
+        where agent_id = belong_id
+    </select>
+
+</mapper>
