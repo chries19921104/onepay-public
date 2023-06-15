@@ -27,6 +27,13 @@ public class Result<T> {
     public static <T> Result<T> success(T data) {
         return new Result<>(HttpStatus.HTTP_OK, "请求成功", data);
     }
+    public static <T> Result<T> success(Integer code,T data) {
+        return new Result<>(code, "请求成功", data);
+    }
+
+    public static <T> Result<T> success(Integer code) {
+        return new Result<>(code, "请求成功",null);
+    }
 
     public static <T> Result<T> success(String message, T data) {
         return new Result<>(HttpStatus.HTTP_OK, message, data);

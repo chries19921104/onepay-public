@@ -10,8 +10,8 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class SummaryDto {
-    private Long agentId;
     private List<Long> SH100ID;
+    private Long agentId;
     private String currency;
     private Integer rp;
     private Integer page;

@@ -30,6 +30,7 @@ public class SystemAgents implements Serializable {
     @TableId
     private Long agentId;
 
+    private Long displayId;
     /**
      * 代理id
      */
