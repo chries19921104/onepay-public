@@ -74,7 +74,9 @@ public class SystemMerchantController {
             //其他信息MerchantResp
             return getMerchantResp(merchantData,totals,request,merchantDto);
         }
-        return GetNoResp.getNoMerchantResp(request,merchantDto.getRp());
+        Totals totals = new Totals();
+        getTotal(totals);
+        return GetNoResp.getNoMerchantResp(request,merchantDto.getRp(),totals);
 
     }
 
@@ -414,6 +416,17 @@ public class SystemMerchantController {
         totals.setTodayTrFee(todayTrFee);
         totals.setDepositOutstandingBalance(depositOutstandingBalance);
         return totals;
+    }
+
+    private void getTotal(Totals t) {
+        t.setEtHoldBalance(BigDecimal.valueOf(0));
+        t.setFiHoldBalance(BigDecimal.valueOf(0));
+        t.setFoHoldBalance(BigDecimal.valueOf(0));
+        t.setFxHoldBalance(BigDecimal.valueOf(0));
+        t.setTrOutHoldBalance(BigDecimal.valueOf(0));
+        t.setTrInHoldBalance(BigDecimal.valueOf(0));
+        t.setLoss(BigDecimal.valueOf(0));
+        t.setRemainingBalance(BigDecimal.valueOf(0));
     }
 
 }

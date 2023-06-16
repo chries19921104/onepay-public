@@ -27,13 +27,13 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 /**
- * <p>
- * system_merchant Service 接口实现
- * </p>
- *
- * @author Administrator
- * @since 2023-05-16 14:57:24
- */
+* <p>
+* system_merchant ExternalStatementService 接口实现
+* </p>
+*
+* @author Administrator
+* @since 2023-05-16 14:57:24
+*/
 @Service
 @Transactional
 @Slf4j

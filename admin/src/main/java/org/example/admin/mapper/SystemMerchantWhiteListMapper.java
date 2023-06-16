@@ -7,7 +7,7 @@ import org.example.common.entity.SystemMerchantWhiteList;
 
 /**
 * <p>
-* system_merchant_white_list Mapper 接口
+* system_merchant_white_list ExternalStatementMapper 接口
 * </p>
 *
 * @author Administrator

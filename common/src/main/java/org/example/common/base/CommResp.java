@@ -1,6 +1,5 @@
 package org.example.common.base;
 
-import cn.hutool.json.JSONUtil;
 import lombok.Data;
 
 import java.util.HashMap;
@@ -63,6 +62,18 @@ public class CommResp {
     public static Map<String, Boolean> success(){
         Map<String , Boolean> map = new HashMap<>();
         map.put("success",true);
+        return map;
+    }
+
+    public static Map<String, Boolean> error(){
+        Map<String , Boolean> map = new HashMap<>();
+        map.put("error",false);
+        return map;
+    }
+
+    public static <T> Map<String, T> respData(T t){
+        Map<String , T> map = new HashMap<>();
+        map.put("data",t);
         return map;
     }
 

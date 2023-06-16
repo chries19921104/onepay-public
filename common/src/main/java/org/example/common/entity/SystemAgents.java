@@ -24,6 +24,9 @@ import java.time.LocalDateTime;
 public class SystemAgents implements Serializable {
     private static final long serialVersionUID = 1L;
 
+    private static final Integer IDENTITY_GEN_AGENT = 1; //总代
+    private static final Integer IDENTITY_AGENT = 2; //代理
+
     @TableId
     private Long agentId;
 
@@ -31,6 +34,11 @@ public class SystemAgents implements Serializable {
     * 1 总代, 2 代理
     */
     private Integer identity;
+
+    /**
+     * 代理ID
+     */
+    private String displayId;
 
     /**
     * 所属总代

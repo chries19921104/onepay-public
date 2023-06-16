@@ -7,7 +7,7 @@ import org.example.common.entity.SystemMerchantWallet;
 
 /**
 * <p>
-* system_merchant_wallet Mapper 接口
+* system_merchant_wallet ExternalStatementMapper 接口
 * </p>
 *
 * @author Administrator

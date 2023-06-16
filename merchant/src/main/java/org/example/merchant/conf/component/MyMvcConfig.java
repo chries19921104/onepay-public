@@ -1,7 +1,7 @@
 package org.example.merchant.conf.component;
 
 
-import org.example.common.component.MyLocaleResolver;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.LocaleResolver;

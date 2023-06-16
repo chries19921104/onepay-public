@@ -12,7 +12,7 @@ import java.util.Map;
 
 /**
 * <p>
-* system_bank Service 接口
+* system_bank ExternalStatementService 接口
 * </p>
 *
 * @author Administrator

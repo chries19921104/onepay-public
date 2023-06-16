@@ -67,10 +67,10 @@ public class InternalTransferDto {
     private String to;
 
     @JsonProperty("vnd_otp")
-    private String[] vnd_otp;
+    private ArrayList<String> vnd_otp;
 
     @JsonProperty("vnd_payment_method")
-    private String vnd_payment_method;
+    private ArrayList<String> vnd_payment_method;
 
     @JsonProperty("postscript")
     private String postscript;
@@ -79,7 +79,7 @@ public class InternalTransferDto {
     private String alt_id;
 
     @JsonProperty("tr_auto")
-    private boolean tr_auto;
+    private String tr_auto;
 
     @JsonProperty("vbs_tag")
     @Min(value = 1, message = "status必须在（1,2）")

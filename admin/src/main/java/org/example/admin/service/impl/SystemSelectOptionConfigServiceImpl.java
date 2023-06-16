@@ -7,16 +7,14 @@ import org.example.common.entity.SystemSelectOptionConfig;
 import org.springframework.stereotype.Service;
 
 /**
-* @author Administrator
-* @description 针对表【system_select_option_config(系统下拉选单设定档)】的数据库操作Service实现
-* @createDate 2023-06-07 15:55:32
-*/
+ * <p>
+ * 系统下拉选单设定档 服务实现类
+ * </p>
+ *
+ * @author rj
+ * @since 2023-06-08
+ */
 @Service
-public class SystemSelectOptionConfigServiceImpl extends ServiceImpl<SystemSelectOptionConfigMapper, SystemSelectOptionConfig>
-    implements SystemSelectOptionConfigService {
+public class SystemSelectOptionConfigServiceImpl extends ServiceImpl<SystemSelectOptionConfigMapper, SystemSelectOptionConfig> implements SystemSelectOptionConfigService {
 
 }
-
-
-
-

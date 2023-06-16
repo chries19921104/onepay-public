@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
 
 /**
 * <p>
-* system_menu Service 接口实现
+* system_menu ExternalStatementService 接口实现
 * </p>
 *
 * @author Administrator

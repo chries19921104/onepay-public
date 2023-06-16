@@ -27,7 +27,7 @@ import java.util.stream.Collectors;
 
 /**
 * <p>
-* admins Service 接口实现
+* admins ExternalStatementService 接口实现
 * </p>
 *
 * @author zhangmi

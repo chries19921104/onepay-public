@@ -1,4 +1,5 @@
 package org.example.common.entity;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.annotations.ApiModel;
@@ -25,6 +26,16 @@ import java.time.LocalDateTime;
 @ApiModel(value = "充值订单")
 public class SystemDepositOrder implements Serializable {
     private static final long serialVersionUID = 1L;
+
+    public static final Integer TXN_MODE_VNPAY_BANK = 106;
+    public static final Integer TXN_MODE_QRPAY = 2;
+    public static final Integer TXN_MODE_TRUE_WALLET = 3;
+    public static final Integer TXN_MODE_VNPAY_ZALO_QR = 101;
+    public static final Integer TXN_MODE_VNPAY_MOMO_QR = 102;
+    public static final Integer TXN_MODE_VNPAY_VIETTEL_QR = 103;
+    public static final Integer TXN_MODE_VNPAY_VIETTEL_FIX = 104;
+    public static final Integer TXN_MODE_VNPAY_BANK_QR = 105;
+
 
     /**
     * 充值ID
@@ -60,12 +71,12 @@ public class SystemDepositOrder implements Serializable {
     /**
     * 银行卡ID (to)
     */
-    private Integer toCardNumber;
+    private Long bankCardId;
 
     /**
     * 第三方串接ID
     */
-    private Integer tpi100Id;
+    private Long tpi100Id;
 
     /**
     * 交易模式 1.Bank网银 2.QR Code二维码 3.Crypto加密
@@ -225,6 +236,7 @@ public class SystemDepositOrder implements Serializable {
     /**
     * OTP发起时间
     */
+    @TableField("receivedOTPtime")
     private LocalDateTime receivedOTPtime;
 
     /**
@@ -263,7 +275,7 @@ public class SystemDepositOrder implements Serializable {
     private String updater;
 
     /**
-    * 更新时间
+    * 创建时间
     */
     private LocalDateTime createdAt;
 

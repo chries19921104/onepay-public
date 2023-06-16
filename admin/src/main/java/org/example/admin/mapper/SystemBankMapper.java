@@ -7,7 +7,7 @@ import org.example.common.entity.SystemBank;
 
 /**
 * <p>
-* system_bank Mapper 接口
+* system_bank ExternalStatementMapper 接口
 * </p>
 *
 * @author Administrator

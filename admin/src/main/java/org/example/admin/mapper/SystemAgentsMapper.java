@@ -7,7 +7,7 @@ import org.example.common.entity.SystemAgents;
 
 /**
 * <p>
-* system_agents Mapper 接口
+* system_agents ExternalStatementMapper 接口
 * </p>
 *
 * @author Administrator

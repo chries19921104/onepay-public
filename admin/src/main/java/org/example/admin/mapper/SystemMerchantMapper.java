@@ -13,7 +13,7 @@ import java.util.Map;
 
 /**
 * <p>
-* system_merchant Mapper 接口
+* system_merchant ExternalStatementMapper 接口
 * </p>
 *
 * @author Administrator

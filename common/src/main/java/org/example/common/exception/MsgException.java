@@ -3,7 +3,7 @@ package org.example.common.exception;
 
 import cn.hutool.json.JSONUtil;
 
-public class MsgException extends Exception {
+public class MsgException extends RuntimeException {
 
     public MsgException(String message) {
         super(message);
